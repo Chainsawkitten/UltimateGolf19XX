@@ -1,5 +1,5 @@
-# Hymn to Beauty
-C++/OpenGL 3D Engine
+# Ultimate Golf 19XX
+Ultimate golf game with exploding balls.
 
 ## Building
 1. Clone the GitHub repository.
