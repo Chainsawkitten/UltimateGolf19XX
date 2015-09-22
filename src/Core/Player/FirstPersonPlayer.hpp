@@ -1,5 +1,4 @@
-#ifndef FIRSTPERSONPLAYER_HPP
-#define FIRSTPERSONPLAYER_HPP
+#pragma once
 
 #include "Player.hpp"
 
@@ -22,5 +21,3 @@ class FirstPersonPlayer : public Player {
 };
 
 /** @} */
-
-#endif

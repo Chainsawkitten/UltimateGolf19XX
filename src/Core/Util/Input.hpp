@@ -1,5 +1,4 @@
-#ifndef INPUT_HPP
-#define INPUT_HPP
+#pragma once
 
 #include <GLFW/glfw3.h>
 #include <string>
@@ -152,5 +151,3 @@ class InputHandler {
 InputHandler* Input();
 
 /** @} */
-
-#endif

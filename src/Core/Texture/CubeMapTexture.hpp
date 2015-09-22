@@ -1,5 +1,4 @@
-#ifndef CUBEMAPTEXTURE_HPP
-#define CUBEMAPTEXTURE_HPP
+#pragma once
 
 #include "Texture.hpp"
 
@@ -57,5 +56,3 @@ class CubeMapTexture : public Texture {
 };
 
 /** @} */
-
-#endif

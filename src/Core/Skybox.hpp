@@ -1,5 +1,4 @@
-#ifndef SKYBOX_HPP
-#define SKYBOX_HPP
+#pragma once
 
 #include <GL/glew.h>
 #include "Texture/CubeMapTexture.hpp"
@@ -68,5 +67,3 @@ class Skybox {
 };
 
 /** @} */
-
-#endif

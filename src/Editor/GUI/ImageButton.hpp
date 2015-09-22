@@ -1,5 +1,4 @@
-#ifndef IMAGEBUTTON_HPP
-#define IMAGEBUTTON_HPP
+#pragma once
 
 #include "Button.hpp"
 #include <Core/Texture/Texture2D.hpp>
@@ -35,5 +34,3 @@ namespace GUI {
 }
 
 /** @} */
-
-#endif

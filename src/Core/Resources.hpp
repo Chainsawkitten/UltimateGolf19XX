@@ -1,5 +1,4 @@
-#ifndef RESOURCES_HPP
-#define RESOURCES_HPP
+#pragma once
 
 #include "Shader/ShaderProgram.hpp"
 #include <map>
@@ -217,5 +216,3 @@ class ResourceManager {
 ResourceManager& Resources();
 
 /** @} */
-
-#endif

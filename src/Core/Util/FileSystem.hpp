@@ -1,5 +1,4 @@
-#ifndef FILESYSTEM_HPP
-#define FILESYSTEM_HPP
+#pragma once
 
 #include <string>
 
@@ -52,5 +51,3 @@ namespace FileSystem {
 }
 
 /** @} */
-
-#endif

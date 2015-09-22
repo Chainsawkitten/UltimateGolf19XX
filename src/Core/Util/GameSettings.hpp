@@ -1,5 +1,4 @@
-#ifndef GAMESETTINGS_HPP
-#define GAMESETTINGS_HPP
+#pragma once
 
 #include "Settings.hpp"
 
@@ -32,5 +31,3 @@ class GameSettings : public Settings {
         GameSettings(GameSettings const&);
         void operator=(GameSettings const&);
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef PLAYER_HPP
-#define PLAYER_HPP
+#pragma once
 
 #include "../Camera/Camera.hpp"
 
@@ -53,5 +52,3 @@ class Player {
 };
 
 /** @} */
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef BUTTON_HPP
-#define BUTTON_HPP
+#pragma once
 
 #include <Core/Geometry/Rectangle.hpp>
 #include <Core/Shader/ShaderProgram.hpp>
@@ -69,5 +68,3 @@ namespace GUI {
 }
 
 /** @} */
-
-#endif

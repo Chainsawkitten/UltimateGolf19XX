@@ -1,5 +1,4 @@
-#ifndef CAMERA_HPP
-#define CAMERA_HPP
+#pragma once
 
 #include "../Object/Object.hpp"
 #include <glm/glm.hpp>
@@ -89,5 +88,3 @@ class Camera : public Object {
 };
 
 /** @} */
-
-#endif

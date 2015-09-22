@@ -1,5 +1,4 @@
-#ifndef GAMEWINDOW_HPP
-#define GAMEWINDOW_HPP
+#pragma once
 
 #include "Skybox.hpp"
 #include "Player/Player.hpp"
@@ -53,5 +52,3 @@ class GameWindow {
 };
 
 /** @} */
-
-#endif

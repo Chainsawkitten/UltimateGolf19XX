@@ -1,5 +1,4 @@
-#ifndef FIRSTPERSONCAMERA_HPP
-#define FIRSTPERSONCAMERA_HPP
+#pragma once
 
 #include "Camera.hpp"
 
@@ -33,5 +32,3 @@ class FirstPersonCamera : public Camera {
 };
 
 /** @} */
-
-#endif
