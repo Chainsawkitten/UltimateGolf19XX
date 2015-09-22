@@ -12,7 +12,7 @@ namespace GUI {
         
         closeTexture = Resources().CreateTexture2D(FILE_PNG, FILE_PNG_LENGTH);
         closeButton = new ImageButton(this, closeTexture);
-        closeButton->SetClickedCallback(std::bind(&Close, this));
+        closeButton->SetClickedCallback(std::bind(&SelectHymnWindow::Close, this));
         AddWidget(closeButton);
         
         font = Resources().CreateFontEmbedded(ABEEZEE_TTF, ABEEZEE_TTF_LENGTH, 24.f);
