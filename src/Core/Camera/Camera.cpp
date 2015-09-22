@@ -46,6 +46,6 @@ void Camera::SetNearAndFarPlanes(float near, float far) {
 	zFar = far;
 }
 
-glm::mat4 Camera::Projection(int width, int height) const {
-	return glm::perspective(glm::radians(fieldOfView), static_cast<float>(width)/height, zNear, zFar);
+glm::mat4 Camera::Projection(const glm::vec2& screenSize) const {
+	return glm::perspective(glm::radians(fieldOfView), screenSize.x / screenSize.y, zNear, zFar);
 }

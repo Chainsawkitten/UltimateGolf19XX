@@ -43,12 +43,16 @@ void GameWindow::Update() {
 }
 
 void GameWindow::Render() {
-    glfwMakeContextCurrent(window);
-    
     int width, height;
     glfwGetWindowSize(window, &width, &height);
     
-    skybox->Render(width, height, camera);
+    Render(glm::vec2(static_cast<float>(width), static_cast<float>(height)));
+}
+
+void GameWindow::Render(const glm::vec2& screenSize) {
+    glfwMakeContextCurrent(window);
+    
+    skybox->Render(camera, screenSize);
     
     glfwSwapBuffers(window);
 }

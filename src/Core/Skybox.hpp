@@ -41,11 +41,10 @@ class Skybox {
 
 		/// Render skybox.
 		/**
-		 * @param width Width of the context.
-		 * @param height Height of the context.
 		 * @param camera Camera through which to render (only orientation is used, not translation).
+		 * @param screenSize Size of the screen in pixels.
 		 */
-		void Render(int width, int height, const Camera* camera);
+		void Render(const Camera* camera, const glm::vec2& screenSize);
 
 	private:
 		void BindData();

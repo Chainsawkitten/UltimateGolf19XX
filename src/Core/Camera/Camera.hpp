@@ -77,11 +77,10 @@ class Camera : public Object {
 
 		/// Get the projection matrix.
 		/**
-		 * @param width Width of context to render to.
-		 * @param height Height of context to render to.
+         * @param screenSize Size of the screen in pixels.
 		 * @return Projection matrix
 		 */
-		glm::mat4 Projection(int width, int height) const;
+		glm::mat4 Projection(const glm::vec2& screenSize) const;
 
 	private:
 		float fieldOfView;

@@ -27,7 +27,7 @@ Skybox::~Skybox() {
 	glDeleteBuffers(1, &indexBuffer);
 }
 
-void Skybox::Render(int width, int height, const Camera* camera) {
+void Skybox::Render(const Camera* camera, const glm::vec2& screenSize) {
 	shaderProgram->Use();
 
 	// Since our Z is always 1.0, we need to set depth buffer to render at <= 1.0 instead of the default < 1.0.
@@ -42,7 +42,7 @@ void Skybox::Render(int width, int height, const Camera* camera) {
 
 	// Set uniforms.
 	glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &camera->Orientation()[0][0]);
-	glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &camera->Projection(width, height)[0][0]);
+	glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &camera->Projection(screenSize)[0][0]);
 
 	glBindVertexArray(vertexAttribute);
 
