@@ -134,8 +134,8 @@ class ResourceManager {
         
     private:
         ResourceManager();
-        ResourceManager(ResourceManager const&) = delete;
-        void operator=(ResourceManager const&) = delete;
+        ResourceManager(ResourceManager const&);
+        void operator=(ResourceManager const&);
         
         // Shaders
         struct ShaderInstance {

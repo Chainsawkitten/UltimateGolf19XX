@@ -161,7 +161,7 @@ create_directory_groups(${EDITOR_SRCS} ${EDITOR_HEADERS})
 add_executable(HymnToBeauty ${EDITOR_SRCS} ${EDITOR_HEADERS})
 target_link_libraries(HymnToBeauty Core)
 target_link_libraries(HymnToBeauty glew glfw ${GLFW_LIBRARIES})
-target_compile_features(HymnToBeauty PRIVATE cxx_nullptr cxx_deleted_functions)
+target_compile_features(HymnToBeauty PRIVATE cxx_nullptr)
 
 
 
