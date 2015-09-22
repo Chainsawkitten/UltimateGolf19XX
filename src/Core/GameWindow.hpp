@@ -3,6 +3,9 @@
 #include "Skybox.hpp"
 #include "Player/Player.hpp"
 #include "Util/Input.hpp"
+#include "RenderTarget.hpp"
+#include "Object/GeometryObject.hpp"
+#include "Texture/Texture2D.hpp"
 #include <GLFW/glfw3.h>
 
 /** @ingroup Core
@@ -46,6 +49,15 @@ class GameWindow {
         CubeMapTexture* skyboxTexture;
         Skybox* skybox;
         Player* player;
+        RenderTarget* renderTarget;
+        Geometry::Geometry3D* geometry;
+        GeometryObject* geometryObject;
+        Texture2D* texture;
+        
+        Shader* vertexShader;
+        Shader* geometryShader;
+        Shader* fragmentShader;
+        ShaderProgram* shaderProgram;
         
         // Input
         InputHandler* input;
