@@ -67,17 +67,17 @@ void EditorWindow::Init() {
     
     fileTexture = Resources().CreateTexture2D(FILE_PNG, FILE_PNG_LENGTH);
     fileButton = new GUI::ImageButton(menuBar, fileTexture);
-    fileButton->SetClickedCallback(std::bind(&OpenFileMenu, this));
+    fileButton->SetClickedCallback(std::bind(&EditorWindow::OpenFileMenu, this));
     menuBar->AddWidget(fileButton);
     
     optionsTexture = Resources().CreateTexture2D(OPTIONS_PNG, OPTIONS_PNG_LENGTH);
     optionsButton = new GUI::ImageButton(menuBar, optionsTexture);
-    optionsButton->SetClickedCallback(std::bind(&OpenProjectOptions, this));
+	optionsButton->SetClickedCallback(std::bind(&EditorWindow::OpenProjectOptions, this));
     menuBar->AddWidget(optionsButton);
     
     playTexture = Resources().CreateTexture2D(PLAY_PNG, PLAY_PNG_LENGTH);
     playButton = new GUI::ImageButton(menuBar, playTexture);
-    playButton->SetClickedCallback(std::bind(&Play, this));
+	playButton->SetClickedCallback(std::bind(&EditorWindow::Play, this));
     menuBar->AddWidget(playButton);
     
     // File menu.
@@ -89,17 +89,17 @@ void EditorWindow::Init() {
     
     newHymnButton = new GUI::ImageTextButton(fileMenu, fileTexture, font, "New Hymn");
     newHymnButton->SetSize(glm::vec2(256.f, 64.f));
-    newHymnButton->SetClickedCallback(std::bind(&NewHymn, this));
+	newHymnButton->SetClickedCallback(std::bind(&EditorWindow::NewHymn, this));
     fileMenu->AddWidget(newHymnButton);
     
     openHymnButton = new GUI::ImageTextButton(fileMenu, fileTexture, font, "Open Hymn");
     openHymnButton->SetSize(glm::vec2(256.f, 64.f));
-    openHymnButton->SetClickedCallback(std::bind(&OpenHymn, this));
+	openHymnButton->SetClickedCallback(std::bind(&EditorWindow::OpenHymn, this));
     fileMenu->AddWidget(openHymnButton);
     
     saveHymnButton = new GUI::ImageTextButton(fileMenu, fileTexture, font, "Save Hymn");
     saveHymnButton->SetSize(glm::vec2(256.f, 64.f));
-    saveHymnButton->SetClickedCallback(std::bind(&SaveHymn, this));
+	saveHymnButton->SetClickedCallback(std::bind(&EditorWindow::SaveHymn, this));
     fileMenu->AddWidget(saveHymnButton);
     
     glEnable(GL_DEPTH_TEST);
@@ -178,7 +178,7 @@ void EditorWindow::NewHymn() {
     childWindow = new GUI::SelectHymnWindow(this);
     childWindow->SetPosition(glm::vec2(0.f, 0.f));
     childWindow->SetSize(Size());
-    childWindow->SetClosedCallback(std::bind(&NewHymnClosed, this));
+    childWindow->SetClosedCallback(std::bind(&EditorWindow::NewHymnClosed, this));
 }
 
 void EditorWindow::NewHymnClosed() {
@@ -192,7 +192,7 @@ void EditorWindow::OpenHymn() {
     childWindow = new GUI::SelectHymnWindow(this);
     childWindow->SetPosition(glm::vec2(0.f, 0.f));
     childWindow->SetSize(Size());
-    childWindow->SetClosedCallback(std::bind(&OpenHymnClosed, this));
+    childWindow->SetClosedCallback(std::bind(&EditorWindow::OpenHymnClosed, this));
 }
 
 void EditorWindow::OpenHymnClosed() {
