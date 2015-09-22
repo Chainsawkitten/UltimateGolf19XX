@@ -25,8 +25,8 @@ class EditorSettings : public Settings {
     private:
         EditorSettings();
         
-        EditorSettings(EditorSettings const&) = delete;
-        void operator=(EditorSettings const&) = delete;
+        EditorSettings(EditorSettings const&);
+        void operator=(EditorSettings const&);
 };
 
 #endif

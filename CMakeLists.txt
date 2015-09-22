@@ -101,6 +101,7 @@ set(CORE_SRCS
         src/Core/Util/FileSystem.cpp
         src/Core/Util/Input.cpp
         src/Core/Util/Settings.cpp
+        src/Core/Util/GameSettings.cpp
         src/Core/Util/Log.cpp
         src/Core/Shader/Shader.cpp
         src/Core/Shader/ShaderProgram.cpp
@@ -109,6 +110,8 @@ set(CORE_SRCS
         src/Core/Geometry/Geometry2D.cpp
         src/Core/Geometry/Rectangle.cpp
         src/Core/Object/Object.cpp
+        src/Core/Player/Player.cpp
+        src/Core/Player/FirstPersonPlayer.cpp
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
         src/Core/Texture/CubeMapTexture.cpp
@@ -122,6 +125,7 @@ set(CORE_HEADERS
         src/Core/Util/FileSystem.hpp
         src/Core/Util/Input.hpp
         src/Core/Util/Settings.hpp
+        src/Core/Util/GameSettings.hpp
         src/Core/Util/Log.hpp
         src/Core/Shader/Shader.hpp
         src/Core/Shader/ShaderProgram.hpp
@@ -130,6 +134,8 @@ set(CORE_HEADERS
         src/Core/Geometry/Geometry2D.hpp
         src/Core/Geometry/Rectangle.hpp
         src/Core/Object/Object.hpp
+        src/Core/Player/Player.hpp
+        src/Core/Player/FirstPersonPlayer.hpp
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
         src/Core/Texture/CubeMapTexture.hpp

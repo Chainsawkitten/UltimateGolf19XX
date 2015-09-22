@@ -19,10 +19,16 @@ InputHandler::InputHandler(GLFWwindow *window) {
         mouseStateLast[i] = false;
     }
     
+    keyboardBindings = new std::vector<int>[BUTTONS];
+    
     glfwSetCharCallback(window, characterCallback);
     inputMap[window] = this;
     text = "";
     tempText = "";
+}
+
+InputHandler::~InputHandler() {
+    delete[] keyboardBindings;
 }
 
 InputHandler* InputHandler::GetActiveInstance() {
@@ -42,6 +48,20 @@ void InputHandler::Update() {
     
     glfwGetCursorPos(window, &cursorX, &cursorY);
     
+    // Update keyboard.
+    for (int button = 0; button < BUTTONS; button++) {
+        bool pressed = false;
+        for (auto &key : keyboardBindings[button]) {
+            if (glfwGetKey(window, key) == GLFW_PRESS)
+                pressed = true;
+        }
+        
+        buttonTriggered[button] = !buttonDown[button] && pressed;
+        buttonReleased[button] = buttonDown[button] && !pressed;
+        buttonDown[button] = pressed;
+    }
+    
+    // Update text.
     text = tempText;
     tempText = "";
 }
@@ -64,6 +84,31 @@ double InputHandler::CursorX() const {
 
 double InputHandler::CursorY() const {
     return cursorY;
+}
+
+void InputHandler::CenterCursor() {
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    glfwSetCursorPos(window, width/2, height/2);
+    
+    cursorX = static_cast<double>(width/2);
+    cursorY = static_cast<double>(height/2);
+}
+
+void InputHandler::AssignKeyboard(Button button, int key) {
+    keyboardBindings[button].push_back(key);
+}
+
+bool InputHandler::Pressed(Button button) {
+    return buttonDown[button];
+}
+
+bool InputHandler::Triggered(Button button) {
+    return buttonTriggered[button];
+}
+
+bool InputHandler::Released(Button button) {
+    return buttonReleased[button];
 }
 
 const std::string& InputHandler::Text() const {

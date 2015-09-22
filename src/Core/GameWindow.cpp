@@ -1,4 +1,6 @@
 #include "GameWindow.hpp"
+#include "Player/FirstPersonPlayer.hpp"
+#include "Util/Log.hpp"
 
 GameWindow::GameWindow() {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -10,11 +12,20 @@ GameWindow::GameWindow() {
     }
 
     glfwMakeContextCurrent(window);
+    
+    input = new InputHandler(window);
+    input->Update();
+    input->SetActive();
+    AssignKeyboardBindings();
 }
 
 GameWindow::~GameWindow() {
     delete skybox;
     delete skyboxTexture;
+    
+    delete player;
+    
+    delete input;
     
     glfwDestroyWindow(window);
 }
@@ -31,15 +42,22 @@ void GameWindow::Init() {
     
     skybox = new Skybox(skyboxTexture);
     
-    camera = new Camera();
+    player = new FirstPersonPlayer();
+    player->SetMovementSpeed(2.f);
 }
 
 bool GameWindow::ShouldClose() const {
-    return (glfwWindowShouldClose(window) != 0);
+    return (glfwWindowShouldClose(window) != GL_FALSE);
 }
 
 void GameWindow::Update() {
+    input->Update();
+    input->SetActive();
     
+    player->Update(1.f);
+    
+    if (input->Pressed(InputHandler::QUIT))
+        glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
 void GameWindow::Render() {
@@ -52,7 +70,15 @@ void GameWindow::Render() {
 void GameWindow::Render(const glm::vec2& screenSize) {
     glfwMakeContextCurrent(window);
     
-    skybox->Render(camera, screenSize);
+    skybox->Render(player->GetCamera(), screenSize);
     
     glfwSwapBuffers(window);
+}
+
+void GameWindow::AssignKeyboardBindings() {
+    input->AssignKeyboard(InputHandler::FORWARD, GLFW_KEY_W);
+    input->AssignKeyboard(InputHandler::BACKWARD, GLFW_KEY_S);
+    input->AssignKeyboard(InputHandler::LEFT, GLFW_KEY_A);
+    input->AssignKeyboard(InputHandler::RIGHT, GLFW_KEY_D);
+    input->AssignKeyboard(InputHandler::QUIT, GLFW_KEY_ESCAPE);
 }

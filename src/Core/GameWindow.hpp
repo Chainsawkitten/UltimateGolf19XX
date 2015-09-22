@@ -1,7 +1,9 @@
 #ifndef GAMEWINDOW_HPP
 #define GAMEWINDOW_HPP
 
-#include <Core/Skybox.hpp>
+#include "Skybox.hpp"
+#include "Player/Player.hpp"
+#include "Util/Input.hpp"
 #include <GLFW/glfw3.h>
 
 /** @ingroup Core
@@ -39,10 +41,15 @@ class GameWindow {
         void Render(const glm::vec2& screenSize);
 
     private:
+        void AssignKeyboardBindings();
+        
         GLFWwindow* window;
         CubeMapTexture* skyboxTexture;
         Skybox* skybox;
-        Camera* camera;
+        Player* player;
+        
+        // Input
+        InputHandler* input;
 };
 
 /** @} */
