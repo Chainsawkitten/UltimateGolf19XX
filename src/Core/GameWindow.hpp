@@ -1,6 +1,7 @@
 #ifndef GAMEWINDOW_HPP
 #define GAMEWINDOW_HPP
 
+#include <Core/Skybox.hpp>
 #include <GLFW/glfw3.h>
 
 /** @ingroup Core
@@ -15,6 +16,9 @@ class GameWindow {
 
         /// Destructor.
         ~GameWindow();
+        
+        /// Initialize components.
+        void Init();
 
         /// Get whether the game window should close.
         /**
@@ -30,6 +34,9 @@ class GameWindow {
 
     private:
         GLFWwindow* window;
+        CubeMapTexture* skyboxTexture;
+        Skybox* skybox;
+        Camera* camera;
 };
 
 /** @} */

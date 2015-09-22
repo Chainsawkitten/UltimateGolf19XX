@@ -41,12 +41,21 @@ function(create_directory_groups)
     endforeach()
 endfunction()
 
+# Copy resources
+set(RESOURCES
+    assets/TropicalSunnyDay
+)
+
+file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
+
 # Setup embedded source
 set(EMBEDDED_INPUT
     shaders/Default2D.vert
     shaders/Font.vert
     shaders/Font.frag
     shaders/SingleColor2D.frag
+    shaders/Skybox.vert
+    shaders/Skybox.frag
     shaders/Texture2D.frag
     assets/ABeeZee.ttf
     assets/File.png
@@ -87,6 +96,7 @@ include_directories(src)
 set(CORE_SRCS
         src/Core/GameWindow.cpp
         src/Core/Resources.cpp
+        src/Core/Skybox.cpp
         src/Core/Font/Font.cpp
         src/Core/Util/FileSystem.cpp
         src/Core/Util/Input.cpp
@@ -94,15 +104,20 @@ set(CORE_SRCS
         src/Core/Util/Log.cpp
         src/Core/Shader/Shader.cpp
         src/Core/Shader/ShaderProgram.cpp
+        src/Core/Camera/Camera.cpp
+        src/Core/Camera/FirstPersonCamera.cpp
         src/Core/Geometry/Geometry2D.cpp
         src/Core/Geometry/Rectangle.cpp
+        src/Core/Object/Object.cpp
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
+        src/Core/Texture/CubeMapTexture.cpp
     )
 
 set(CORE_HEADERS
         src/Core/GameWindow.hpp
         src/Core/Resources.hpp
+        src/Core/Skybox.hpp
         src/Core/Font/Font.hpp
         src/Core/Util/FileSystem.hpp
         src/Core/Util/Input.hpp
@@ -110,10 +125,14 @@ set(CORE_HEADERS
         src/Core/Util/Log.hpp
         src/Core/Shader/Shader.hpp
         src/Core/Shader/ShaderProgram.hpp
+        src/Core/Camera/Camera.hpp
+        src/Core/Camera/FirstPersonCamera.hpp
         src/Core/Geometry/Geometry2D.hpp
         src/Core/Geometry/Rectangle.hpp
+        src/Core/Object/Object.hpp
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
+        src/Core/Texture/CubeMapTexture.hpp
     )
 
 create_directory_groups(${CORE_SRCS} ${CORE_HEADERS})
@@ -121,7 +140,7 @@ create_directory_groups(${CORE_SRCS} ${CORE_HEADERS})
 set_property(SOURCE ${CORE_SRCS} APPEND PROPERTY OBJECT_DEPENDS ${EMBEDDED_HEADER})
 
 add_library(Core STATIC ${CORE_SRCS} ${CORE_HEADERS} ${EMBEDDED_SOURCE})
-target_compile_features(Core PRIVATE cxx_nullptr)
+target_compile_features(Core PRIVATE cxx_nullptr cxx_generalized_initializers)
 
 
 
@@ -158,10 +177,10 @@ set(EDITOR_HEADERS
 
 create_directory_groups(${EDITOR_SRCS} ${EDITOR_HEADERS})
 
-add_executable(HymnToBeauty ${EDITOR_SRCS} ${EDITOR_HEADERS})
-target_link_libraries(HymnToBeauty Core)
-target_link_libraries(HymnToBeauty glew glfw ${GLFW_LIBRARIES})
-target_compile_features(HymnToBeauty PRIVATE cxx_nullptr)
+add_executable(Editor ${EDITOR_SRCS} ${EDITOR_HEADERS})
+target_link_libraries(Editor Core)
+target_link_libraries(Editor glew glfw ${GLFW_LIBRARIES})
+target_compile_features(Editor PRIVATE cxx_nullptr cxx_generalized_initializers)
 
 
 
@@ -179,3 +198,4 @@ create_directory_groups(${GAME_SRCS} ${GAME_HEADERS})
 add_executable(Game ${GAME_SRCS} ${GAME_HEADERS})
 target_link_libraries(Game Core)
 target_link_libraries(Game glew glfw ${GLFW_LIBRARIES})
+target_compile_features(Game PRIVATE cxx_nullptr cxx_generalized_initializers)

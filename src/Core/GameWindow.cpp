@@ -13,7 +13,25 @@ GameWindow::GameWindow() {
 }
 
 GameWindow::~GameWindow() {
+    delete skybox;
+    delete skyboxTexture;
+    
     glfwDestroyWindow(window);
+}
+
+void GameWindow::Init() {
+    skyboxTexture = new CubeMapTexture(
+        "Resources/TropicalSunnyDay/Right.png",
+        "Resources/TropicalSunnyDay/Left.png",
+        "Resources/TropicalSunnyDay/Up.png",
+        "Resources/TropicalSunnyDay/Down.png",
+        "Resources/TropicalSunnyDay/Back.png",
+        "Resources/TropicalSunnyDay/Front.png"
+    );
+    
+    skybox = new Skybox(skyboxTexture);
+    
+    camera = new Camera();
 }
 
 bool GameWindow::ShouldClose() const {
@@ -21,10 +39,16 @@ bool GameWindow::ShouldClose() const {
 }
 
 void GameWindow::Update() {
-
+    
 }
 
 void GameWindow::Render() {
     glfwMakeContextCurrent(window);
+    
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+    
+    skybox->Render(width, height, camera);
+    
     glfwSwapBuffers(window);
 }
