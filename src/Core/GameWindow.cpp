@@ -1,11 +1,12 @@
 #include "GameWindow.hpp"
 #include "Player/FirstPersonPlayer.hpp"
 #include "Util/Log.hpp"
+#include "Util/GameSettings.hpp"
 
 GameWindow::GameWindow() {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    window = glfwCreateWindow(640, 480, "Hymn to Beauty", nullptr, nullptr);
+    window = glfwCreateWindow(GameSettings::GetInstance().GetLong("Screen Width"), GameSettings::GetInstance().GetLong("Screen Height"), "Ultimate Golf 19XX", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         /// @todo Print error to log.
