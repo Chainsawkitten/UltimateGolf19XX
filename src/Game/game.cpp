@@ -15,7 +15,10 @@ int main() {
     
     if (!glfwInit())
         return 1;
-
+    
+    if (GameSettings::GetInstance().GetBool("Debug Context"))
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+    
     GameWindow* gameWindow = new GameWindow();
     glewInit();
     

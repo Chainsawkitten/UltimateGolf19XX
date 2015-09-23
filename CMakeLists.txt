@@ -57,6 +57,14 @@ set(EMBEDDED_INPUT
     shaders/Skybox.vert
     shaders/Skybox.frag
     shaders/Texture2D.frag
+    shaders/Post.vert
+    shaders/PostCopy.frag
+    shaders/PostColor.frag
+    shaders/PostFXAA.frag
+    shaders/Deferred.frag
+    shaders/Default3D.vert
+    shaders/Default3D.geom
+    shaders/Default3D.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
@@ -96,6 +104,8 @@ include_directories(src)
 set(CORE_SRCS
         src/Core/GameWindow.cpp
         src/Core/Resources.cpp
+        src/Core/RenderTarget.cpp
+        src/Core/Light.cpp
         src/Core/Skybox.cpp
         src/Core/Font/Font.cpp
         src/Core/Util/FileSystem.cpp
@@ -109,9 +119,17 @@ set(CORE_SRCS
         src/Core/Camera/FirstPersonCamera.cpp
         src/Core/Geometry/Geometry2D.cpp
         src/Core/Geometry/Rectangle.cpp
+        src/Core/Geometry/Geometry3D.cpp
+        src/Core/Geometry/Cube.cpp
         src/Core/Object/Object.cpp
+        src/Core/Object/GeometryObject.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
+        src/Core/PostProcessing/PostProcessing.cpp
+        src/Core/PostProcessing/ColorFilter.cpp
+        src/Core/PostProcessing/FXAAFilter.cpp
+        src/Core/Scene/Scene.cpp
+        src/Core/Scene/TestScene.cpp
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
         src/Core/Texture/CubeMapTexture.cpp
@@ -126,6 +144,8 @@ set(CORE_SRCS
 set(CORE_HEADERS
         src/Core/GameWindow.hpp
         src/Core/Resources.hpp
+        src/Core/RenderTarget.hpp
+        src/Core/Light.hpp
         src/Core/Skybox.hpp
         src/Core/Font/Font.hpp
         src/Core/Util/FileSystem.hpp
@@ -139,9 +159,18 @@ set(CORE_HEADERS
         src/Core/Camera/FirstPersonCamera.hpp
         src/Core/Geometry/Geometry2D.hpp
         src/Core/Geometry/Rectangle.hpp
+        src/Core/Geometry/Geometry3D.hpp
+        src/Core/Geometry/Cube.hpp
         src/Core/Object/Object.hpp
+        src/Core/Object/GeometryObject.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
+        src/Core/PostProcessing/PostProcessing.hpp
+        src/Core/PostProcessing/Filter.hpp
+        src/Core/PostProcessing/ColorFilter.hpp
+        src/Core/PostProcessing/FXAAFilter.hpp
+        src/Core/Scene/Scene.hpp
+        src/Core/Scene/TestScene.hpp
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
         src/Core/Texture/CubeMapTexture.hpp

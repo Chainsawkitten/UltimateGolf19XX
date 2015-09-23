@@ -4,6 +4,7 @@ using namespace std;
 
 ResourceManager::ResourceManager() {
     rectangleCount = 0;
+    cubeCount = 0;
 }
 
 ResourceManager& ResourceManager::GetInstance() {
@@ -98,6 +99,21 @@ void ResourceManager::FreeRectangle() {
     
     if (rectangleCount <= 0)
         delete rectangle;
+}
+
+Geometry::Cube* ResourceManager::CreateCube() {
+    if (cubeCount == 0)
+        cube = new Geometry::Cube();
+    
+    cubeCount++;
+    return cube;
+}
+
+void ResourceManager::FreeCube() {
+    cubeCount--;
+    
+    if (cubeCount <= 0)
+        delete cube;
 }
 
 ResourceManager::ShaderProgramKey::ShaderProgramKey() {

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Skybox.hpp"
-#include "Player/Player.hpp"
 #include "Util/Input.hpp"
+#include "Scene/Scene.hpp"
 #include <GLFW/glfw3.h>
 
 /** @ingroup Core
@@ -41,11 +40,14 @@ class GameWindow {
 
     private:
         void AssignKeyboardBindings();
+        void SetWindowTitle();
         
         GLFWwindow* window;
-        CubeMapTexture* skyboxTexture;
-        Skybox* skybox;
-        Player* player;
+        Scene* currentScene;
+        
+        double lastTime, lastTimeRendered, lastTimeRender;
+        
+        glm::vec2 size;
         
         // Input
         InputHandler* input;

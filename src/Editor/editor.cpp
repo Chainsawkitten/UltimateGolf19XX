@@ -15,6 +15,9 @@ int main() {
     
     if (!glfwInit())
         return 1;
+    
+    if (EditorSettings::GetInstance().GetBool("Debug Context"))
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
     EditorWindow* editorWindow = new EditorWindow();
     glewInit();
