@@ -9,12 +9,15 @@
 int main() {
     // Enable logging if requested.
     if (EditorSettings::GetInstance().GetBool("Logging"))
-        freopen(FileSystem::SavePath("Hymn to Beauty", "log.txt").c_str(), "a", stderr);
+        freopen(FileSystem::SavePath("UltimateGolf19XX", "EditorLog.txt").c_str(), "a", stderr);
     
     Log() << "Editor started - " << time(nullptr) << "\n";
     
     if (!glfwInit())
         return 1;
+    
+    if (EditorSettings::GetInstance().GetBool("Debug Context"))
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 
     EditorWindow* editorWindow = new EditorWindow();
     glewInit();

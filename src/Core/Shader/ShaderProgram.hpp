@@ -1,5 +1,4 @@
-#ifndef SHADERPROGRAM_HPP
-#define SHADERPROGRAM_HPP
+#pragma once
 
 #include <gl/glew.h>
 #include <initializer_list>
@@ -57,5 +56,3 @@ class ShaderProgram {
 };
 
 /** @} */
-
-#endif

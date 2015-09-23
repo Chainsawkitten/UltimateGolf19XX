@@ -1,6 +1,7 @@
-#ifndef GAMEWINDOW_HPP
-#define GAMEWINDOW_HPP
+#pragma once
 
+#include "Util/Input.hpp"
+#include "Scene/Scene.hpp"
 #include <GLFW/glfw3.h>
 
 /** @ingroup Core
@@ -15,6 +16,9 @@ class GameWindow {
 
         /// Destructor.
         ~GameWindow();
+        
+        /// Initialize components.
+        void Init();
 
         /// Get whether the game window should close.
         /**
@@ -27,11 +31,26 @@ class GameWindow {
 
         /// Render the game.
         void Render();
+        
+        /// Render the game.
+        /**
+         * @param screenSize Size of the screen in pixels.
+         */
+        void Render(const glm::vec2& screenSize);
 
     private:
+        void AssignKeyboardBindings();
+        void SetWindowTitle();
+        
         GLFWwindow* window;
+        Scene* currentScene;
+        
+        double lastTime, lastTimeRendered, lastTimeRender;
+        
+        glm::vec2 size;
+        
+        // Input
+        InputHandler* input;
 };
 
 /** @} */
-
-#endif

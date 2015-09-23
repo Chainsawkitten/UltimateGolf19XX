@@ -1,5 +1,4 @@
-#ifndef TEXTURE2D_HPP
-#define TEXTURE2D_HPP
+#pragma once
 
 #include "Texture.hpp"
 #include "../Geometry/Rectangle.hpp"
@@ -79,5 +78,3 @@ class Texture2D : public Texture {
 };
 
 /** @} */
-
-#endif

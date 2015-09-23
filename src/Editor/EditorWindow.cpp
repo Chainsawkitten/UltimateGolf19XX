@@ -172,6 +172,7 @@ void EditorWindow::OpenProjectOptions() {
 
 void EditorWindow::Play() {
     gameWindow = new GameWindow();
+    gameWindow->Init();
 }
 
 void EditorWindow::NewHymn() {

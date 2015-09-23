@@ -1,5 +1,4 @@
-#ifndef EDITOR_HPP
-#define EDITOR_HPP
+#pragma once
 
 /** @ingroup Editor
  * @{
@@ -9,5 +8,3 @@
 int main();
 
 /** @} */
-
-#endif
