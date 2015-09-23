@@ -122,6 +122,8 @@ set(CORE_SRCS
         src/Core/Object/GeometryObject.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
+        src/Core/Scene/Scene.cpp
+        src/Core/Scene/TestScene.cpp
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
         src/Core/Texture/CubeMapTexture.cpp
@@ -151,6 +153,8 @@ set(CORE_HEADERS
         src/Core/Object/GeometryObject.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
+        src/Core/Scene/Scene.hpp
+        src/Core/Scene/TestScene.hpp
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
         src/Core/Texture/CubeMapTexture.hpp
