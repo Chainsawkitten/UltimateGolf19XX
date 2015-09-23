@@ -62,15 +62,7 @@ void GameWindow::Update() {
     input->SetActive();
     
     Scene::SceneEnd* status = currentScene->Update(deltaTime);
-    if (status == nullptr) {
-        
-        currentScene->Render(size);
-        
-        long wait = static_cast<long>((1.0 / GameSettings::GetInstance().GetLong("Target FPS") + lastTimeRender - glfwGetTime()) * 1000000.0);
-        if (wait > 0)
-            std::this_thread::sleep_for(std::chrono::microseconds(wait));
-        lastTimeRender = glfwGetTime();
-    } else {
+    if (status != nullptr) {
         /// @todo Handle new scene.
         /*if (status->command == Scene::SceneEnd::NEW_SCENE) {
             delete currentScene;
@@ -93,9 +85,21 @@ void GameWindow::Render() {
 }
 
 void GameWindow::Render(const glm::vec2& screenSize) {
-    glfwMakeContextCurrent(window);
-    
-    glfwSwapBuffers(window);
+    if (screenSize != glm::vec2(0.f, 0.f)) {
+        glfwMakeContextCurrent(window);
+        
+        currentScene->Render(screenSize);
+        lastTimeRendered = glfwGetTime();
+        
+        long wait = static_cast<long>((1.0 / GameSettings::GetInstance().GetLong("Target FPS") + lastTimeRender - glfwGetTime()) * 1000000.0);
+        if (wait > 0)
+            std::this_thread::sleep_for(std::chrono::microseconds(wait));
+        lastTimeRender = glfwGetTime();
+        
+        glfwSwapBuffers(window);
+        
+        SetWindowTitle();
+    }
 }
 
 void GameWindow::AssignKeyboardBindings() {
@@ -104,4 +108,13 @@ void GameWindow::AssignKeyboardBindings() {
     input->AssignKeyboard(InputHandler::LEFT, GLFW_KEY_A);
     input->AssignKeyboard(InputHandler::RIGHT, GLFW_KEY_D);
     input->AssignKeyboard(InputHandler::QUIT, GLFW_KEY_ESCAPE);
+}
+
+void GameWindow::SetWindowTitle() {
+    std::string title = "Ultimate Golf 19XX";
+    
+    if (GameSettings::GetInstance().GetBool("Show Frame Times"))
+        title += " - " + std::to_string(lastTimeRendered - lastTime) + "ms";
+    
+    glfwSetWindowTitle(window, title.c_str());
 }

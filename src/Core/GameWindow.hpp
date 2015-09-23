@@ -40,11 +40,12 @@ class GameWindow {
 
     private:
         void AssignKeyboardBindings();
+        void SetWindowTitle();
         
         GLFWwindow* window;
         Scene* currentScene;
         
-        double lastTime, lastTimeRender;
+        double lastTime, lastTimeRendered, lastTimeRender;
         
         glm::vec2 size;
         

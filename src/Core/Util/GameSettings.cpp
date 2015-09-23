@@ -8,6 +8,7 @@ GameSettings::GameSettings() {
     
     AddBoolSetting("Logging", "Debug", "Logging", false);
     AddBoolSetting("Debug Context", "Debug", "Debug Context", false);
+    AddBoolSetting("Show Frame Times", "Debug", "Show Frame Times", false);
     
     AddDoubleSetting("Mouse Sensitivity", "Controls", "Mouse Sensitivity", 0.5);
     AddBoolSetting("Center Mouse Cursor", "Controls", "Center Mouse Cursor", true);
