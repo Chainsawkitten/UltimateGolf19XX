@@ -59,6 +59,7 @@ set(EMBEDDED_INPUT
     shaders/Texture2D.frag
     shaders/Post.vert
     shaders/PostCopy.frag
+    shaders/PostColor.frag
     shaders/PostFXAA.frag
     shaders/Deferred.frag
     shaders/Default3D.vert
@@ -125,6 +126,7 @@ set(CORE_SRCS
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
         src/Core/PostProcessing/PostProcessing.cpp
+        src/Core/PostProcessing/ColorFilter.cpp
         src/Core/PostProcessing/FXAAFilter.cpp
         src/Core/Scene/Scene.cpp
         src/Core/Scene/TestScene.cpp
@@ -159,6 +161,7 @@ set(CORE_HEADERS
         src/Core/Player/FirstPersonPlayer.hpp
         src/Core/PostProcessing/PostProcessing.hpp
         src/Core/PostProcessing/Filter.hpp
+        src/Core/PostProcessing/ColorFilter.hpp
         src/Core/PostProcessing/FXAAFilter.hpp
         src/Core/Scene/Scene.hpp
         src/Core/Scene/TestScene.hpp
