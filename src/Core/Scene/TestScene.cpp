@@ -24,6 +24,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     renderTarget = new RenderTarget(screenSize);
     
+    postProcessing = new PostProcessing(screenSize);
+    fxaaFilter = new FXAAFilter();
+    
     geometry = new Geometry::Cube();
     geometryObject = new GeometryObject(geometry);
     
@@ -42,6 +45,9 @@ TestScene::~TestScene() {
     delete player;
     
     delete renderTarget;
+    
+    delete fxaaFilter;
+    delete postProcessing;
     
     delete geometryObject;
     delete geometry;
@@ -95,8 +101,11 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     
     // End - render cube
     
-    renderTarget->ResetWriting();
-    renderTarget->Render(player->GetCamera(), screenSize);
+    postProcessing->SetTarget();
     
+    renderTarget->Render(player->GetCamera(), screenSize);
     skybox->Render(player->GetCamera(), screenSize);
+    
+    postProcessing->ApplyFilter(fxaaFilter);
+    postProcessing->Render();
 }

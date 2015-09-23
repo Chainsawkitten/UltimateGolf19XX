@@ -79,6 +79,10 @@ class RenderTarget {
 		Light light;
         
 	private:
+        static void AttachTexture(GLuint texture, unsigned int width, unsigned int height, GLenum attachment, GLint internalFormat);
+		void BindLighting(Camera* camera, const glm::vec2& screenSize);
+		void BindQuad();
+        
 		GLuint textures[NUM_TEXTURES];
         
 		GLuint fbo;
@@ -102,10 +106,6 @@ class RenderTarget {
 		// Index buffer
 		GLuint indexBuffer;
 		unsigned int indexCount;
-        
-		static void AttachTexture(GLuint texture, unsigned int width, unsigned int height, GLenum attachment, GLint internalFormat);
-		void BindLighting(Camera* camera, const glm::vec2& screenSize);
-		void BindQuad();
 };
 
 /** @} */

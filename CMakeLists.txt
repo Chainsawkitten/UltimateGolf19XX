@@ -58,6 +58,8 @@ set(EMBEDDED_INPUT
     shaders/Skybox.frag
     shaders/Texture2D.frag
     shaders/Post.vert
+    shaders/PostCopy.frag
+    shaders/PostFXAA.frag
     shaders/Deferred.frag
     shaders/Default3D.vert
     shaders/Default3D.geom
@@ -122,6 +124,8 @@ set(CORE_SRCS
         src/Core/Object/GeometryObject.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
+        src/Core/PostProcessing/PostProcessing.cpp
+        src/Core/PostProcessing/FXAAFilter.cpp
         src/Core/Scene/Scene.cpp
         src/Core/Scene/TestScene.cpp
         src/Core/Texture/Texture.cpp
@@ -153,6 +157,9 @@ set(CORE_HEADERS
         src/Core/Object/GeometryObject.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
+        src/Core/PostProcessing/PostProcessing.hpp
+        src/Core/PostProcessing/Filter.hpp
+        src/Core/PostProcessing/FXAAFilter.hpp
         src/Core/Scene/Scene.hpp
         src/Core/Scene/TestScene.hpp
         src/Core/Texture/Texture.hpp

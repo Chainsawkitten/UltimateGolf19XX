@@ -7,6 +7,8 @@
 #include "../RenderTarget.hpp"
 #include "../Object/GeometryObject.hpp"
 #include "../Texture/Texture2D.hpp"
+#include "../PostProcessing/PostProcessing.hpp"
+#include "../PostProcessing/FXAAFilter.hpp"
 
 /** @ingroup Core
  * @{
@@ -50,6 +52,9 @@ class TestScene : public Scene {
         Shader* geometryShader;
         Shader* fragmentShader;
         ShaderProgram* shaderProgram;
+        
+        PostProcessing* postProcessing;
+        FXAAFilter* fxaaFilter;
 };
 
 /** @} */
