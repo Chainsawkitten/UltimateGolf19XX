@@ -1,6 +1,5 @@
 #include "TestScene.hpp"
 #include "../Player/FirstPersonPlayer.hpp"
-#include "../Geometry/Cube.hpp"
 #include "../Resources.hpp"
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
@@ -27,7 +26,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     postProcessing = new PostProcessing(screenSize);
     fxaaFilter = new FXAAFilter();
     
-    geometry = new Geometry::Cube();
+    geometry = Resources().CreateCube();
     geometryObject = new GeometryObject(geometry);
     
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
@@ -50,7 +49,7 @@ TestScene::~TestScene() {
     delete postProcessing;
     
     delete geometryObject;
-    delete geometry;
+    Resources().FreeCube();
     
     Resources().FreeTexture2D(texture);
     

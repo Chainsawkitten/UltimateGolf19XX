@@ -3,6 +3,7 @@
 #include "Shader/ShaderProgram.hpp"
 #include <map>
 #include "Geometry/Rectangle.hpp"
+#include "Geometry/Cube.hpp"
 #include "Texture/Texture2D.hpp"
 #include "Font/Font.hpp"
 
@@ -70,6 +71,18 @@ class ResourceManager {
          * Deletes the instance if no more references exist.
          */
         void FreeRectangle();
+        
+        /// Create a cube for rendering if it doesn't already exist.
+        /**
+         * @return The cube instance
+         */
+        Geometry::Cube* CreateCube();
+        
+        /// Free the reference to the cube.
+        /**
+         * Deletes the instance if no more references exist.
+         */
+        void FreeCube();
         
         /// Create a 2D texture if it doesn't already exist.
         /**
@@ -167,6 +180,10 @@ class ResourceManager {
         // Rectangle
         Geometry::Rectangle* rectangle;
         int rectangleCount;
+        
+        // Cube
+        Geometry::Cube* cube;
+        int cubeCount;
         
         // Texture2D
         struct Texture2DInstance {
