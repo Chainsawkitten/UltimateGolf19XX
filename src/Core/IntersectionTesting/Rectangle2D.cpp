@@ -10,17 +10,16 @@ bool Rectangle2D::collide(const Frustum& frustum, const float height) const {
 	return frustum.collide(*this, height);
 }
 
-Rectangle2D::Rectangle2D(const Geometry & geometry, const glm::mat4& matrix) {
+Rectangle2D::Rectangle2D(const Geometry::Geometry3D & geometry, const glm::mat4& matrix) {
 	glm::vec2 minValues, maxValues;
-	glm::vec3* currVert = new glm::vec3[geometry.vertexCount()];
-
-	for (unsigned int i = 0; i < geometry.vertexCount(); i++) {
-		currVert[i] = glm::vec3(matrix*glm::vec4(geometry.vertices()[i].position, 1.f));
+	glm::vec3* currVert = new glm::vec3[geometry.VertexCount()];
+	for (unsigned int i = 0; i < geometry.VertexCount(); i++) {
+		currVert[i] = glm::vec3(matrix*glm::vec4(geometry.Vertices()[i].position, 1.f));
 	}
 	minValues = maxValues = glm::vec2(currVert[0].x, currVert[0].z);
 
 	// Get minimum rectangle from vertices, same principle as for minimum AABB
-	for (unsigned int i = 0; i < geometry.vertexCount(); i++) {
+	for (unsigned int i = 0; i < geometry.VertexCount(); i++) {
 		if (currVert[i].x > maxValues.x)
 			maxValues.x = currVert[i].x;
 		else if (currVert[i].x < minValues.x)

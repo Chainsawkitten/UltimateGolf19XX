@@ -1,7 +1,5 @@
-#ifndef __RAY_H__
-#define __RAY_H__
+#pragma once
 
-#include "Core.hpp"
 #include <glm/glm.hpp>
 
 class Triangle;
@@ -29,7 +27,7 @@ class Ray {
 		 * @param origin Origin.
 		 * @param direction Direction.
 		 */
-		CORE_EXPORT Ray(const glm::vec3& origin = { 0.f, 0.f, 0.f }, const glm::vec3& direction = { 0.f, 0.f, 0.f });
+		Ray(const glm::vec3& origin = { 0.f, 0.f, 0.f }, const glm::vec3& direction = { 0.f, 0.f, 0.f });
 
 		/// Checks intersection between the ray and a Triangle.
 		/**
@@ -37,23 +35,21 @@ class Ray {
 		 * @param triangle Triangle to check intersection against.
 		 * @return Distance to Triangle (or -1 if missed)
 		 */
-		CORE_EXPORT float intersect(const Triangle& triangle) const;
+		float intersect(const Triangle& triangle) const;
 
 		/// Checks intersection between the ray and an OBB.
 		/**
 		 * @param obb OBB to check intersection against.
 		 * @return Distance to OBB (or -1 if missed)
 		 */
-		CORE_EXPORT float intersect(const OBB& obb) const;
+		float intersect(const OBB& obb) const;
 
 		/// Checks intersection between the ray and an AABB.
 		/**
 		 * @param aabb AABB to check intersection against.
 		 * @return Distance to AABB (or -1 if missed)
 		 */
-		CORE_EXPORT float intersect(const AABB& aabb) const;
+		float intersect(const AABB& aabb) const;
 };
 
 /** @} */
-
-#endif

@@ -1,7 +1,6 @@
-#ifndef __RECTANGLE_H__
-#define __RECTANGLE_H__
+#pragma once
 
-#include "Geometry.hpp"
+#include "../Geometry/Geometry3D.hpp"
 #include <glm/glm.hpp>
 
 class Frustum;
@@ -34,7 +33,7 @@ class Rectangle2D {
 		 * @param geometry Geometry to encapsulate.
 		 * @param matrix Transformation matrix to transform geometry with.
 		 */
-		Rectangle2D::Rectangle2D(const Geometry& geometry, const glm::mat4& matrix);
+		Rectangle2D::Rectangle2D(const Geometry::Geometry3D& geometry, const glm::mat4& matrix);
 
 		/// Check collision between rectangle and a Frustum.
 		/**
@@ -53,5 +52,3 @@ class Rectangle2D {
 };
 
 /** @} */
-
-#endif

@@ -1,7 +1,5 @@
-#ifndef __FRUSTUM_H__
-#define __FRUSTUM_H__
+#pragma once
 
-#include "Core.hpp"
 #include <glm/glm.hpp>
 
 class AABB;
@@ -21,14 +19,14 @@ class Frustum {
 		/**
 		 * @param matrix View-projection matrix to create frustum planes from.
 		 */
-		CORE_EXPORT Frustum(const glm::mat4& matrix);
+		Frustum(const glm::mat4& matrix);
 
 		/// Check collision between frustum and an AABB.
 		/**
 		 * @param aabb The AABB to check collision against.
 		 * @return Whether there was a collision
 		 */
-		CORE_EXPORT bool collide(const AABB& aabb) const;
+		bool collide(const AABB& aabb) const;
 
 		/// Check collision between frustum and a rectangle.
 		/**
@@ -36,7 +34,7 @@ class Frustum {
 		* @param height Height.
 		* @return Whether there was a collision
 		*/
-		CORE_EXPORT bool collide(const Rectangle2D& rectangle, float height) const;
+		bool collide(const Rectangle2D& rectangle, float height) const;
 
 	private:
 		glm::vec4 planes[6];
@@ -47,5 +45,3 @@ class Frustum {
 };
 
 /** @} */
-
-#endif

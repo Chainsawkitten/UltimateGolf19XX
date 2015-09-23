@@ -1,7 +1,5 @@
-#ifndef __OBB_H__
-#define __OBB_H__
+#pragma once
 
-#include "Core.hpp"
 #include "AABB.hpp"
 #include <glm/glm.hpp>
 
@@ -39,5 +37,3 @@ class OBB {
 };
 
 /** @} */
-
-#endif
