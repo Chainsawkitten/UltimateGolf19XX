@@ -62,8 +62,7 @@ void GameWindow::Update() {
         glfwGetFramebufferSize(window, &width, &height);
         currentScene->Render(glm::vec2(static_cast<float>(width), static_cast<float>(height)));
         
-        /// @todo Configurable FPS.
-        long wait = static_cast<long>((1.0 / 60.0/*settings::targetFPS()*/ + lastTimeRender - glfwGetTime()) * 1000000.0);
+        long wait = static_cast<long>((1.0 / GameSettings::GetInstance().GetLong("Target FPS") + lastTimeRender - glfwGetTime()) * 1000000.0);
         if (wait > 0)
             std::this_thread::sleep_for(std::chrono::microseconds(wait));
         lastTimeRender = glfwGetTime();

@@ -12,7 +12,8 @@
  * Mouse Sensitivity   | Mouse sensitivity.                  | double | 0.5
  * Center Mouse Cursor | Center the mouse cursor each frame. | bool   | true
  * Screen Width        | Width of the game window.           | long   | 800
- * Screen Height       | Height of the game window.          | long   | 600 
+ * Screen Height       | Height of the game window.          | long   | 600
+ * Target FPS          | FPS to aim for when rendering.      | long   | 60
  */
 class GameSettings : public Settings {
     public:
