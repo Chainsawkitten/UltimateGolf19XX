@@ -7,13 +7,13 @@
 
 GameWindow::GameWindow() {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
+    
     window = glfwCreateWindow(GameSettings::GetInstance().GetLong("Screen Width"), GameSettings::GetInstance().GetLong("Screen Height"), "Ultimate Golf 19XX", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         /// @todo Print error to log.
     }
-
+    
     glfwMakeContextCurrent(window);
     
     input = new InputHandler(window);
@@ -37,7 +37,8 @@ GameWindow::~GameWindow() {
 void GameWindow::Init() {
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
-    currentScene = new TestScene(glm::vec2(static_cast<float>(width), static_cast<float>(height)));
+    size = glm::vec2(static_cast<float>(width), static_cast<float>(height));
+    currentScene = new TestScene(size);
     
     glEnable(GL_DEPTH_TEST);
     
@@ -50,6 +51,10 @@ bool GameWindow::ShouldClose() const {
 }
 
 void GameWindow::Update() {
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    size = glm::vec2(static_cast<float>(width), static_cast<float>(height));
+    
     double deltaTime = glfwGetTime() - lastTime;
     lastTime = glfwGetTime();
     
@@ -58,9 +63,8 @@ void GameWindow::Update() {
     
     Scene::SceneEnd* status = currentScene->Update(deltaTime);
     if (status == nullptr) {
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        currentScene->Render(glm::vec2(static_cast<float>(width), static_cast<float>(height)));
+        
+        currentScene->Render(size);
         
         long wait = static_cast<long>((1.0 / GameSettings::GetInstance().GetLong("Target FPS") + lastTimeRender - glfwGetTime()) * 1000000.0);
         if (wait > 0)
@@ -85,10 +89,7 @@ void GameWindow::Update() {
 }
 
 void GameWindow::Render() {
-    int width, height;
-    glfwGetWindowSize(window, &width, &height);
-    
-    Render(glm::vec2(static_cast<float>(width), static_cast<float>(height)));
+    Render(size);
 }
 
 void GameWindow::Render(const glm::vec2& screenSize) {

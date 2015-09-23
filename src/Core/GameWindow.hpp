@@ -46,6 +46,8 @@ class GameWindow {
         
         double lastTime, lastTimeRender;
         
+        glm::vec2 size;
+        
         // Input
         InputHandler* input;
 };
