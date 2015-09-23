@@ -121,6 +121,7 @@ set(CORE_SRCS
         src/Core/Geometry/Rectangle.cpp
         src/Core/Geometry/Geometry3D.cpp
         src/Core/Geometry/Cube.cpp
+	src/Core/Geometry/Terrain.cpp
         src/Core/Object/Object.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Player/Player.cpp
@@ -133,12 +134,12 @@ set(CORE_SRCS
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
         src/Core/Texture/CubeMapTexture.cpp
-		src/Core/IntersectionTesting/AABB.cpp
-		src/Core/IntersectionTesting/Frustum.cpp
-		src/Core/IntersectionTesting/OBB.cpp
-		src/Core/IntersectionTesting/Ray.cpp
-		src/Core/IntersectionTesting/Rectangle2D.cpp
-		src/Core/IntersectionTesting/Triangle.cpp
+	src/Core/IntersectionTesting/AABB.cpp
+	src/Core/IntersectionTesting/Frustum.cpp
+	src/Core/IntersectionTesting/OBB.cpp
+	src/Core/IntersectionTesting/Ray.cpp
+	src/Core/IntersectionTesting/Rectangle2D.cpp
+	src/Core/IntersectionTesting/Triangle.cpp
     )
 
 set(CORE_HEADERS
@@ -161,6 +162,7 @@ set(CORE_HEADERS
         src/Core/Geometry/Rectangle.hpp
         src/Core/Geometry/Geometry3D.hpp
         src/Core/Geometry/Cube.hpp
+	src/Core/Geometry/Terrain.hpp
         src/Core/Object/Object.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Player/Player.hpp
@@ -174,12 +176,11 @@ set(CORE_HEADERS
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
         src/Core/Texture/CubeMapTexture.hpp
-		src/Core/IntersectionTesting/AABB.hpp
-		src/Core/IntersectionTesting/Frustum.hpp
-		src/Core/IntersectionTesting/OBB.hpp
-		src/Core/IntersectionTesting/Ray.hpp
-		src/Core/IntersectionTesting/Rectangle2D.hpp
-		src/Core/IntersectionTesting/Triangle.hpp
+	src/Core/IntersectionTesting/AABB.hpp
+	src/Core/IntersectionTesting/Frustum.hpp
+	src/Core/IntersectionTesting/OBB.hpp
+	src/Core/IntersectionTesting/Ray.hpp
+	src/Core/IntersectionTesting/Rectangle2D.hpp
     )
 
 create_directory_groups(${CORE_SRCS} ${CORE_HEADERS})
