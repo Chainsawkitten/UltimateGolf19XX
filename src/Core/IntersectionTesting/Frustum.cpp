@@ -41,7 +41,7 @@ Frustum::Frustum(const glm::mat4& matrix) {
 	planes[5].w = glm::row(matrix, 3).w - glm::row(matrix, 2).w;
 }
 
-bool Frustum::collide(const AABB& aabb) const {
+bool Frustum::Collide(const AABB& aabb) const {
 	// Define the AABB's vertices.
 	glm::vec3 vertices[8];
 	vertices[0] = aabb.minVertex;
@@ -58,7 +58,7 @@ bool Frustum::collide(const AABB& aabb) const {
 	for (int plane = 0; plane < 6; plane++) {
 		bool inside = false;
 		for (int vertex = 0; vertex < 8; vertex++) {
-			if (distanceToPoint(planes[plane], vertices[vertex]) >= 0.f) {
+			if (DistanceToPoint(planes[plane], vertices[vertex]) >= 0.f) {
 				inside = true;
 				break;
 			}
@@ -70,10 +70,10 @@ bool Frustum::collide(const AABB& aabb) const {
 	return true;
 }
 
-bool Frustum::collide(const Rectangle2D& rectangle, float height) const {
-	return collide(AABB(rectangle, height));
+bool Frustum::Collide(const Rectangle2D& rectangle, float height) const {
+	return Collide(AABB(rectangle, height));
 }
 
-float Frustum::distanceToPoint(const glm::vec4& plane, const glm::vec3& point) {
+float Frustum::DistanceToPoint(const glm::vec4& plane, const glm::vec3& point) {
 	return plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w;
 }

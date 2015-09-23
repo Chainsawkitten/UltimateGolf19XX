@@ -32,11 +32,11 @@ Terrain::Terrain(const char* filename) {
 
 	stbi_image_free(data);
 
-	filter3x3();
-	calculateNormals();
+	Filter3x3();
+	CalculateNormals();
 
-	generateVertices();
-	generateIndices();
+	GenerateVertices();
+	GenerateIndices();
 
 	for (int i = 0; i < width; i++) {
 		delete[] normals[i];
@@ -59,23 +59,23 @@ Terrain::~Terrain() {
 	delete[] heightMap;
 }
 
-Geometry::Geometry3D::Vertex* Terrain::vertices() const {
+Geometry::Geometry3D::Vertex* Terrain::Vertices() const {
 	return vertexData;
 }
 
-unsigned int Terrain::vertexCount() const {
+unsigned int Terrain::VertexCount() const {
 	return vertexNr;
 }
 
-unsigned int* Terrain::indices() const {
+unsigned int* Terrain::Indices() const {
 	return indexData;
 }
 
-unsigned int Terrain::indexCount() const {
+unsigned int Terrain::IndexCount() const {
 	return indexNr;
 }
 
-float Terrain::getY(float x, float z) const {
+float Terrain::GetY(float x, float z) const {
 	float xInTerrain = x * width;
 	float zInTerrain = z * height;
 
@@ -96,15 +96,15 @@ float Terrain::getY(float x, float z) const {
 		   dx * dz * heightMap[xFloor + 1][zFloor + 1];
 }
 
-glm::vec2 Terrain::textureRepeat() const {
+glm::vec2 Terrain::TextureRepeat() const {
 	return _textureRepeat;
 }
 
-void Terrain::setTextureRepeat(glm::vec2 repeat) {
+void Terrain::SetTextureRepeat(glm::vec2 repeat) {
 	_textureRepeat = repeat;
 }
 
-void Terrain::generateVertices() {
+void Terrain::GenerateVertices() {
 	vertexNr = width * height;
 	vertexData = new Vertex[vertexNr];
 
@@ -125,7 +125,7 @@ void Terrain::generateVertices() {
 	}
 }
 
-void Terrain::generateIndices() {
+void Terrain::GenerateIndices() {
 	indexNr = (width - 1) * (height - 1) * 6;
 	indexData = new unsigned int[indexNr];
 
@@ -142,7 +142,7 @@ void Terrain::generateIndices() {
 	}
 }
 
-void Terrain::filter3x3() {
+void Terrain::Filter3x3() {
 	float** filteredHeightMap = new float*[width];
 	for (int i = 0; i < width; i++) {
 		filteredHeightMap[i] = new float[height];
@@ -150,7 +150,7 @@ void Terrain::filter3x3() {
 
 	for (int x = 0; x < width; x++) {
 		for (int y = 0; y < height; y++) {
-			filteredHeightMap[x][y] = sampleHeight(x, y);
+			filteredHeightMap[x][y] = SampleHeight(x, y);
 		}
 	}
 
@@ -166,7 +166,7 @@ void Terrain::filter3x3() {
 	delete[] filteredHeightMap;
 }
 
-float Terrain::sampleHeight(int x, int y) const {
+float Terrain::SampleHeight(int x, int y) const {
 	int num = 0;
 	float sum = 0.f;
 
@@ -182,7 +182,7 @@ float Terrain::sampleHeight(int x, int y) const {
 	return sum / num;
 }
 
-void Terrain::calculateNormals() {
+void Terrain::CalculateNormals() {
 	for (int x = 0; x < width; x++) {
 		for (int y = 0; y < height; y++) {
 			float sx = heightMap[x < width - 1 ? x + 1 : x][y] - heightMap[x > 0 ? x - 1 : x][y];

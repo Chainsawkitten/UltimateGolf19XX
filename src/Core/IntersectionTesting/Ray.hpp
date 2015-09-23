@@ -6,7 +6,7 @@ class Triangle;
 class OBB;
 class AABB;
 
-/** @ingroup core
+/** @ingroup Core
  * @{
  */
 
@@ -35,21 +35,21 @@ class Ray {
 		 * @param triangle Triangle to check intersection against.
 		 * @return Distance to Triangle (or -1 if missed)
 		 */
-		float intersect(const Triangle& triangle) const;
+		float Intersect(const Triangle& triangle) const;
 
 		/// Checks intersection between the ray and an OBB.
 		/**
 		 * @param obb OBB to check intersection against.
 		 * @return Distance to OBB (or -1 if missed)
 		 */
-		float intersect(const OBB& obb) const;
+		float Intersect(const OBB& obb) const;
 
 		/// Checks intersection between the ray and an AABB.
 		/**
 		 * @param aabb AABB to check intersection against.
 		 * @return Distance to AABB (or -1 if missed)
 		 */
-		float intersect(const AABB& aabb) const;
+		float Intersect(const AABB& aabb) const;
 };
 
 /** @} */

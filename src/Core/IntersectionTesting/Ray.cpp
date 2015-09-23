@@ -13,7 +13,7 @@ Ray::Ray(const glm::vec3& origin, const glm::vec3& direction) {
 	this->direction = direction;
 }
 
-float Ray::intersect(const Triangle& triangle) const {
+float Ray::Intersect(const Triangle& triangle) const {
 	// Declaration
 	glm::vec3 edge1, edge2, normal, P, Q, T;
 	float det, inverseDet, u, v, t;
@@ -56,7 +56,7 @@ float Ray::intersect(const Triangle& triangle) const {
 	return -1.f;
 }
 
-float Ray::intersect(const OBB& obb) const {
+float Ray::Intersect(const OBB& obb) const {
 	float tMin, tMax, t1, t2;
 	tMin = std::numeric_limits<float>::lowest();
 	tMax = std::numeric_limits<float>::max();
@@ -93,7 +93,7 @@ float Ray::intersect(const OBB& obb) const {
 	}
 }
 
-float Ray::intersect(const AABB& aabb) const {
+float Ray::Intersect(const AABB& aabb) const {
 	// First check if the ray's origin is inside the AABB
 	if (origin.x >= aabb.minVertex.x && origin.x <= aabb.maxVertex.x &&
 		origin.y >= aabb.minVertex.y && origin.y <= aabb.maxVertex.y &&

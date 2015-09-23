@@ -5,7 +5,8 @@
 
 class Frustum;
 class Rectangle2D;
-/** @ingroup core
+
+/** @ingroup Core
  * @{
  */
 
@@ -33,7 +34,7 @@ class Rectangle2D {
 		 * @param geometry Geometry to encapsulate.
 		 * @param matrix Transformation matrix to transform geometry with.
 		 */
-		Rectangle2D::Rectangle2D(const Geometry::Geometry3D& geometry, const glm::mat4& matrix);
+		Rectangle2D(const Geometry::Geometry3D& geometry, const glm::mat4& matrix);
 
 		/// Check collision between rectangle and a Frustum.
 		/**
@@ -41,14 +42,14 @@ class Rectangle2D {
 		* @param height Height.
 		* @return Whether there was a collision
 		*/
-		bool collide(const Frustum& frustum, const float height) const;
+		bool Collide(const Frustum& frustum, const float height) const;
 
 		/// Check collision between rectangle and another rectangle.
 		/**
 		* @param other The rectangle to check overlap against
 		* @return Whether there was an overlap
 		*/
-		bool overlaps(const Rectangle2D& other);
+		bool Overlaps(const Rectangle2D& other);
 };
 
 /** @} */

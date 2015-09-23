@@ -6,8 +6,8 @@ Rectangle2D::Rectangle2D(const glm::vec2& origin, const glm::vec2& dimensions) {
 	this->dimensions = dimensions;
 }
 
-bool Rectangle2D::collide(const Frustum& frustum, const float height) const {
-	return frustum.collide(*this, height);
+bool Rectangle2D::Collide(const Frustum& frustum, const float height) const {
+	return frustum.Collide(*this, height);
 }
 
 Rectangle2D::Rectangle2D(const Geometry::Geometry3D & geometry, const glm::mat4& matrix) {
@@ -40,7 +40,7 @@ Rectangle2D::Rectangle2D(const Geometry::Geometry3D & geometry, const glm::mat4&
 	delete[] currVert;
 }
 
-bool Rectangle2D::overlaps(const Rectangle2D & other){
+bool Rectangle2D::Overlaps(const Rectangle2D & other){
 	float rect1MinX, rect1MinY,rect1MaxX, rect1MaxY;
 	float rect2MinX, rect2MinY, rect2MaxX, rect2MaxY;
 
