@@ -17,6 +17,6 @@ AABB::AABB(const Rectangle2D& rectangle, const float height) {
 	this->maxVertex = glm::vec3(rectangle.origin.x + rectangle.dimensions.x / 2.f, height / 2, rectangle.origin.y + rectangle.dimensions.y / 2.f);
 }
 
-bool AABB::collide(const Frustum& frustum) const {
-	return frustum.collide(*this);
+bool AABB::Collide(const Frustum& frustum) const {
+	return frustum.Collide(*this);
 }

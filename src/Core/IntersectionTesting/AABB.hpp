@@ -5,7 +5,7 @@
 class Frustum;
 class Rectangle2D;
 
-/** @ingroup core
+/** @ingroup Core
  * @{
  */
 
@@ -50,7 +50,7 @@ class AABB {
 		* @param frustum The Frustum to check collision against.
 		* @return Whether there was a collision
 		*/
-		bool collide(const Frustum& frustum) const;
+		bool Collide(const Frustum& frustum) const;
 };
 
 /** @} */

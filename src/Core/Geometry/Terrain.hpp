@@ -3,7 +3,7 @@
 #include "../Geometry/Geometry3D.hpp"
 #include <glm/glm.hpp>
 
-/** @ingroup game
+/** @ingroup Core
  * @{
  */
 
@@ -21,27 +21,27 @@ class Terrain : public Geometry::Geometry3D {
 
 		/// Get all the vertices.
 		/**
-		* @return Array of vertices
-		*/
-		Vertex* vertices() const;
+		 * @return Array of vertices
+		 */
+		Vertex* Vertices() const;
 
 		/// Get the number of vertices.
 		/**
-		* @return The number of vertices
-		*/
-		unsigned int vertexCount() const;
+		 * @return The number of vertices
+		 */
+		unsigned int VertexCount() const;
 
 		/// Get all the vertex indices.
 		/**
-		* @return Array of vertex indices
-		*/
-		unsigned int* indices() const;
+		 * @return Array of vertex indices
+		 */
+		unsigned int* Indices() const;
 
 		/// Get the number of indicies.
 		/**
-		* @return The number of vertex indices.
-		*/
-		unsigned int indexCount() const;
+		 * @return The number of vertex indices.
+		 */
+		unsigned int IndexCount() const;
 
 		/// Gets the height of the terrain at a given location.
 		/**
@@ -50,27 +50,27 @@ class Terrain : public Geometry::Geometry3D {
 		 * @param z Z-position on the terrain.
 		 * @return Height of the terrain (0.0 - 1.0).
 		 */
-		float getY(float x, float z) const;
+		float GetY(float x, float z) const;
 
 		/// Get how many times the texture should repeat.
 		/**
 		 * Default: (1.0, 1.0)
 		 * @return How many times the texture should repeat
 		 */
-		glm::vec2 textureRepeat() const;
+		glm::vec2 TextureRepeat() const;
 
 		/// Set how many times the texture should repeat.
 		/**
 		 * @param repeat How many times the texture should repeat.
 		 */
-		void setTextureRepeat(glm::vec2 repeat);
+		void SetTextureRepeat(glm::vec2 repeat);
 
 	private:
-		void generateVertices();
-		void generateIndices();
-		void filter3x3();
-		float sampleHeight(int x, int y) const;
-		void calculateNormals();
+		void GenerateVertices();
+		void GenerateIndices();
+		void Filter3x3();
+		float SampleHeight(int x, int y) const;
+		void CalculateNormals();
 
 		Vertex *vertexData = nullptr;
 		unsigned int vertexNr = 0;

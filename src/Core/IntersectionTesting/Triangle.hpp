@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-/** @ingroup core
+/** @ingroup Core
  * @{
  */
 
