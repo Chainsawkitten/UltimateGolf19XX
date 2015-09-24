@@ -8,6 +8,7 @@
 
 class ParticleSystem;
 
+/// Emitter that emits particles.
 class ParticleEmitter {
     public:
         /// Create new particle emitter.

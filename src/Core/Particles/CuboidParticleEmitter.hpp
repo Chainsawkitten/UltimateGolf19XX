@@ -3,6 +3,11 @@
 #include "ParticleEmitter.hpp"
 #include <glm/glm.hpp>
 
+/** @ingroup Core
+ * @{
+ */
+
+/// Emitter that emits particles in a cuboid area.
 class CuboidParticleEmitter : public ParticleEmitter {
     public:
         /// Create new CuboidParticleEmitter.
@@ -22,3 +27,5 @@ class CuboidParticleEmitter : public ParticleEmitter {
         glm::vec3 origin;
         glm::vec3 size;
 };
+
+/** @} */

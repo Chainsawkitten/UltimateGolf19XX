@@ -58,7 +58,7 @@ class ParticleSystem {
         
         /// Add a particle emitter to the system.
         /**
-         * @param particleEmitter Particle emitter to add to the system.
+         * @param emitter Particle emitter to add to the system.
          */
         void AddParticleEmitter(ParticleEmitter* emitter);
         
