@@ -9,6 +9,7 @@
 #include "../Texture/Texture2D.hpp"
 #include "../PostProcessing/PostProcessing.hpp"
 #include "../PostProcessing/FXAAFilter.hpp"
+#include "../Particles/ParticleSystem.hpp"
 
 /** @ingroup Core
  * @{
@@ -55,6 +56,10 @@ class TestScene : public Scene {
         
         PostProcessing* postProcessing;
         FXAAFilter* fxaaFilter;
+        
+        // Particles
+        ParticleSystem* particleSystem;
+        Texture2D* particleTexture;
 };
 
 /** @} */

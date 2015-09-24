@@ -5,6 +5,7 @@
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
 #include "File.png.hpp"
+#include "../Particles/CuboidParticleEmitter.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
     skyboxTexture = new CubeMapTexture(
@@ -35,11 +36,37 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
     texture = Resources().CreateTexture2D(FILE_PNG, FILE_PNG_LENGTH);
+    
+    // Particle texture.
+    particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
+    
+    // Particle type.
+    ParticleType dustParticle;
+    dustParticle.texture = particleTexture;
+    dustParticle.minLifetime = 6.f;
+    dustParticle.maxLifetime = 10.f;
+    dustParticle.minVelocity = glm::vec3(-0.025f, -0.01f, -0.025f);
+    dustParticle.maxVelocity = glm::vec3(0.025f, -0.1f, 0.025f);
+    dustParticle.minSize = glm::vec2(0.025f, 0.025f);
+    dustParticle.maxSize = glm::vec2(0.05f, 0.05f);
+    dustParticle.uniformScaling = true;
+    dustParticle.color = glm::vec3(0.2f, 1.f, 0.f);
+    
+    // Particle system.
+    particleSystem = new ParticleSystem(dustParticle, 1000);
+    
+    // Emitters.
+    ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
+    particleSystem->AddParticleEmitter(emitter);
+    emitter->Update(5.0, particleSystem, player->GetCamera());
 }
 
 TestScene::~TestScene() {
     delete skybox;
     delete skyboxTexture;
+    
+    delete particleSystem;
+    Resources().FreeTexture2DFromFile(particleTexture);
     
     delete player;
     
@@ -61,6 +88,7 @@ TestScene::~TestScene() {
 
 TestScene::SceneEnd* TestScene::Update(double time) {
     player->Update(time);
+    particleSystem->Update(time, player->GetCamera());
     
     return nullptr;
 }
@@ -104,6 +132,7 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     
     renderTarget->Render(player->GetCamera(), screenSize);
     skybox->Render(player->GetCamera(), screenSize);
+    particleSystem->Render(player->GetCamera(), screenSize);
     
     postProcessing->ApplyFilter(fxaaFilter);
     postProcessing->Render();

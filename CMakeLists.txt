@@ -44,6 +44,7 @@ endfunction()
 # Copy resources
 set(RESOURCES
     assets/TropicalSunnyDay
+    assets/DustParticle.png
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
@@ -65,6 +66,9 @@ set(EMBEDDED_INPUT
     shaders/Default3D.vert
     shaders/Default3D.geom
     shaders/Default3D.frag
+    shaders/Particle.vert
+    shaders/Particle.geom
+    shaders/Particle.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
@@ -134,6 +138,10 @@ set(CORE_SRCS
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
         src/Core/Texture/CubeMapTexture.cpp
+        src/Core/Particles/CuboidParticleEmitter.cpp
+        src/Core/Particles/ParticleEmitter.cpp
+        src/Core/Particles/ParticleSystem.cpp
+        src/Core/Particles/PointParticleEmitter.cpp
 	src/Core/Physics/AABB.cpp
 	src/Core/Physics/Frustum.cpp
 	src/Core/Physics/OBB.cpp
@@ -176,6 +184,11 @@ set(CORE_HEADERS
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
         src/Core/Texture/CubeMapTexture.hpp
+        src/Core/Particles/CuboidParticleEmitter.hpp
+        src/Core/Particles/ParticleEmitter.hpp
+        src/Core/Particles/ParticleSystem.hpp
+        src/Core/Particles/PointParticleEmitter.hpp
+        src/Core/Particles/ParticleType.hpp
 	src/Core/Physics/AABB.hpp
 	src/Core/Physics/Frustum.hpp
 	src/Core/Physics/OBB.hpp
