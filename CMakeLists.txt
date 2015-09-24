@@ -134,12 +134,12 @@ set(CORE_SRCS
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
         src/Core/Texture/CubeMapTexture.cpp
-	src/Core/IntersectionTesting/AABB.cpp
-	src/Core/IntersectionTesting/Frustum.cpp
-	src/Core/IntersectionTesting/OBB.cpp
-	src/Core/IntersectionTesting/Ray.cpp
-	src/Core/IntersectionTesting/Rectangle2D.cpp
-	src/Core/IntersectionTesting/Triangle.cpp
+	src/Core/Physics/AABB.cpp
+	src/Core/Physics/Frustum.cpp
+	src/Core/Physics/OBB.cpp
+	src/Core/Physics/Ray.cpp
+	src/Core/Physics/Rectangle2D.cpp
+	src/Core/Physics/Triangle.cpp
     )
 
 set(CORE_HEADERS
@@ -176,11 +176,12 @@ set(CORE_HEADERS
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
         src/Core/Texture/CubeMapTexture.hpp
-	src/Core/IntersectionTesting/AABB.hpp
-	src/Core/IntersectionTesting/Frustum.hpp
-	src/Core/IntersectionTesting/OBB.hpp
-	src/Core/IntersectionTesting/Ray.hpp
-	src/Core/IntersectionTesting/Rectangle2D.hpp
+	src/Core/Physics/AABB.hpp
+	src/Core/Physics/Frustum.hpp
+	src/Core/Physics/OBB.hpp
+	src/Core/Physics/Ray.hpp
+	src/Core/Physics/Rectangle2D.hpp
+        src/Core/Physics/Triangle.hpp
     )
 
 create_directory_groups(${CORE_SRCS} ${CORE_HEADERS})
