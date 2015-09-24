@@ -186,7 +186,7 @@ set(CORE_HEADERS
 
 create_directory_groups(${CORE_SRCS} ${CORE_HEADERS})
 
-set_property(SOURCE ${CORE_SRCS} APPEND PROPERTY OBJECT_DEPENDS ${EMBEDDED_HEADER})
+#set_property(SOURCE ${CORE_SRCS} APPEND PROPERTY OBJECT_DEPENDS ${EMBEDDED_HEADER})
 
 add_library(Core STATIC ${CORE_SRCS} ${CORE_HEADERS} ${EMBEDDED_SOURCE})
 target_compile_features(Core PRIVATE cxx_nullptr cxx_generalized_initializers)
