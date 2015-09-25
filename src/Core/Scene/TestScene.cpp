@@ -7,6 +7,7 @@
 #include "File.png.hpp"
 #include "../Particles/CuboidParticleEmitter.hpp"
 #include "../Audio/SoundSystem.hpp"
+#include "../Util/GameSettings.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
     skyboxTexture = new CubeMapTexture(
@@ -151,6 +152,8 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     skybox->Render(player->GetCamera(), screenSize);
     particleSystem->Render(player->GetCamera(), screenSize);
     
-    postProcessing->ApplyFilter(fxaaFilter);
+    if (GameSettings::GetInstance().GetBool("FXAA"))
+        postProcessing->ApplyFilter(fxaaFilter);
+    
     postProcessing->Render();
 }

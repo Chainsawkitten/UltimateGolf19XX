@@ -16,6 +16,7 @@ GameSettings::GameSettings() {
     AddLongSetting("Screen Width", "Graphics", "Width", 800);
     AddLongSetting("Screen Height", "Graphics", "Height", 600);
     AddLongSetting("Target FPS", "Graphics", "Target FPS", 60);
+    AddBoolSetting("FXAA", "Graphics", "FXAA", true);
 }
 
 GameSettings& GameSettings::GetInstance() {
