@@ -18,7 +18,10 @@ TestScene::TestScene(const glm::vec2& screenSize) {
         "Resources/TropicalSunnyDay/Back.png",
         "Resources/TropicalSunnyDay/Front.png"
     );
-    
+	terrain = new Terrain("Resources/Terrain/FlatMapSmall.tga");
+	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
+	terrainObject = new TerrainObject(terrain);
+
     skybox = new Skybox(skyboxTexture);
     
     player = new FirstPersonPlayer();
@@ -146,6 +149,7 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     
     // End - render cube
     
+	terrainObject->Render(player->GetCamera(), screenSize);
     postProcessing->SetTarget();
     
     renderTarget->Render(player->GetCamera(), screenSize);

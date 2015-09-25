@@ -30,7 +30,7 @@ class GeometryObject : public Object {
          * @param camera %Camera to render through.
          * @param screenSize Size of the screen in pixels.
          */
-		virtual void Render(ShaderProgram* shaderProgram, Camera* camera, const glm::vec2& screenSize) const;
+		virtual void Render(Camera* camera, const glm::vec2& screenSize) const;
 
 		/// Get relative drawing distance (compared to other objects).
 		/**
