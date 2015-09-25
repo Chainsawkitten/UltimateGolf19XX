@@ -17,7 +17,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
         "Resources/TropicalSunnyDay/Back.png",
         "Resources/TropicalSunnyDay/Front.png"
     );
-    
+	terrain = new Terrain("Resources/Terrain/TestMapSmall.tga");
+	terrainObject = new TerrainObject(terrain);
+
     skybox = new Skybox(skyboxTexture);
     
     player = new FirstPersonPlayer();
@@ -149,6 +151,7 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     
     renderTarget->Render(player->GetCamera(), screenSize);
     skybox->Render(player->GetCamera(), screenSize);
+	terrainObject->Render(player->GetCamera(), screenSize);
     particleSystem->Render(player->GetCamera(), screenSize);
     
     postProcessing->ApplyFilter(fxaaFilter);

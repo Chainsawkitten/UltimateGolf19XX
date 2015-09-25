@@ -12,6 +12,8 @@
 #include "../Particles/ParticleSystem.hpp"
 #include "../Audio/WaveFile.hpp"
 #include "../Audio/Sound.hpp"
+#include "../Object/TerrainObject.hpp"
+#include "../Geometry/Terrain.hpp"
 
 /** @ingroup Core
  * @{
@@ -50,12 +52,17 @@ class TestScene : public Scene {
         Geometry::Geometry3D* geometry;
         GeometryObject* geometryObject;
         Texture2D* texture;
-        
+		TerrainObject* terrainObject;
+		Terrain* terrain;
+
+
         Shader* vertexShader;
         Shader* geometryShader;
         Shader* fragmentShader;
         ShaderProgram* shaderProgram;
         
+
+
         PostProcessing* postProcessing;
         FXAAFilter* fxaaFilter;
         

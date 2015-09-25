@@ -18,6 +18,9 @@ class TerrainObject : public GeometryObject {
 		 */
 		TerrainObject(const Terrain* terrain);
 
+		/// Destroys terrain object.
+		~TerrainObject();
+
 		/// Get renderable Geometry.
 		/**
 		* @return The renderable Geometry.
@@ -35,7 +38,7 @@ class TerrainObject : public GeometryObject {
 
 
 		/// Renders terrain.
-		void render();
+		void Render(Camera* camera, const glm::vec2& screenSize) const;
 
 	private:
 		Texture2D* blendMap;
@@ -43,6 +46,12 @@ class TerrainObject : public GeometryObject {
 		Texture2D* cliffTexture;
 		Texture2D* sandTexture;
 		Texture2D* snowTexture;
+
+		Shader* vertexShader;
+		Shader* fragmentShader;
+		Shader* geometryShader;
+		ShaderProgram* shaderProgram;
+
 		const Terrain* terrain;
 };
 
