@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Geometry/Geometry3D.hpp"
+#include "../Texture/Texture2D.hpp"
 #include <glm/glm.hpp>
 
 /** @ingroup Core
@@ -64,6 +65,12 @@ class Terrain : public Geometry::Geometry3D {
 		 * @param repeat How many times the texture should repeat.
 		 */
 		void SetTextureRepeat(glm::vec2 repeat);
+		
+		void Render();
+		/// Renders Terrain
+		/**
+		*/
+
 
 	private:
 		void GenerateVertices();

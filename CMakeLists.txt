@@ -44,6 +44,8 @@ endfunction()
 # Copy resources
 set(RESOURCES
     assets/TropicalSunnyDay
+    assets/CGTextures
+    assets/Terrain
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
@@ -65,6 +67,7 @@ set(EMBEDDED_INPUT
     shaders/Default3D.vert
     shaders/Default3D.geom
     shaders/Default3D.frag
+	shaders/Blendmap.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
@@ -123,6 +126,7 @@ set(CORE_SRCS
         src/Core/Geometry/Cube.cpp
 	src/Core/Geometry/Terrain.cpp
         src/Core/Object/Object.cpp
+		src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
@@ -164,6 +168,7 @@ set(CORE_HEADERS
         src/Core/Geometry/Cube.hpp
 	src/Core/Geometry/Terrain.hpp
         src/Core/Object/Object.hpp
+		src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp

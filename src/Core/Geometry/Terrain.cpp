@@ -1,5 +1,6 @@
 #include "Terrain.hpp"
 #include "../Util/Log.hpp"
+#include "../Resources.hpp"
 #include <stb_image.h>
 
 
@@ -181,6 +182,7 @@ float Terrain::SampleHeight(int x, int y) const {
 
 	return sum / num;
 }
+
 
 void Terrain::CalculateNormals() {
 	for (int x = 0; x < width; x++) {
