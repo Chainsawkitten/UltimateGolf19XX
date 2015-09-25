@@ -62,7 +62,6 @@ class TestScene : public Scene {
         ShaderProgram* shaderProgram;
         
 
-
         PostProcessing* postProcessing;
         FXAAFilter* fxaaFilter;
         
