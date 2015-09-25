@@ -25,11 +25,15 @@ GameWindow::GameWindow() {
     
     lastTime = 0.0;
     lastTimeRender = 0.0;
+    
+    soundSystem = new SoundSystem();
 }
 
 GameWindow::~GameWindow() {
     delete currentScene;
     delete input;
+    
+    delete soundSystem;
     
     glfwDestroyWindow(window);
 }
