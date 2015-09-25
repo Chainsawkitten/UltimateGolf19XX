@@ -4,15 +4,12 @@
 #include "Post.vert.hpp"
 #include "Deferred.frag.hpp"
 
-#define BUFFER_OFFSET(i) ((char *)nullptr + (i))
-
-const glm::vec2 RenderTarget::vertices[4] = { { -1.f, 1.f }, { 1.f, 1.f }, { -1.f, -1.f }, { 1.f, -1.f } };
-const unsigned int RenderTarget::indices[6] = { 0, 1, 3, 0, 3, 2 };
-
 RenderTarget::RenderTarget(const glm::vec2& size) {
 	vertexShader = Resources().CreateShader(POST_VERT, POST_VERT_LENGTH, GL_VERTEX_SHADER);
     fragmentShader = Resources().CreateShader(DEFERRED_FRAG, DEFERRED_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, fragmentShader });
+    
+    rectangle = Resources().CreateRectangle();
     
 	this->size = size;
     
@@ -52,9 +49,6 @@ RenderTarget::RenderTarget(const glm::vec2& size) {
     
 	// Default framebuffer
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    
-	shaderProgram->Use();
-	BindQuad();
 }
 
 RenderTarget::~RenderTarget() {
@@ -66,13 +60,12 @@ RenderTarget::~RenderTarget() {
 
 	if (depthHandle != 0)
 		glDeleteTextures(1, &depthHandle);
-
-	glDeleteBuffers(1, &vertexBuffer);
-	glDeleteBuffers(1, &indexBuffer);
     
     Resources().FreeShaderProgram(shaderProgram);
     Resources().FreeShader(vertexShader);
     Resources().FreeShader(fragmentShader);
+    
+    Resources().FreeRectangle();
 }
 
 GLuint RenderTarget::Texture(TEXTURE_TYPE textureType) const {
@@ -158,9 +151,9 @@ void RenderTarget::Render(Camera* camera, const glm::vec2& screenSize) {
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glBindVertexArray(vertexAttribute);
+	glBindVertexArray(rectangle->VertexArray());
 
-	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, rectangle->IndexCount(), GL_UNSIGNED_INT, (void*)0);
 
 	if (!depthTest)
 		glDisable(GL_DEPTH_TEST);
@@ -193,26 +186,4 @@ void RenderTarget::BindLighting(Camera* camera, const glm::vec2& screenSize){
 	glUniform3fv(shaderProgram->UniformLocation("diffuseCoefficient"), 1, &light.diffuseCoefficient[0]);
 
 	glUniformMatrix4fv(shaderProgram->UniformLocation("inverseProjectionMatrix"), 1, GL_FALSE, &glm::inverse(camera->Projection(screenSize))[0][0]);
-}
-
-void RenderTarget::BindQuad() {
-	vertexCount = 4;
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(glm::vec2), vertices, GL_STATIC_DRAW);
-
-	// Define vertex data layout
-	glGenVertexArrays(1, &vertexAttribute);
-	glBindVertexArray(vertexAttribute);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), BUFFER_OFFSET(0));
-
-	// Index buffer
-	indexCount = 6;
-	glGenBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCount * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
 }

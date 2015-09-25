@@ -1,9 +1,7 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
 #include "Light.hpp"
-
+#include "Geometry/Rectangle.hpp"
 #include "Shader/ShaderProgram.hpp"
 #include "Camera/Camera.hpp"
 
@@ -94,18 +92,7 @@ class RenderTarget {
         
 		glm::vec2 size;
         
-		// Full screen quad
-		static const glm::vec2 vertices[4];
-		static const unsigned int indices[6];
-        
-		// Vertex buffer
-		GLuint vertexBuffer;
-		GLuint vertexAttribute;
-		unsigned int vertexCount;
-        
-		// Index buffer
-		GLuint indexBuffer;
-		unsigned int indexCount;
+        Geometry::Rectangle* rectangle;
 };
 
 /** @} */

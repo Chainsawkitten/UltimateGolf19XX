@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Filter.hpp"
-#include <glm/glm.hpp>
+#include "../Geometry/Rectangle.hpp"
 
 /** @ingroup Core
  * @{
@@ -32,8 +32,6 @@ class PostProcessing {
 		void Render();
 
 	private:
-        void BindQuad();
-        
 		unsigned int width;
 		unsigned int height;
 
@@ -43,18 +41,7 @@ class PostProcessing {
 		GLuint bufferTexture[2];
 		GLuint depthBuffer[2];
 
-		// Full screen quad
-		static const glm::vec2 vertices[4];
-		static const unsigned int indices[6];
-
-		// Vertex buffer
-		GLuint vertexBuffer;
-		GLuint vertexAttribute;
-		unsigned int vertexCount;
-
-		// Index buffer
-		GLuint indexBuffer;
-		unsigned int indexCount;
+		Geometry::Rectangle* rectangle;
 
 		// Shaders
 		Shader* vertexShader;

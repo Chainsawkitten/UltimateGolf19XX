@@ -46,6 +46,7 @@ set(RESOURCES
     assets/TropicalSunnyDay
     assets/CGTextures
     assets/Terrain
+    assets/DustParticle.png
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
@@ -67,7 +68,10 @@ set(EMBEDDED_INPUT
     shaders/Default3D.vert
     shaders/Default3D.geom
     shaders/Default3D.frag
-	shaders/Blendmap.frag
+    shaders/Blendmap.frag
+    shaders/Particle.vert
+    shaders/Particle.geom
+    shaders/Particle.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
@@ -126,7 +130,7 @@ set(CORE_SRCS
         src/Core/Geometry/Cube.cpp
 	src/Core/Geometry/Terrain.cpp
         src/Core/Object/Object.cpp
-		src/Core/Object/TerrainObject.cpp
+	src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
@@ -138,12 +142,16 @@ set(CORE_SRCS
         src/Core/Texture/Texture.cpp
         src/Core/Texture/Texture2D.cpp
         src/Core/Texture/CubeMapTexture.cpp
-	src/Core/IntersectionTesting/AABB.cpp
-	src/Core/IntersectionTesting/Frustum.cpp
-	src/Core/IntersectionTesting/OBB.cpp
-	src/Core/IntersectionTesting/Ray.cpp
-	src/Core/IntersectionTesting/Rectangle2D.cpp
-	src/Core/IntersectionTesting/Triangle.cpp
+        src/Core/Particles/CuboidParticleEmitter.cpp
+        src/Core/Particles/ParticleEmitter.cpp
+        src/Core/Particles/ParticleSystem.cpp
+        src/Core/Particles/PointParticleEmitter.cpp
+	src/Core/Physics/AABB.cpp
+	src/Core/Physics/Frustum.cpp
+	src/Core/Physics/OBB.cpp
+	src/Core/Physics/Ray.cpp
+	src/Core/Physics/Rectangle2D.cpp
+	src/Core/Physics/Triangle.cpp
     )
 
 set(CORE_HEADERS
@@ -168,7 +176,7 @@ set(CORE_HEADERS
         src/Core/Geometry/Cube.hpp
 	src/Core/Geometry/Terrain.hpp
         src/Core/Object/Object.hpp
-		src/Core/Object/TerrainObject.hpp
+	src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
@@ -181,16 +189,22 @@ set(CORE_HEADERS
         src/Core/Texture/Texture.hpp
         src/Core/Texture/Texture2D.hpp
         src/Core/Texture/CubeMapTexture.hpp
-	src/Core/IntersectionTesting/AABB.hpp
-	src/Core/IntersectionTesting/Frustum.hpp
-	src/Core/IntersectionTesting/OBB.hpp
-	src/Core/IntersectionTesting/Ray.hpp
-	src/Core/IntersectionTesting/Rectangle2D.hpp
+        src/Core/Particles/CuboidParticleEmitter.hpp
+        src/Core/Particles/ParticleEmitter.hpp
+        src/Core/Particles/ParticleSystem.hpp
+        src/Core/Particles/PointParticleEmitter.hpp
+        src/Core/Particles/ParticleType.hpp
+	src/Core/Physics/AABB.hpp
+	src/Core/Physics/Frustum.hpp
+	src/Core/Physics/OBB.hpp
+	src/Core/Physics/Ray.hpp
+	src/Core/Physics/Rectangle2D.hpp
+        src/Core/Physics/Triangle.hpp
     )
 
 create_directory_groups(${CORE_SRCS} ${CORE_HEADERS})
 
-set_property(SOURCE ${CORE_SRCS} APPEND PROPERTY OBJECT_DEPENDS ${EMBEDDED_HEADER})
+#set_property(SOURCE ${CORE_SRCS} APPEND PROPERTY OBJECT_DEPENDS ${EMBEDDED_HEADER})
 
 add_library(Core STATIC ${CORE_SRCS} ${CORE_HEADERS} ${EMBEDDED_SOURCE})
 target_compile_features(Core PRIVATE cxx_nullptr cxx_generalized_initializers)
