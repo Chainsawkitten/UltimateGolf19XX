@@ -25,6 +25,16 @@ include_directories(externals/glm)
 # STB
 include_directories(externals/stb)
 
+# OpenAL Soft
+set(ALSOFT_EXAMPLES OFF CACHE BOOL "Don't build OpenAL Soft examples" FORCE)
+add_subdirectory(externals/openal-soft)
+include_directories(externals/openal-soft/include)
+if(WIN32)
+    set(OPENAL_LIB OpenAL32)
+else()
+    set(OPENAL_LIB openal)
+endif()
+
 # This function should be passed a list of all files in a target. It will automatically generate
 # file groups following the directory hierarchy, so that the layout of the files in IDEs matches the
 # one in the filesystem.
@@ -45,6 +55,7 @@ endfunction()
 set(RESOURCES
     assets/TropicalSunnyDay
     assets/DustParticle.png
+    assets/Testing.wav
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
@@ -111,6 +122,11 @@ set(CORE_SRCS
         src/Core/RenderTarget.cpp
         src/Core/Light.cpp
         src/Core/Skybox.cpp
+        src/Core/Audio/Listener.cpp
+        src/Core/Audio/Sound.cpp
+        src/Core/Audio/SoundBuffer.cpp
+        src/Core/Audio/SoundSystem.cpp
+        src/Core/Audio/WaveFile.cpp
         src/Core/Font/Font.cpp
         src/Core/Util/FileSystem.cpp
         src/Core/Util/Input.cpp
@@ -156,6 +172,12 @@ set(CORE_HEADERS
         src/Core/RenderTarget.hpp
         src/Core/Light.hpp
         src/Core/Skybox.hpp
+        src/Core/Audio/Listener.hpp
+        src/Core/Audio/Sound.hpp
+        src/Core/Audio/SoundBuffer.hpp
+        src/Core/Audio/SoundFile.hpp
+        src/Core/Audio/SoundSystem.hpp
+        src/Core/Audio/WaveFile.hpp
         src/Core/Font/Font.hpp
         src/Core/Util/FileSystem.hpp
         src/Core/Util/Input.hpp
@@ -241,7 +263,7 @@ create_directory_groups(${EDITOR_SRCS} ${EDITOR_HEADERS})
 
 add_executable(Editor ${EDITOR_SRCS} ${EDITOR_HEADERS})
 target_link_libraries(Editor Core)
-target_link_libraries(Editor glew glfw ${GLFW_LIBRARIES})
+target_link_libraries(Editor glew glfw ${GLFW_LIBRARIES} ${OPENAL_LIB})
 target_compile_features(Editor PRIVATE cxx_nullptr cxx_generalized_initializers)
 
 
@@ -259,5 +281,5 @@ create_directory_groups(${GAME_SRCS} ${GAME_HEADERS})
 
 add_executable(Game ${GAME_SRCS} ${GAME_HEADERS})
 target_link_libraries(Game Core)
-target_link_libraries(Game glew glfw ${GLFW_LIBRARIES})
+target_link_libraries(Game glew glfw ${GLFW_LIBRARIES} ${OPENAL_LIB})
 target_compile_features(Game PRIVATE cxx_nullptr cxx_generalized_initializers)

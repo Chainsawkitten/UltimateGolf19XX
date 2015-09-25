@@ -2,6 +2,7 @@
 
 #include "Util/Input.hpp"
 #include "Scene/Scene.hpp"
+#include "Audio/SoundSystem.hpp"
 #include <GLFW/glfw3.h>
 
 /** @ingroup Core
@@ -51,6 +52,8 @@ class GameWindow {
         
         // Input
         InputHandler* input;
+        
+        SoundSystem* soundSystem;
 };
 
 /** @} */

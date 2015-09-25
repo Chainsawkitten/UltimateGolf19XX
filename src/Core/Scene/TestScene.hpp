@@ -10,6 +10,8 @@
 #include "../PostProcessing/PostProcessing.hpp"
 #include "../PostProcessing/FXAAFilter.hpp"
 #include "../Particles/ParticleSystem.hpp"
+#include "../Audio/WaveFile.hpp"
+#include "../Audio/Sound.hpp"
 
 /** @ingroup Core
  * @{
@@ -60,6 +62,11 @@ class TestScene : public Scene {
         // Particles
         ParticleSystem* particleSystem;
         Texture2D* particleTexture;
+        
+        // Audio
+        WaveFile* waveFile;
+        SoundBuffer* buffer;
+        Sound* sound;
 };
 
 /** @} */

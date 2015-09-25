@@ -6,6 +6,7 @@
 #include "Default3D.frag.hpp"
 #include "File.png.hpp"
 #include "../Particles/CuboidParticleEmitter.hpp"
+#include "../Audio/SoundSystem.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
     skyboxTexture = new CubeMapTexture(
@@ -59,9 +60,21 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
     emitter->Update(5.0, particleSystem, player->GetCamera());
+    
+    // Audio.
+    waveFile = new WaveFile("Resources/Testing.wav");
+    buffer = new SoundBuffer(waveFile);
+    sound = new Sound(buffer);
+    sound->SetLooping(true);
+    sound->SetGain(2.f);
+    sound->Play();
 }
 
 TestScene::~TestScene() {
+    delete sound;
+    delete buffer;
+    delete waveFile;
+    
     delete skybox;
     delete skyboxTexture;
     
@@ -88,6 +101,10 @@ TestScene::~TestScene() {
 
 TestScene::SceneEnd* TestScene::Update(double time) {
     player->Update(time);
+    
+    SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
+    SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
+    
     particleSystem->Update(time, player->GetCamera());
     
     return nullptr;
