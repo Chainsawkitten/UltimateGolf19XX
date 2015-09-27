@@ -37,7 +37,7 @@ class TestScene : public Scene {
 		 * @return SceneEnd-struct defining what to do next. nullptr if nothing should be done
 		 */
 		SceneEnd* Update(double time);
-
+        
 		/// Render the scene.
 		/**
 		 * @param screenSize Size of the screen in pixels.
@@ -53,15 +53,13 @@ class TestScene : public Scene {
         GeometryObject* geometryObject;
         Texture2D* texture;
 		TerrainObject* terrainObject;
-		Terrain* terrain;
-
-
+		Geometry::Terrain* terrain;
+        
         Shader* vertexShader;
         Shader* geometryShader;
         Shader* fragmentShader;
         ShaderProgram* shaderProgram;
         
-
         PostProcessing* postProcessing;
         FXAAFilter* fxaaFilter;
         

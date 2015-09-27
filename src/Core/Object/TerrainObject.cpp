@@ -1,11 +1,11 @@
 #include "TerrainObject.hpp"
-#include "../Geometry/Terrain.hpp"
+#include "../Resources.hpp"
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
 #include "Blendmap.frag.hpp"
 #include <glm/glm.hpp>
 
-TerrainObject::TerrainObject(const Terrain* terrain) : GeometryObject(terrain) {
+TerrainObject::TerrainObject(const Geometry::Terrain* terrain) : GeometryObject(terrain) {
 	this->terrain = terrain;
 
 	//Allocate resources from manager.
@@ -25,7 +25,7 @@ TerrainObject::TerrainObject(const Terrain* terrain) : GeometryObject(terrain) {
 	SetScale(50.f, 10.f, 50.f);
 }
 
-const Geometry::Geometry3D* TerrainObject::geometry() const {
+const Geometry::Geometry3D* TerrainObject::Geometry() const {
 	return terrain;
 }
 
@@ -42,7 +42,7 @@ TerrainObject::~TerrainObject(){
 	Resources().FreeShader(fragmentShader);
 }
 
-float TerrainObject::getY(float x, float z) const {
+float TerrainObject::GetY(float x, float z) const {
 	float xInTerrain = (x - Position().x) / Scale().x + 0.5f;
 	float zInTerrain = (z - Position().z) / Scale().z + 0.5f;
 
@@ -83,7 +83,7 @@ void TerrainObject::Render(Camera* camera, const glm::vec2& screenSize) const{
 	glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(Normal)[0][0]);
 	glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &camera->Projection(screenSize)[0][0]);
 
-	glBindVertexArray(geometry()->VertexArray());
+	glBindVertexArray(Geometry()->VertexArray());
 
-	glDrawElements(GL_TRIANGLES, this->geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
 }
