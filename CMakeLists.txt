@@ -57,7 +57,7 @@ set(RESOURCES
     assets/CGTextures
     assets/Terrain
     assets/DustParticle.png
-    assets/Testing.wav
+    assets/Testing.ogg
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
@@ -130,6 +130,7 @@ set(CORE_SRCS
         src/Core/Audio/SoundBuffer.cpp
         src/Core/Audio/SoundSystem.cpp
         src/Core/Audio/WaveFile.cpp
+        src/Core/Audio/VorbisFile.cpp
         src/Core/Font/Font.cpp
         src/Core/Util/FileSystem.cpp
         src/Core/Util/Input.cpp
@@ -183,6 +184,7 @@ set(CORE_HEADERS
         src/Core/Audio/SoundFile.hpp
         src/Core/Audio/SoundSystem.hpp
         src/Core/Audio/WaveFile.hpp
+        src/Core/Audio/VorbisFile.hpp
         src/Core/Font/Font.hpp
         src/Core/Util/FileSystem.hpp
         src/Core/Util/Input.hpp

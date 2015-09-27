@@ -10,7 +10,7 @@
 #include "../PostProcessing/PostProcessing.hpp"
 #include "../PostProcessing/FXAAFilter.hpp"
 #include "../Particles/ParticleSystem.hpp"
-#include "../Audio/WaveFile.hpp"
+#include "../Audio/VorbisFile.hpp"
 #include "../Audio/Sound.hpp"
 #include "../Object/TerrainObject.hpp"
 #include "../Geometry/Terrain.hpp"
@@ -70,7 +70,7 @@ class TestScene : public Scene {
         Texture2D* particleTexture;
         
         // Audio
-        WaveFile* waveFile;
+        VorbisFile* waveFile;
         SoundBuffer* buffer;
         Sound* sound;
 };
