@@ -9,11 +9,11 @@ TerrainObject::TerrainObject(const Terrain* terrain) : GeometryObject(terrain) {
 	this->terrain = terrain;
 
 	//Allocate resources from manager.
-	blendMap = Resources().CreateTexture2DFromFile("Resources/Terrain/blendmap.tga");
-	grassTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/grass.tga");
-	cliffTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.tga");
-	sandTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/sand.tga");
-	snowTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/snow.tga");
+	blendMap = Resources().CreateTexture2DFromFile("Resources/Terrain/blendmap.png");
+	grassTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/grass.png");
+	cliffTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
+	sandTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/sand.png");
+	snowTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/snow.png");
 
 	//Allocate shaders
 	vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH,GL_VERTEX_SHADER);

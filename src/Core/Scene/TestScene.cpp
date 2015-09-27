@@ -18,7 +18,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
         "Resources/TropicalSunnyDay/Back.png",
         "Resources/TropicalSunnyDay/Front.png"
     );
-	terrain = new Terrain("Resources/Terrain/FlatMapSmall.tga");
+	terrain = new Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
 
