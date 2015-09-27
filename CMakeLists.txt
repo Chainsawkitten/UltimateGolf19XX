@@ -144,6 +144,7 @@ set(CORE_SRCS
         src/Core/Geometry/Rectangle.cpp
         src/Core/Geometry/Geometry3D.cpp
         src/Core/Geometry/Cube.cpp
+        src/Core/Geometry/Square.cpp
 	src/Core/Geometry/Terrain.cpp
         src/Core/Object/Object.cpp
 	src/Core/Object/TerrainObject.cpp
@@ -196,6 +197,7 @@ set(CORE_HEADERS
         src/Core/Geometry/Rectangle.hpp
         src/Core/Geometry/Geometry3D.hpp
         src/Core/Geometry/Cube.hpp
+        src/Core/Geometry/Square.hpp
 	src/Core/Geometry/Terrain.hpp
         src/Core/Object/Object.hpp
 	src/Core/Object/TerrainObject.hpp
