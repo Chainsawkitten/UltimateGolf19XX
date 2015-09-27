@@ -8,6 +8,9 @@
 GameWindow::GameWindow() {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     
+    if (GameSettings::GetInstance().GetBool("Borderless"))
+        glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+    
     window = glfwCreateWindow(GameSettings::GetInstance().GetLong("Screen Width"), GameSettings::GetInstance().GetLong("Screen Height"), "Ultimate Golf 19XX", nullptr, nullptr);
     if (!window) {
         glfwTerminate();
