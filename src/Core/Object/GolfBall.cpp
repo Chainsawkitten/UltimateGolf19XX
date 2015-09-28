@@ -24,6 +24,13 @@ GolfBall::~GolfBall() {
     Resources().FreeTexture2DFromFile(texture);
 }
 
+void GolfBall::Update(double time) {
+    Move(velocity);
+    
+    glm::vec3 acceleration = glm::vec3(0.f, -9.82f, 0.f);
+    velocity += acceleration * static_cast<float>(time) * static_cast<float>(time) / 2.f;
+}
+
 void GolfBall::Render(Camera *camera, const glm::vec2 &screenSize) const {
     shaderProgram->Use();
     glBindVertexArray(Geometry()->VertexArray());

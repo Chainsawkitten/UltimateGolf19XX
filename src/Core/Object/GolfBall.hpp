@@ -17,6 +17,12 @@ class GolfBall : public GeometryObject {
         /// Destructor.
         ~GolfBall();
         
+        /// Update movement.
+        /**
+         * @param time Time since last frame (in seconds).
+         */
+        void Update(double time);
+        
         /// Render the object.
         /**
          * @param camera %Camera to render through.
@@ -32,6 +38,8 @@ class GolfBall : public GeometryObject {
         Shader* geometryShader;
         Shader* fragmentShader;
         ShaderProgram* shaderProgram;
+        
+        glm::vec3 velocity;
 };
 
 /** @} */
