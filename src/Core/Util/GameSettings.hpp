@@ -18,6 +18,7 @@
  * Borderless          | Use a borderless window.            | bool   | false
  * Target FPS          | FPS to aim for when rendering.      | long   | 60
  * FXAA                | Whether to use FXAA.                | bool   | true
+ * Audio Volume        | How loud to play sounds.            | double | 1.0
  */
 class GameSettings : public Settings {
     public:

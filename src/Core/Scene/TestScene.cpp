@@ -1,10 +1,8 @@
 #include "TestScene.hpp"
-#include "../Player/FirstPersonPlayer.hpp"
 #include "../Resources.hpp"
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
-#include "File.png.hpp"
 #include "../Particles/CuboidParticleEmitter.hpp"
 #include "../Audio/SoundSystem.hpp"
 #include "../Util/GameSettings.hpp"
@@ -24,7 +22,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 
     skybox = new Skybox(skyboxTexture);
     
-    player = new FirstPersonPlayer();
+    player = new Player();
     player->SetMovementSpeed(2.f);
     
     renderTarget = new RenderTarget(screenSize);
@@ -40,7 +38,10 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     fragmentShader = Resources().CreateShader(DEFAULT3D_FRAG, DEFAULT3D_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
-    texture = Resources().CreateTexture2D(FILE_PNG, FILE_PNG_LENGTH);
+    texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
+    
+    golfBall = new GolfBall();
+    golfBall->SetPosition(2.f, 0.f, 0.f);
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
@@ -95,7 +96,9 @@ TestScene::~TestScene() {
     delete geometryObject;
     Resources().FreeCube();
     
-    Resources().FreeTexture2D(texture);
+    delete golfBall;
+    
+    Resources().FreeTexture2DFromFile(texture);
     
     Resources().FreeShaderProgram(shaderProgram);
     Resources().FreeShader(vertexShader);
@@ -148,6 +151,8 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     glDrawElements(GL_TRIANGLES, geometryObject->Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
     
     // End - render cube
+    
+    golfBall->Render(player->GetCamera(), screenSize);
     
 	terrainObject->Render(player->GetCamera(), screenSize);
     postProcessing->SetTarget();
