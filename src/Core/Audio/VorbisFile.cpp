@@ -1,10 +1,10 @@
 #include "VorbisFile.hpp"
-//#include <stb_vorbis.c>
 #include "../Util/Log.hpp"
+#include <stb_vorbis.c>
 
 VorbisFile::VorbisFile(const char *filename) {
 	Log() << "Warning!! Vorbis support not active!!\n";
-    /*int channels;
+    int channels;
     dataSize = stb_vorbis_decode_filename(filename, &channels, &sampleRate, reinterpret_cast<short**>(&data));
     
     if (dataSize == -1)
@@ -13,7 +13,7 @@ VorbisFile::VorbisFile(const char *filename) {
     if (channels > 1)
         format = AL_FORMAT_STEREO16;
     else
-        format = AL_FORMAT_MONO16;*/
+        format = AL_FORMAT_MONO16;
 }
 
 VorbisFile::~VorbisFile() {
