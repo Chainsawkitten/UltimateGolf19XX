@@ -28,9 +28,9 @@ void ModelObject::Render(Camera* camera, const glm::vec2& screenSize) const {
 	shaderProgram->Use();
 	
 	//Set texture locations
-	glUniform1i(shaderProgram->UniformLocation("diffuse"), 0);
-	glUniform1i(shaderProgram->UniformLocation("normal"), 1);
-	glUniform1i(shaderProgram->UniformLocation("specular"), 2);
+	glUniform1i(shaderProgram->UniformLocation("baseImage"), 0);
+	glUniform1i(shaderProgram->UniformLocation("normalMap"), 1);
+	glUniform1i(shaderProgram->UniformLocation("specularMap"), 2);
 
 	//Textures
 	glActiveTexture(GL_TEXTURE0);

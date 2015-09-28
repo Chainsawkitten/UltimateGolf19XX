@@ -6,7 +6,7 @@ Normal map and specular map.
 in VertexData {
 	vec3 normal;
 	vec3 tangent;
-	vec2 tex_coords;
+	vec2 texCoords;
 } vertexIn;
 
 uniform sampler2D baseImage;
@@ -28,7 +28,7 @@ vec3 calculateNormal(vec3 normal, vec3 tangent, vec3 mapNormal) {
 }
 
 void main () {
-	diffuseOut = texture(baseImage, vertexIn.tex_coords).rgb;
-	normalsOut = calculateNormal(vertexIn.normal, vertexIn.tangent, texture(normalMap, vertexIn.tex_coords).rgb);
-	specularOut = texture(specularMap, vertexIn.tex_coords).rgb;
+	diffuseOut = texture(baseImage, vertexIn.texCoords).rgb;
+	normalsOut = calculateNormal(vertexIn.normal, vertexIn.tangent, texture(normalMap, vertexIn.texCoords).rgb);
+	specularOut = texture(specularMap, vertexIn.texCoords).rgb;
 }
