@@ -3,7 +3,6 @@
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
-#include "File.png.hpp"
 #include "../Particles/CuboidParticleEmitter.hpp"
 #include "../Audio/SoundSystem.hpp"
 #include "../Util/GameSettings.hpp"
@@ -39,7 +38,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     fragmentShader = Resources().CreateShader(DEFAULT3D_FRAG, DEFAULT3D_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
-    texture = Resources().CreateTexture2D(FILE_PNG, FILE_PNG_LENGTH);
+    texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
@@ -94,7 +93,7 @@ TestScene::~TestScene() {
     delete geometryObject;
     Resources().FreeCube();
     
-    Resources().FreeTexture2D(texture);
+    Resources().FreeTexture2DFromFile(texture);
     
     Resources().FreeShaderProgram(shaderProgram);
     Resources().FreeShader(vertexShader);
