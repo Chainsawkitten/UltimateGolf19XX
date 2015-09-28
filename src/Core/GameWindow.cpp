@@ -32,6 +32,7 @@ GameWindow::GameWindow() {
     lastTimeRender = 0.0;
     
     soundSystem = new SoundSystem();
+    soundSystem->GetListener()->SetGain(GameSettings::GetInstance().GetDouble("Audio Volume"));
 }
 
 GameWindow::~GameWindow() {

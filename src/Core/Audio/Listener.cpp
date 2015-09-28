@@ -10,6 +10,8 @@ Listener::Listener() {
     horizontalAngle = 0.f;
     verticalAngle = 0.f;
     tiltAngle = 0.f;
+    
+    gain = 1.f;
 }
 
 const glm::vec3& Listener::Position() const {
@@ -37,4 +39,13 @@ void Listener::SetOrientation(const glm::vec3& forward, const glm::vec3& up) {
 	ALfloat listenerOri[] = { forward.x, forward.y, forward.z, up.x, up.y, up.z };
 	alListenerfv(AL_ORIENTATION, listenerOri);
 	SoundSystem::CheckError("Couldn't set listener orientation.");
+}
+
+float Listener::Gain() const {
+    return gain;
+}
+
+void Listener::SetGain(float gain) {
+    this->gain = gain;
+    alListenerf(AL_GAIN, gain);
 }

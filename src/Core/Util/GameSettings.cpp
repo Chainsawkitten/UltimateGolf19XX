@@ -19,6 +19,8 @@ GameSettings::GameSettings() {
     AddBoolSetting("Borderless", "Graphics", "Borderless Window", false);
     AddLongSetting("Target FPS", "Graphics", "Target FPS", 60);
     AddBoolSetting("FXAA", "Graphics", "FXAA", true);
+    
+    AddDoubleSetting("Audio Volume", "Sound", "Volume", 1.0);
 }
 
 GameSettings& GameSettings::GetInstance() {

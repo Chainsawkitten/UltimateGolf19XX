@@ -46,6 +46,18 @@ class Listener {
 		 * @param up The listener's up-vector.
 		 */
 		void SetOrientation(const glm::vec3& forward, const glm::vec3& up);
+        
+        /// Get listener gain.
+        /**
+         * @return %Listener gain (0.0 - 1.0).
+         */
+        float Gain() const;
+        
+        /// Set listener gain.
+        /**
+         * @param gain %Listener gain (0.0 - 1.0).
+         */
+        void SetGain(float gain);
 
 	private:
 		glm::vec3 position;
@@ -55,6 +67,8 @@ class Listener {
 		float horizontalAngle;
 		float verticalAngle;
 		float tiltAngle;
+        
+        float gain;
 };
 
 /** @} */
