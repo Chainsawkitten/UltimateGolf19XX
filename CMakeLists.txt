@@ -56,6 +56,7 @@ set(RESOURCES
     assets/TropicalSunnyDay
     assets/CGTextures
     assets/Terrain
+	assets/Models
     assets/DustParticle.png
     assets/Testing.ogg
 )

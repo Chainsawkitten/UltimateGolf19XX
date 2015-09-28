@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GeometryObject.hpp"
+#include <string>
 #include "../Geometry/Model.hpp"
 
 
