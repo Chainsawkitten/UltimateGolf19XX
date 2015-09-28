@@ -10,8 +10,6 @@
 #include "../PostProcessing/PostProcessing.hpp"
 #include "../PostProcessing/FXAAFilter.hpp"
 #include "../Particles/ParticleSystem.hpp"
-#include "../Audio/VorbisFile.hpp"
-#include "../Audio/Sound.hpp"
 #include "../Object/TerrainObject.hpp"
 #include "../Geometry/Terrain.hpp"
 #include "../Object/GolfBall.hpp"
@@ -69,11 +67,6 @@ class TestScene : public Scene {
         // Particles
         ParticleSystem* particleSystem;
         Texture2D* particleTexture;
-        
-        // Audio
-        VorbisFile* waveFile;
-        SoundBuffer* buffer;
-        Sound* sound;
 };
 
 /** @} */
