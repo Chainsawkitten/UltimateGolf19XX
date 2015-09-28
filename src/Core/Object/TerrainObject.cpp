@@ -1,9 +1,4 @@
 #include "TerrainObject.hpp"
-#include "../Geometry/Terrain.hpp"
-#include "Default3D.vert.hpp"
-#include "Default3D.geom.hpp"
-#include "Blendmap.frag.hpp"
-#include <glm/glm.hpp>
 
 TerrainObject::TerrainObject(const Terrain* terrain) : GeometryObject(terrain) {
 	this->terrain = terrain;

@@ -141,11 +141,13 @@ set(CORE_SRCS
         src/Core/Camera/Camera.cpp
         src/Core/Camera/FirstPersonCamera.cpp
         src/Core/Geometry/Geometry2D.cpp
+		src/Core/Geometry/Model.cpp
         src/Core/Geometry/Rectangle.cpp
         src/Core/Geometry/Geometry3D.cpp
         src/Core/Geometry/Cube.cpp
 	src/Core/Geometry/Terrain.cpp
         src/Core/Object/Object.cpp
+		src/Core/Object/ModelObject.cpp
 	src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Player/Player.cpp
@@ -192,12 +194,14 @@ set(CORE_HEADERS
         src/Core/Shader/ShaderProgram.hpp
         src/Core/Camera/Camera.hpp
         src/Core/Camera/FirstPersonCamera.hpp
-        src/Core/Geometry/Geometry2D.hpp
+        src/Core/Geometry/Model.hpp
         src/Core/Geometry/Rectangle.hpp
         src/Core/Geometry/Geometry3D.hpp
+		src/Core/Geometry/Geometry2D.hpp
         src/Core/Geometry/Cube.hpp
 	src/Core/Geometry/Terrain.hpp
         src/Core/Object/Object.hpp
+		src/Core/Object/ModelObject.hpp
 	src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Player/Player.hpp
