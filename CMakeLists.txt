@@ -57,7 +57,6 @@ set(RESOURCES
     assets/CGTextures
     assets/Terrain
     assets/DustParticle.png
-    assets/Testing.ogg
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
