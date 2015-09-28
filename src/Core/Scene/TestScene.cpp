@@ -16,6 +16,14 @@ TestScene::TestScene(const glm::vec2& screenSize) {
         "Resources/TropicalSunnyDay/Back.png",
         "Resources/TropicalSunnyDay/Front.png"
     );
+
+	model = new Geometry::Model("Resources/Models/rock/Rock.bin");
+	std::string diffusePath = "Resources/Models/rock/diffuse.tga";
+	std::string normalPath = "Resources/Models/rock/normal.tga";
+	std::string specularPath = "Resources/Models/rock/specular.tga";
+	modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
+	modelObject->SetPosition(4.f,0.f,0.f);
+
 	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
@@ -140,6 +148,8 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     
     // End - render cube
     
+	modelObject->Render(player->GetCamera(), screenSize);
+
     golfBall->Render(player->GetCamera(), screenSize);
     
 	terrainObject->Render(player->GetCamera(), screenSize);

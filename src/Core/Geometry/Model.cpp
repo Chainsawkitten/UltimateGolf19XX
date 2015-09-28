@@ -27,23 +27,23 @@ Model::~Model() {
 	delete[] indexData;
 }
 
-Geometry::Geometry3D:: Vertex* Model::vertices() const {
+Geometry::Geometry3D:: Vertex* Model::Vertices() const {
 	return vertexData;
 }
 
-unsigned int Model::vertexCount() const {
+unsigned int Model::VertexCount() const {
 	return vertexNr;
 }
 
-unsigned int* Model::indices() const {
+unsigned int* Model::Indices() const {
 	return indexData;
 }
 
-unsigned int Model::indexCount() const {
+unsigned int Model::IndexCount() const {
 	return indexNr;
 }
 
-void Model::save(const char* filename) const {
+void Model::Save(const char* filename) const {
 	std::ofstream modelFile;
 	modelFile.open(filename, std::ios_base::binary);
 

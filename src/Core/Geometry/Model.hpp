@@ -26,31 +26,31 @@ namespace Geometry {
 		/**
 		 * @return Array of vertices
 		 */
-		Vertex* vertices() const;
+		Vertex* Vertices() const;
 
 		/// Get the number of vertices.
 		/**
 		 * @return The number of vertices
 		 */
-		unsigned int vertexCount() const;
+		unsigned int VertexCount() const;
 
 		/// Get all the vertex indices.
 		/**
 		 * @return Array of vertex indices
 		 */
-		unsigned int* indices() const;
+		unsigned int* Indices() const;
 
 		/// Get the number of indicies.
 		/**
 		 * @return The number of vertex indices.
 		 */
-		unsigned int indexCount() const;
+		unsigned int IndexCount() const;
 
 		/// Save model to binary file.
 		/**
 		 * @param filename Filename (relative or absolute) to the model file.
 		 */
-		void save(const char* filename) const;
+		void Save(const char* filename) const;
 
 	protected:
 		Model() { }

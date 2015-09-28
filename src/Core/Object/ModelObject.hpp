@@ -6,7 +6,18 @@
 
 
 class ModelObject : public GeometryObject{
-	//ModelObject(const Geometry::Model* Model, std::string diffusePath, std::string normalPath, std::string specularPath);
+public:
+	/// Create new modelObject
+	/**
+	* @param model Model to load geometry from.
+	* @param diffusePath Path to diffuse texture.
+	* @param normalPath Path to normal texture.
+	* @param specularPath Path to specular texture.
+	*/
+	ModelObject(const Geometry::Model* Model, std::string diffusePath, std::string normalPath, std::string specularPath);
+
+	/// Destructor
+	~ModelObject();
 
 	/// Render the object.
 	/**
