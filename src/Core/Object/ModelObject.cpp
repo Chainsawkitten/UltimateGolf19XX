@@ -1,12 +1,12 @@
 #include "ModelObject.hpp"
 
-ModelObject::ModelObject(const Geometry::Model* Model, std::string diffusePath, std::string normalPath, std::string specularPath):GeometryObject(Model){
-	/*diffuse = Resources().CreateTexture2DFromFile(diffusePath);
-	normal = Resources().CreateTexture2DFromFile(normalPath);
-	specular = Resources().CreateTexture2DFromFile(specularPath);
-
-	geometry = Geometry();*/
-}
+//ModelObject::ModelObject(const Geometry::Model* Model, std::string diffusePath, std::string normalPath, std::string specularPath):GeometryObject(Model){
+//	/*diffuse = Resources().CreateTexture2DFromFile(diffusePath);
+//	normal = Resources().CreateTexture2DFromFile(normalPath);
+//	specular = Resources().CreateTexture2DFromFile(specularPath);
+//
+//	geometry = Geometry();*/
+//}
 
 void ModelObject::Render(Camera* camera, const glm::vec2& screenSize) const {
 //	shaderProgram->Use();

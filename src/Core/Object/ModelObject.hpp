@@ -6,7 +6,7 @@
 
 
 class ModelObject : public GeometryObject{
-	ModelObject(const Geometry::Model* Model, std::string diffusePath, std::string normalPath, std::string specularPath);
+	//ModelObject(const Geometry::Model* Model, std::string diffusePath, std::string normalPath, std::string specularPath);
 
 	/// Render the object.
 	/**
