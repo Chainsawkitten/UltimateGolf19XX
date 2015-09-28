@@ -1,5 +1,4 @@
-#ifndef EDITORWINDOW_HPP
-#define EDITORWINDOW_HPP
+#pragma once
 
 #include <GLFW/glfw3.h>
 #include <Core/GameWindow.hpp>
@@ -105,5 +104,3 @@ class EditorWindow : public GUI::Container {
 };
 
 /** @} */
-
-#endif

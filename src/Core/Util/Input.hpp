@@ -1,21 +1,39 @@
-#ifndef INPUT_HPP
-#define INPUT_HPP
+#pragma once
 
 #include <GLFW/glfw3.h>
 #include <string>
+#include <vector>
 
 /** @ingroup Core
  * @{
  */
 
 /// Class that handles input.
+/**
+ * Rather than checking directly for key presses (like 'W'), keys are assigned to more general buttons (eg. 'Forward' to walk forward).
+ * This allows keys to be rebound for different keyboard layouts or player preferences.
+ */
 class InputHandler {
     public:
+        /// Button codes.
+        enum Button {
+            FORWARD = 0, ///< Forward button
+            BACKWARD, ///< Backward button
+            LEFT, ///< Left button
+            RIGHT, ///< Right button
+            STRIKE, ///< Button to strike the golf ball.
+            QUIT, ///< Quit game
+            BUTTONS, ///< Total number of buttons
+        };
+        
         /// Create new input handler.
         /**
          * @param window %Window to get input for.
          */
         InputHandler(GLFWwindow* window);
+        
+        /// Destructor.
+        ~InputHandler();
         
         /// Get currently active input handler.
         /**
@@ -62,6 +80,39 @@ class InputHandler {
          */
         double CursorY() const;
         
+        /// Centers the cursor to the middle of the window.
+        void CenterCursor();
+        
+        /// Assign a keyboard key to a button.
+        /**
+         * @param button The button to assign a key to.
+         * @param key The <a href="http://www.glfw.org/docs/latest/group__keys.html">keyboard key</a> to assign.
+         */
+        void AssignKeyboard(Button button, int key);
+        
+        /// Gets whether a button is currently down.
+        /**
+         * @param button The button to check.
+         * @return Whether the button is down
+         */
+        bool Pressed(Button button);
+        
+        /// Gets whether a button was just pressed.
+        /**
+         * Checks whether a button was pressed between the last two calls to update().
+         * @param button The button to check.
+         * @return Whether the button was pressed
+         */
+        bool Triggered(Button button);
+        
+        /// Gets whether a button was just released.
+        /**
+         * Checks whether a button was released between the last two calls to update().
+         * @param button The button to check.
+         * @return Whether the button was released
+         */
+        bool Released(Button button);
+        
         /// Get text input since last frame.
         /**
          * @return Text input since last frame.
@@ -86,6 +137,12 @@ class InputHandler {
         double cursorX, cursorY;
         
         std::string text, tempText;
+        
+        // Keyboard
+        std::vector<int>* keyboardBindings;
+        bool buttonDown[BUTTONS];
+        bool buttonTriggered[BUTTONS];
+        bool buttonReleased[BUTTONS];
 };
 
 /// Get currently active input handler.
@@ -95,5 +152,3 @@ class InputHandler {
 InputHandler* Input();
 
 /** @} */
-
-#endif

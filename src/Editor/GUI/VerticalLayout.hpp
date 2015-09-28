@@ -1,5 +1,4 @@
-#ifndef VERTICALLAYOUT_HPP
-#define VERTICALLAYOUT_HPP
+#pragma once
 
 #include <Core/Geometry/Rectangle.hpp>
 #include "Container.hpp"
@@ -54,5 +53,3 @@ namespace GUI {
 }
 
 /** @} */
-
-#endif
