@@ -3,7 +3,7 @@
 #include "GeometryObject.hpp"
 #include <string>
 #include "../Geometry/Model.hpp"
-
+#include "NormalSpecularMap.frag.hpp"
 
 class ModelObject : public GeometryObject{
 public:

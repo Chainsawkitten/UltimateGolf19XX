@@ -7,7 +7,7 @@ ModelObject::ModelObject(const Geometry::Model* Model, std::string diffusePath, 
 
 	vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
 	geometryShader = Resources().CreateShader(DEFAULT3D_GEOM, DEFAULT3D_GEOM_LENGTH, GL_GEOMETRY_SHADER);
-	fragmentShader = Resources().CreateShader(DEFAULT3D_FRAG, DEFAULT3D_FRAG_LENGTH, GL_FRAGMENT_SHADER);
+	fragmentShader = Resources().CreateShader(NORMALSPECULARMAP_FRAG, NORMALSPECULARMAP_FRAG_LENGTH, GL_FRAGMENT_SHADER);
 	shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
 
 	geometry = Geometry();
@@ -33,11 +33,11 @@ void ModelObject::Render(Camera* camera, const glm::vec2& screenSize) const {
 	glUniform1i(shaderProgram->UniformLocation("specular"), 2);
 
 	//Textures
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, diffuse->TextureID());
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, normal->TextureID());
-	glActiveTexture(GL_TEXTURE3);
+	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, specular->TextureID());
 
 	glm::mat4 ModelView = camera->View()*ModelMatrix();

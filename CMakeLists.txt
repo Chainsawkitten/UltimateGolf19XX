@@ -58,7 +58,6 @@ set(RESOURCES
     assets/Terrain
 	assets/Models
     assets/DustParticle.png
-    assets/Testing.ogg
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
@@ -84,6 +83,7 @@ set(EMBEDDED_INPUT
     shaders/Particle.vert
     shaders/Particle.geom
     shaders/Particle.frag
+	shaders/NormalSpecularMap.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
