@@ -4,6 +4,10 @@
 #include "../Geometry/Geometry3D.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../Camera/Camera.hpp"
+#include "Default3D.vert.hpp"
+#include "Default3D.geom.hpp"
+#include "Default3D.frag.hpp"
+#include "../Resources.hpp"
 
 /** @ingroup Core
  * @{
@@ -45,6 +49,11 @@ class GeometryObject : public Object {
 		void SetRelativeDrawingDistance(float drawingDistance);
 
 	private:
+		Shader* vertexShader;
+		Shader* fragmentShader;
+		Shader* geometryShader;
+		ShaderProgram* shaderProgram;
+
 		const Geometry::Geometry3D* geometry;
 		float drawingDistance;
 };

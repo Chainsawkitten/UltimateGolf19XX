@@ -6,12 +6,14 @@
 #include "../Util/Input.hpp"
 #include "../RenderTarget.hpp"
 #include "../Object/GeometryObject.hpp"
+#include "../Object/ModelObject.hpp"
 #include "../Texture/Texture2D.hpp"
 #include "../PostProcessing/PostProcessing.hpp"
 #include "../PostProcessing/FXAAFilter.hpp"
 #include "../Particles/ParticleSystem.hpp"
 #include "../Object/TerrainObject.hpp"
 #include "../Geometry/Terrain.hpp"
+#include "../Geometry/Model.hpp"
 #include "../Object/GolfBall.hpp"
 
 /** @ingroup Core
@@ -50,10 +52,15 @@ class TestScene : public Scene {
         RenderTarget* renderTarget;
         Geometry::Geometry3D* geometry;
         GeometryObject* geometryObject;
+
         Texture2D* texture;
+		//Terrain
 		TerrainObject* terrainObject;
 		Geometry::Terrain* terrain;
-        
+        //Model
+		ModelObject* modelObject;
+		Geometry::Model* model;
+
         Shader* vertexShader;
         Shader* geometryShader;
         Shader* fragmentShader;

@@ -1,7 +1,14 @@
 #pragma once
 
 #include "GeometryObject.hpp"
+#include "../Resources.hpp"
 #include "../Geometry/Terrain.hpp"
+#include "Default3D.vert.hpp"
+#include "Default3D.geom.hpp"
+#include "Blendmap.frag.hpp"
+#include <glm/glm.hpp>
+#include "../Geometry/Terrain.hpp"
+
 
 /** @ingroup Core
  * @{
