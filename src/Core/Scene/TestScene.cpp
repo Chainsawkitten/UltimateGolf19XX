@@ -1,5 +1,4 @@
 #include "TestScene.hpp"
-#include "../Player/FirstPersonPlayer.hpp"
 #include "../Resources.hpp"
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
@@ -24,7 +23,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 
     skybox = new Skybox(skyboxTexture);
     
-    player = new FirstPersonPlayer();
+    player = new Player();
     player->SetMovementSpeed(2.f);
     
     renderTarget = new RenderTarget(screenSize);
