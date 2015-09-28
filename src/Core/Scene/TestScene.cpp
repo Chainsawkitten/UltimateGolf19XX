@@ -65,22 +65,10 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
     emitter->Update(5.0, particleSystem, player->GetCamera());
-    
-    // Audio.
-    waveFile = new VorbisFile("Resources/Testing.ogg");
-    buffer = new SoundBuffer(waveFile);
-    sound = new Sound(buffer);
-    sound->SetLooping(true);
-    sound->SetGain(2.f);
-    sound->Play();
 }
 
 TestScene::~TestScene() {
-    delete sound;
-    delete buffer;
-    delete waveFile;
-    
-    delete skybox;
+	delete skybox;
     delete skyboxTexture;
     
     delete particleSystem;
