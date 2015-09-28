@@ -25,3 +25,5 @@ private:
 	Texture2D* normal;
 	Texture2D* specular;
 };
+
+/** @} */
