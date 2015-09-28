@@ -23,6 +23,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	std::string specularPath = "Resources/Models/rock/specular.tga";
 	modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
 	modelObject->SetPosition(4.f,0.f,0.f);
+	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 
 	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));

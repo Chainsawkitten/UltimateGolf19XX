@@ -20,6 +20,9 @@ Model::Model(const char* filename) {
 	for (unsigned int i = 0; i < indexNr; i++) {
 		indexData[i] = i;
 	}
+
+	GenerateBuffers();
+	GenerateVertexArray();
 }
 
 Model::~Model() {
