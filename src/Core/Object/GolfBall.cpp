@@ -27,10 +27,12 @@ GolfBall::~GolfBall() {
 
 void GolfBall::Update(double time) {
     if (active) {
-        Move(velocity);
+        Move(static_cast<float>(time) * velocity);
+        
+        /// @todo Calculate forces.
         
         glm::vec3 acceleration = glm::vec3(0.f, -9.82f, 0.f);
-        velocity += acceleration * static_cast<float>(time) * static_cast<float>(time) / 2.f;
+        velocity += acceleration * static_cast<float>(time);
     }
 }
 
@@ -63,4 +65,8 @@ void GolfBall::Render(Camera *camera, const glm::vec2 &screenSize) const {
 
 void GolfBall::Strike() {
     active = true;
+    
+    /// @todo Calculate velocity based on club mass, loft and velocity.
+    
+    velocity = glm::vec3(20.f, 5.f, 0.f);
 }
