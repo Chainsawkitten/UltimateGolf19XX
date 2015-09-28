@@ -14,6 +14,7 @@
 #include "../Audio/Sound.hpp"
 #include "../Object/TerrainObject.hpp"
 #include "../Geometry/Terrain.hpp"
+#include "../Object/GolfBall.hpp"
 
 /** @ingroup Core
  * @{
@@ -62,6 +63,8 @@ class TestScene : public Scene {
         
         PostProcessing* postProcessing;
         FXAAFilter* fxaaFilter;
+        
+        GolfBall* golfBall;
         
         // Particles
         ParticleSystem* particleSystem;

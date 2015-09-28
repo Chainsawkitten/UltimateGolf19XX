@@ -40,6 +40,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
     
+    golfBall = new GolfBall();
+    golfBall->SetPosition(2.f, 0.f, 0.f);
+    
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
     
@@ -92,6 +95,8 @@ TestScene::~TestScene() {
     
     delete geometryObject;
     Resources().FreeCube();
+    
+    delete golfBall;
     
     Resources().FreeTexture2DFromFile(texture);
     
@@ -146,6 +151,8 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     glDrawElements(GL_TRIANGLES, geometryObject->Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
     
     // End - render cube
+    
+    golfBall->Render(player->GetCamera(), screenSize);
     
 	terrainObject->Render(player->GetCamera(), screenSize);
     postProcessing->SetTarget();
