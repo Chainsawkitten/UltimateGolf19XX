@@ -59,17 +59,17 @@ vec2 calculateTexCoord() {
 }
 
 // Ambient, diffuse and specular lighting.
-vec3 ads(vec3 normal, vec3 position, vec3 specular) {
+vec3 ads(vec3 diffuse, vec3 normal, vec3 position, vec3 specular) {
 	vec4 lightSpacePos = lightProjectionMatrix * lightViewMatrix * 	inverseViewMatrix * vec4(position, 1.0);
 	vec3 lightDirection = normalize(vec3(lightPosition) - position);	
 	float visibility = calculateShadow(lightSpacePos);
 	vec3 v = normalize(vec3(-position));
-	vec3 r = reflect(-lightDirection, normal)* ((visibility*2) -1.0);
+	vec3 r = normalize(reflect(-lightDirection, normal)) * (visibility * 2.0 - 1.0);
 	vec3 diffuseLight = diffuseCoefficient * max(dot(lightDirection, normal), 0.0);
-	float shinyPower = 2000.0f;
+	float shinyPower = 2000.0;
 	vec3 Ka = vec3(0.2, 0.2, 0.2);
 	vec3 specularLight = specular * pow(max(dot(r, v), 0.0), shinyPower);
-	return lightIntensity * (Ka + visibility*(diffuseLight + specularLight));
+	return lightIntensity * (diffuse * (Ka + visibility * diffuseLight) + visibility * specularLight);
 }
 
 // Reconstruct position.
@@ -88,6 +88,6 @@ void main () {
 	vec3 normal = texture(tNormals, texCoord).xyz;
 	vec3 specular = texture(tSpecular, texCoord).xyz;
 	
-	fragmentColor = vec4(diffuse, 1.0) * vec4(ads(normal, position, specular), 1.0);
+	fragmentColor = vec4(ads(diffuse, normal, position, specular), 1.0);
 	gl_FragDepth = depth;
 }
