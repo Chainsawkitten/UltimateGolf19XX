@@ -11,6 +11,7 @@ GolfBall::GolfBall() : GeometryObject(Resources().CreateCube()) {
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
     texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
+    active = false;
 }
 
 GolfBall::~GolfBall() {
@@ -25,10 +26,12 @@ GolfBall::~GolfBall() {
 }
 
 void GolfBall::Update(double time) {
-    Move(velocity);
-    
-    glm::vec3 acceleration = glm::vec3(0.f, -9.82f, 0.f);
-    velocity += acceleration * static_cast<float>(time) * static_cast<float>(time) / 2.f;
+    if (active) {
+        Move(velocity);
+        
+        glm::vec3 acceleration = glm::vec3(0.f, -9.82f, 0.f);
+        velocity += acceleration * static_cast<float>(time) * static_cast<float>(time) / 2.f;
+    }
 }
 
 void GolfBall::Render(Camera *camera, const glm::vec2 &screenSize) const {
@@ -56,4 +59,8 @@ void GolfBall::Render(Camera *camera, const glm::vec2 &screenSize) const {
     
     // Draw the triangles
     glDrawElements(GL_TRIANGLES, Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
+}
+
+void GolfBall::Strike() {
+    active = true;
 }

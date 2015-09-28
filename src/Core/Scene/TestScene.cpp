@@ -6,6 +6,7 @@
 #include "../Particles/CuboidParticleEmitter.hpp"
 #include "../Audio/SoundSystem.hpp"
 #include "../Util/GameSettings.hpp"
+#include "../Util/Input.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
     skyboxTexture = new CubeMapTexture(
@@ -96,6 +97,9 @@ TestScene::~TestScene() {
 
 TestScene::SceneEnd* TestScene::Update(double time) {
     player->Update(time);
+    
+    if (Input()->Triggered(InputHandler::STRIKE))
+        golfBall->Strike();
     golfBall->Update(time);
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());

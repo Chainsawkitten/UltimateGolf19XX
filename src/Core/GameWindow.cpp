@@ -117,6 +117,7 @@ void GameWindow::AssignKeyboardBindings() {
     input->AssignKeyboard(InputHandler::BACKWARD, GLFW_KEY_S);
     input->AssignKeyboard(InputHandler::LEFT, GLFW_KEY_A);
     input->AssignKeyboard(InputHandler::RIGHT, GLFW_KEY_D);
+    input->AssignKeyboard(InputHandler::STRIKE, GLFW_KEY_SPACE);
     input->AssignKeyboard(InputHandler::QUIT, GLFW_KEY_ESCAPE);
 }
 

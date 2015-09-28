@@ -30,6 +30,9 @@ class GolfBall : public GeometryObject {
          */
 		void Render(Camera* camera, const glm::vec2& screenSize) const;
         
+        /// Hit the golf ball with a club.
+        void Strike();
+        
     private:
         Texture2D* texture;
         
@@ -40,6 +43,7 @@ class GolfBall : public GeometryObject {
         ShaderProgram* shaderProgram;
         
         glm::vec3 velocity;
+        bool active;
 };
 
 /** @} */

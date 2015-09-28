@@ -21,6 +21,7 @@ class InputHandler {
             BACKWARD, ///< Backward button
             LEFT, ///< Left button
             RIGHT, ///< Right button
+            STRIKE, ///< Button to strike the golf ball.
             QUIT, ///< Quit game
             BUTTONS, ///< Total number of buttons
         };
