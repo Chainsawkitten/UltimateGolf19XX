@@ -1,5 +1,4 @@
-#ifndef GAME_HPP
-#define GAME_HPP
+#pragma once
 
 /** @ingroup Game
  * @{
@@ -9,5 +8,3 @@
 int main();
 
 /** @} */
-
-#endif

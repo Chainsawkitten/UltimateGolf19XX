@@ -1,5 +1,4 @@
-#ifndef CONTAINER_HPP
-#define CONTAINER_HPP
+#pragma once
 
 #include "Widget.hpp"
 #include <vector>
@@ -46,5 +45,3 @@ namespace GUI {
 }
 
 /** @} */
-
-#endif

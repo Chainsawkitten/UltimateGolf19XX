@@ -1,5 +1,4 @@
-#ifndef TEXTFIELD_HPP
-#define TEXTFIELD_HPP
+#pragma once
 
 #include "Widget.hpp"
 #include <Core/Geometry/Rectangle.hpp>
@@ -68,5 +67,3 @@ namespace GUI {
 }
 
 /** @} */
-
-#endif
