@@ -4,6 +4,7 @@
 #include <map>
 #include "Geometry/Rectangle.hpp"
 #include "Geometry/Cube.hpp"
+#include "Geometry/Square.hpp"
 #include "Texture/Texture2D.hpp"
 #include "Font/Font.hpp"
 
@@ -83,6 +84,18 @@ class ResourceManager {
          * Deletes the instance if no more references exist.
          */
         void FreeCube();
+        
+        /// Create a square for rendering if it doesn't already exist.
+        /**
+         * @return The square instance
+         */
+        Geometry::Square* CreateSquare();
+        
+        /// Free the reference to the square.
+        /**
+         * Deletes the instance if no more references exist.
+         */
+        void FreeSquare();
         
         /// Create a 2D texture if it doesn't already exist.
         /**
@@ -184,6 +197,10 @@ class ResourceManager {
         // Cube
         Geometry::Cube* cube;
         int cubeCount;
+        
+        // Square
+        Geometry::Square* square;
+        int squareCount;
         
         // Texture2D
         struct Texture2DInstance {

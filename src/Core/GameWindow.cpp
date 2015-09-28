@@ -8,7 +8,12 @@
 GameWindow::GameWindow() {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     
-    window = glfwCreateWindow(GameSettings::GetInstance().GetLong("Screen Width"), GameSettings::GetInstance().GetLong("Screen Height"), "Ultimate Golf 19XX", nullptr, nullptr);
+    if (GameSettings::GetInstance().GetBool("Borderless"))
+        glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+    
+    GLFWmonitor* monitor = GameSettings::GetInstance().GetBool("Fullscreen") ? glfwGetPrimaryMonitor() : nullptr;
+    
+    window = glfwCreateWindow(GameSettings::GetInstance().GetLong("Screen Width"), GameSettings::GetInstance().GetLong("Screen Height"), "Ultimate Golf 19XX", monitor, nullptr);
     if (!window) {
         glfwTerminate();
         /// @todo Print error to log.

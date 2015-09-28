@@ -14,6 +14,8 @@
  * Center Mouse Cursor | Center the mouse cursor each frame. | bool   | true
  * Screen Width        | Width of the game window.           | long   | 800
  * Screen Height       | Height of the game window.          | long   | 600
+ * Fullscreen          | Play in fullscreen mode.            | bool   | false
+ * Borderless          | Use a borderless window.            | bool   | false
  * Target FPS          | FPS to aim for when rendering.      | long   | 60
  * FXAA                | Whether to use FXAA.                | bool   | true
  */

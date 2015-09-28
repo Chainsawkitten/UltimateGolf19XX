@@ -30,7 +30,6 @@ class GeometryObject : public Object {
 
 		/// Render the object.
         /**
-         * @param shaderProgram %Shader program to render the object with.
          * @param camera %Camera to render through.
          * @param screenSize Size of the screen in pixels.
          */

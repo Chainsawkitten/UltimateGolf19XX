@@ -1,14 +1,19 @@
 #include "TerrainObject.hpp"
+#include "../Resources.hpp"
+#include "Default3D.vert.hpp"
+#include "Default3D.geom.hpp"
+#include "Blendmap.frag.hpp"
+#include <glm/glm.hpp>
 
-TerrainObject::TerrainObject(const Terrain* terrain) : GeometryObject(terrain) {
+TerrainObject::TerrainObject(const Geometry::Terrain* terrain) : GeometryObject(terrain) {
 	this->terrain = terrain;
 
 	//Allocate resources from manager.
-	blendMap = Resources().CreateTexture2DFromFile("Resources/Terrain/blendmap.tga");
-	grassTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/grass.tga");
-	cliffTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.tga");
-	sandTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/sand.tga");
-	snowTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/snow.tga");
+	blendMap = Resources().CreateTexture2DFromFile("Resources/Terrain/blendmap.png");
+	grassTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/grass.png");
+	cliffTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
+	sandTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/sand.png");
+	snowTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/snow.png");
 
 	//Allocate shaders
 	vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH,GL_VERTEX_SHADER);
@@ -20,7 +25,7 @@ TerrainObject::TerrainObject(const Terrain* terrain) : GeometryObject(terrain) {
 	SetScale(50.f, 10.f, 50.f);
 }
 
-const Geometry::Geometry3D* TerrainObject::geometry() const {
+const Geometry::Geometry3D* TerrainObject::Geometry() const {
 	return terrain;
 }
 
@@ -37,7 +42,7 @@ TerrainObject::~TerrainObject(){
 	Resources().FreeShader(fragmentShader);
 }
 
-float TerrainObject::getY(float x, float z) const {
+float TerrainObject::GetY(float x, float z) const {
 	float xInTerrain = (x - Position().x) / Scale().x + 0.5f;
 	float zInTerrain = (z - Position().z) / Scale().z + 0.5f;
 
@@ -78,7 +83,7 @@ void TerrainObject::Render(Camera* camera, const glm::vec2& screenSize) const{
 	glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(Normal)[0][0]);
 	glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &camera->Projection(screenSize)[0][0]);
 
-	glBindVertexArray(geometry()->VertexArray());
+	glBindVertexArray(Geometry()->VertexArray());
 
-	glDrawElements(GL_TRIANGLES, this->geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
+	glDrawElements(GL_TRIANGLES, Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
 }

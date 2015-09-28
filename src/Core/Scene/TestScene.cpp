@@ -18,7 +18,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
         "Resources/TropicalSunnyDay/Back.png",
         "Resources/TropicalSunnyDay/Front.png"
     );
-	terrain = new Terrain("Resources/Terrain/FlatMapSmall.tga");
+	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
 
@@ -66,7 +66,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitter->Update(5.0, particleSystem, player->GetCamera());
     
     // Audio.
-    waveFile = new WaveFile("Resources/Testing.wav");
+    waveFile = new VorbisFile("Resources/Testing.ogg");
     buffer = new SoundBuffer(waveFile);
     sound = new Sound(buffer);
     sound->SetLooping(true);
