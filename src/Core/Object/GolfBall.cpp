@@ -31,7 +31,7 @@ GolfBall::~GolfBall() {
     Resources().FreeTexture2DFromFile(texture);
 }
 
-void GolfBall::Update(double time) {
+void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
         Move(static_cast<float>(time) * velocity);
         

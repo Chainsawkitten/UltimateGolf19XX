@@ -20,8 +20,9 @@ class GolfBall : public GeometryObject {
         /// Update movement.
         /**
          * @param time Time since last frame (in seconds).
+         * @param wind The wind velocity.
          */
-        void Update(double time);
+        void Update(double time, const glm::vec3& wind);
         
         /// Render the object.
         /**

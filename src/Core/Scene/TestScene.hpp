@@ -70,6 +70,7 @@ class TestScene : public Scene {
         FXAAFilter* fxaaFilter;
         
         GolfBall* golfBall;
+        glm::vec3 wind;
         
         // Particles
         ParticleSystem* particleSystem;

@@ -53,6 +53,8 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     golfBall = new GolfBall();
     golfBall->SetPosition(2.f, 0.f, 0.f);
     
+    wind = glm::vec3(0.f, 0.f, 4.f);
+    
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
     
@@ -109,7 +111,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     
     if (Input()->Triggered(InputHandler::STRIKE))
         golfBall->Strike();
-    golfBall->Update(time);
+    golfBall->Update(time, wind);
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
