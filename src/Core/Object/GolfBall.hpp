@@ -1,6 +1,8 @@
 #pragma once
 
-#include "GeometryObject.hpp"
+#include "Object.hpp"
+#include "../Geometry/Model.hpp"
+#include "ModelObject.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../Texture/Texture2D.hpp"
 
@@ -9,7 +11,7 @@
  */
 
 /// A golf ball that can be struck.
-class GolfBall : public GeometryObject {
+class GolfBall : public Object {
     public:
         /// The type of ball.
         enum BallType {
@@ -50,14 +52,8 @@ class GolfBall : public GeometryObject {
         void SetRadius(float radius);
         
     private:
-        Texture2D* texture;
-        
-        // Shaders
-        Shader* vertexShader;
-        Shader* geometryShader;
-        Shader* fragmentShader;
-        ShaderProgram* shaderProgram;
-        
+		ModelObject* modelObject;
+		Geometry::Model* modelGeometry;
         glm::vec3 velocity;
         bool active;
         
