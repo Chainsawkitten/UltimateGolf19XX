@@ -7,6 +7,7 @@
 
 GolfBall::GolfBall(BallType ballType) : Object() {
     active = false;
+	resistution = 0.78f;
 
 	modelGeometry = new Geometry::Model("Resources/Models/rock/Rock.bin");
 	std::string diffusePath = "Resources/Models/rock/diffuse.tga";
@@ -19,9 +20,10 @@ GolfBall::GolfBall(BallType ballType) : Object() {
     /// @todo Mass based on explosive material.
     mass = 0.0459f;
     this->ballType = ballType;
+
+	
     
-    SetRadius(0.0214f);
-	this->sphere.position = this->Position;
+	sphere = new Physics::Sphere(modelObject->Position(), 0.0214f);
 }
 
 GolfBall::~GolfBall() {
@@ -32,7 +34,7 @@ GolfBall::~GolfBall() {
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)*velocity);
-		sphere.position = modelObject->Position();
+		sphere->position = modelObject->Position();
 		float horizontal = -static_cast<float>(time)*angularVelocity.x*(180.f / glm::pi<float>());
 		float vertical = -static_cast<float>(time)*angularVelocity.y*(180.f / glm::pi<float>());
 		float tilt = -static_cast<float>(time)*angularVelocity.z*(180.f / glm::pi<float>());
@@ -70,17 +72,22 @@ void GolfBall::Render(Camera* camera, const glm::vec2& screenSize) const{
 	modelObject->Render(camera, screenSize);
 }
 
-void GolfBall::Strike() {
-    active = true;
-    
-    /// @todo Calculate velocity based on club mass, loft and velocity.
-    
-    velocity = glm::vec3(20.f, 5.f, 0.f);
-	angularVelocity = glm::vec3(0.f,0.f,-800.f);
+void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
+	active = true;
+	float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
+
+	angularVelocity = glm::vec3(0.f, 0.f, -(5.f / 7.f)*(sin(clubLoft)*translatedVelocity));
+
+	float massCoefficient = clubMass / (clubMass + mass);
+	float velocitybx = translatedVelocity*massCoefficient*((1 + resistution)*pow(cos(clubLoft), 2) + (2.f / 7.f)*pow(sin(clubLoft), 2));
+	float velocityby = translatedVelocity*massCoefficient*sin(clubLoft)*cos(clubLoft)*((5.f / 7.f) + resistution);
+
+	float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
+	velocity = glm::vec3(velocitybx*cos(horizontalAngle), velocityby, velocitybx*sin(horizontalAngle));
 }
 
 void GolfBall::SetRadius(float radius) {
-	this->sphere.radius = radius;
+	sphere->radius = radius;
     SetScale(2.f * glm::vec3(radius, radius, radius));
     area = glm::pi<float>() * radius * radius;
 }

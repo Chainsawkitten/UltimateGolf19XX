@@ -49,7 +49,7 @@ class GolfBall : public Object {
 		void Render(Camera* camera, const glm::vec2& screenSize) const;
         
         /// Hit the golf ball with a club.
-        void Strike();
+		void Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity);
         
         /// Set the radius of the golf ball.
         /**
@@ -64,7 +64,8 @@ class GolfBall : public Object {
 		glm::vec3 angularVelocity;
         bool active;
         
-		Physics::Sphere sphere;
+		Physics::Sphere* sphere;
+		float resistution;
         float mass;
         float area;
         BallType ballType;
