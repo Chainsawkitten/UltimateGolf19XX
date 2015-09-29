@@ -12,6 +12,9 @@ GolfBall::GolfBall() : GeometryObject(Resources().CreateCube()) {
     
     texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
     active = false;
+    
+    /// @todo Mass based on explosive material.
+    mass = 0.0459f;
 }
 
 GolfBall::~GolfBall() {
@@ -29,9 +32,16 @@ void GolfBall::Update(double time) {
     if (active) {
         Move(static_cast<float>(time) * velocity);
         
-        /// @todo Calculate forces.
+        /// @todo Calculate drive force.
+        glm::vec3 driveForce = glm::vec3(0.f, 0.f, 0.f);
         
-        glm::vec3 acceleration = glm::vec3(0.f, -9.82f, 0.f);
+        /// @todo Calculate magnus force.
+        glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
+        
+        // Calculate gravitational force.
+        glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
+        
+        glm::vec3 acceleration = (driveForce + magnusForce + gravitationForce) / mass;
         velocity += acceleration * static_cast<float>(time);
     }
 }

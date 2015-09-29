@@ -44,6 +44,8 @@ class GolfBall : public GeometryObject {
         
         glm::vec3 velocity;
         bool active;
+        
+        float mass;
 };
 
 /** @} */
