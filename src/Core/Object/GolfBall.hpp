@@ -55,6 +55,7 @@ class GolfBall : public Object {
 		ModelObject* modelObject;
 		Geometry::Model* modelGeometry;
         glm::vec3 velocity;
+		glm::vec3 angularVelocity;
         bool active;
         
         float mass;

@@ -3,7 +3,7 @@
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
-#include <cmath>
+#include "glm\gtc\constants.hpp"
 
 GolfBall::GolfBall(BallType ballType) : Object() {
     active = false;
@@ -33,7 +33,11 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 		modelObject->Move(static_cast<float>(time)* velocity);
         
         float v = velocity.length();
+		float w = angularVelocity.length();
         float u = (velocity - wind).length();
+		float Cm = (sqrt(1.f + 0.31f*(v/w))-1.f)/20.f;
+		float Fm = 0.5f*Cm*1.23*area*u*u;
+
         glm::vec3 eU = (velocity - wind) / u;
         
         /// Calculate drive force.
@@ -46,8 +50,8 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         glm::vec3 driveForce = -0.5f * 1.23f * area * cD * u * u * eU;
         
         /// @todo Calculate magnus force.
-        glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
-        
+		glm::vec3 magnusForce = Fm*(cross(eU, (angularVelocity / w)));
+
         // Calculate gravitational force.
         glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
         
@@ -66,10 +70,11 @@ void GolfBall::Strike() {
     /// @todo Calculate velocity based on club mass, loft and velocity.
     
     velocity = glm::vec3(20.f, 5.f, 0.f);
+	angularVelocity = glm::vec3(0.f,0.f,-80.f);
 }
 
 void GolfBall::SetRadius(float radius) {
     this->radius = radius;
     SetScale(2.f * glm::vec3(radius, radius, radius));
-    area = M_PI * radius * radius;
+    area = glm::pi<float>() * radius * radius;
 }
