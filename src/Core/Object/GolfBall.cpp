@@ -36,8 +36,18 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
         Move(static_cast<float>(time) * velocity);
         
-        /// @todo Calculate drive force.
-        glm::vec3 driveForce = glm::vec3(0.f, 0.f, 0.f);
+        float v = velocity.length();
+        float u = (velocity - wind).length();
+        glm::vec3 eU = (velocity - wind) / u;
+        
+        /// Calculate drive force.
+        float cD;
+        if (ballType == TWOPIECE) {
+            cD = v < 65.f ? -0.0051f * v + 0.53f : 0.21f;
+        } else {
+            cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
+        }
+        glm::vec3 driveForce = -0.5f * 1.23f * area * cD * u * u * eU;
         
         /// @todo Calculate magnus force.
         glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
