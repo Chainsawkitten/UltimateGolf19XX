@@ -21,6 +21,7 @@ GolfBall::GolfBall(BallType ballType) : Object() {
     this->ballType = ballType;
     
     SetRadius(0.0214f);
+	this->sphere.position = this->Position;
 }
 
 GolfBall::~GolfBall() {
@@ -30,7 +31,13 @@ GolfBall::~GolfBall() {
 
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
-		modelObject->Move(static_cast<float>(time)* velocity);
+		modelObject->Move(static_cast<float>(time)*velocity);
+		sphere.position = modelObject->Position();
+		float horizontal = -static_cast<float>(time)*angularVelocity.x*(180.f / glm::pi<float>());
+		float vertical = -static_cast<float>(time)*angularVelocity.y*(180.f / glm::pi<float>());
+		float tilt = -static_cast<float>(time)*angularVelocity.z*(180.f / glm::pi<float>());
+
+		modelObject->Rotate(horizontal, vertical, tilt);
         
         float v = velocity.length();
 		float w = angularVelocity.length();
@@ -47,15 +54,14 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         } else {
             cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
         }
-        glm::vec3 driveForce = -0.5f * 1.23f * area * cD * u * u * eU;
+        glm::vec3 dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
         
-        /// @todo Calculate magnus force.
 		glm::vec3 magnusForce = Fm*(cross(eU, (angularVelocity / w)));
 
         // Calculate gravitational force.
         glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
         
-        glm::vec3 acceleration = (driveForce + magnusForce + gravitationForce) / mass;
+        glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
         velocity += acceleration * static_cast<float>(time);
     }
 }
@@ -70,11 +76,11 @@ void GolfBall::Strike() {
     /// @todo Calculate velocity based on club mass, loft and velocity.
     
     velocity = glm::vec3(20.f, 5.f, 0.f);
-	angularVelocity = glm::vec3(0.f,0.f,-80.f);
+	angularVelocity = glm::vec3(0.f,0.f,-800.f);
 }
 
 void GolfBall::SetRadius(float radius) {
-    this->radius = radius;
+	this->sphere.radius = radius;
     SetScale(2.f * glm::vec3(radius, radius, radius));
     area = glm::pi<float>() * radius * radius;
 }

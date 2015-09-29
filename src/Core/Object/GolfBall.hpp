@@ -5,6 +5,7 @@
 #include "ModelObject.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../Texture/Texture2D.hpp"
+#include "../Physics/Sphere.hpp"
 
 /** @ingroup Core
  * @{
@@ -18,6 +19,11 @@ class GolfBall : public Object {
             TWOPIECE, ///< Two-piece ball.
             THREEPIECE ///< Three-piece ball.
         };
+
+		struct ClubType{
+			float mass;
+			float loft;
+		};
         
         /// Create new golf ball.
         /**
@@ -58,8 +64,8 @@ class GolfBall : public Object {
 		glm::vec3 angularVelocity;
         bool active;
         
+		Physics::Sphere sphere;
         float mass;
-        float radius;
         float area;
         BallType ballType;
 };
