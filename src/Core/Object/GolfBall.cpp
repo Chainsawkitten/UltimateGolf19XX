@@ -24,7 +24,6 @@ GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
     mass = 0.0459f;
     this->ballType = ballType;
 
-	//sphere = new Physics::Sphere(modelObject->Position(), 0.0214f);
 	this->sphere.position = modelObject->Position();
 	SetRadius(0.0214f);
 }
@@ -37,7 +36,7 @@ GolfBall::~GolfBall() {
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)*velocity);
-		sphere->position = modelObject->Position();
+		sphere.position = modelObject->Position();
 		float horizontal = -static_cast<float>(time)*angularVelocity.x*(180.f / glm::pi<float>());
 		float vertical = -static_cast<float>(time)*angularVelocity.y*(180.f / glm::pi<float>());
 		float tilt = -static_cast<float>(time)*angularVelocity.z*(180.f / glm::pi<float>());
@@ -103,6 +102,7 @@ void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
 
 	angularVelocity = glm::vec3(0.f, 0.f, -360.f*(5.f / 7.f)*(sin(clubLoft)*translatedVelocity));
 
+
 	float massCoefficient = clubMass / (clubMass + mass);
 	float velocitybx = translatedVelocity*massCoefficient*((1 + resistution)*pow(cos(clubLoft), 2) + (2.f / 7.f)*pow(sin(clubLoft), 2));
 	float velocityby = translatedVelocity*massCoefficient*sin(clubLoft)*cos(clubLoft)*((5.f / 7.f) + resistution);
@@ -113,7 +113,7 @@ void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
 }
 
 void GolfBall::SetRadius(float radius) {
-	sphere->radius = radius;
+	sphere.radius = radius;
     SetScale(2.f * glm::vec3(radius, radius, radius));
     area = glm::pi<float>() * radius * radius;
 }

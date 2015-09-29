@@ -110,7 +110,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     player->Update(time);
     
     if (Input()->Triggered(InputHandler::STRIKE))
-		golfBall->Strike(0.208f, 25.f*( 3.14f / 180.f), glm::vec3(10.f, 0.f, 2.f));
+		golfBall->Strike(0.208f, 45.f*( 3.14f / 180.f), glm::vec3(10.f, 0.f, 10.f));
     golfBall->Update(time, wind);
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());

@@ -68,7 +68,7 @@ class GolfBall : public Object {
 		glm::vec3 angularVelocity;
         bool active;
         
-		Physics::Sphere* sphere;
+		Physics::Sphere sphere;
 		float resistution;
         float mass;
         float area;
