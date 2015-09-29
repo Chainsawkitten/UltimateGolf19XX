@@ -50,7 +50,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
     
-    golfBall = new GolfBall();
+    golfBall = new GolfBall(GolfBall::TWOPIECE);
     golfBall->SetPosition(2.f, 0.f, 0.f);
     
     wind = glm::vec3(0.f, 0.f, 4.f);

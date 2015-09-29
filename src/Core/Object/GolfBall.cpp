@@ -5,7 +5,7 @@
 #include "Default3D.frag.hpp"
 #include <cmath>
 
-GolfBall::GolfBall() : GeometryObject(Resources().CreateCube()) {
+GolfBall::GolfBall(BallType ballType) : GeometryObject(Resources().CreateCube()) {
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
     geometryShader = Resources().CreateShader(DEFAULT3D_GEOM, DEFAULT3D_GEOM_LENGTH, GL_GEOMETRY_SHADER);
     fragmentShader = Resources().CreateShader(DEFAULT3D_FRAG, DEFAULT3D_FRAG_LENGTH, GL_FRAGMENT_SHADER);
@@ -16,6 +16,7 @@ GolfBall::GolfBall() : GeometryObject(Resources().CreateCube()) {
     
     /// @todo Mass based on explosive material.
     mass = 0.0459f;
+    this->ballType = ballType;
     
     SetRadius(0.0214f);
 }

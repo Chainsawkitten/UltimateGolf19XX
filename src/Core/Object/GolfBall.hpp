@@ -11,8 +11,17 @@
 /// A golf ball that can be struck.
 class GolfBall : public GeometryObject {
     public:
+        /// The type of ball.
+        enum BallType {
+            TWOPIECE, ///< Two-piece ball.
+            THREEPIECE ///< Three-piece ball.
+        };
+        
         /// Create new golf ball.
-        GolfBall();
+        /**
+         * @param ballType The type of ball to be created.
+         */
+        GolfBall(BallType ballType);
         
         /// Destructor.
         ~GolfBall();
@@ -55,6 +64,7 @@ class GolfBall : public GeometryObject {
         float mass;
         float radius;
         float area;
+        BallType ballType;
 };
 
 /** @} */
