@@ -15,6 +15,8 @@ GolfBall::GolfBall() : GeometryObject(Resources().CreateCube()) {
     
     /// @todo Mass based on explosive material.
     mass = 0.0459f;
+    
+    SetRadius(0.0214f);
 }
 
 GolfBall::~GolfBall() {
@@ -79,4 +81,9 @@ void GolfBall::Strike() {
     /// @todo Calculate velocity based on club mass, loft and velocity.
     
     velocity = glm::vec3(20.f, 5.f, 0.f);
+}
+
+void GolfBall::SetRadius(float radius) {
+    this->radius = radius;
+    SetScale(2.f * glm::vec3(radius, radius, radius));
 }

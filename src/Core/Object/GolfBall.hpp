@@ -33,6 +33,12 @@ class GolfBall : public GeometryObject {
         /// Hit the golf ball with a club.
         void Strike();
         
+        /// Set the radius of the golf ball.
+        /**
+         * @param radius Radius in meters.
+         */
+        void SetRadius(float radius);
+        
     private:
         Texture2D* texture;
         
@@ -46,6 +52,7 @@ class GolfBall : public GeometryObject {
         bool active;
         
         float mass;
+        float radius;
 };
 
 /** @} */
