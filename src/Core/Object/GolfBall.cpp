@@ -52,14 +52,14 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         } else {
             cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
         }
-        glm::vec3 driveForce = -0.5f * 1.23f * area * cD * u * u * eU;
+        glm::vec3 dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
         
 		glm::vec3 magnusForce = Fm*(cross(eU, (angularVelocity / w)));
 
         // Calculate gravitational force.
         glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
         
-        glm::vec3 acceleration = (driveForce + magnusForce + gravitationForce) / mass;
+        glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
         velocity += acceleration * static_cast<float>(time);
     }
 }
