@@ -31,11 +31,11 @@ GolfBall::~GolfBall() {
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)* velocity);
-		float horizontal = modelObject->HorizontalAngle() + static_cast<float>(time)*angularVelocity.x;
-		float vertical = modelObject->VerticalAngle() + static_cast<float>(time)*angularVelocity.y;
-		float tilt = modelObject->TiltAngle() + static_cast<float>(time)*angularVelocity.z;
+		float horizontal = static_cast<float>(time)*angularVelocity.x;
+		float vertical = static_cast<float>(time)*angularVelocity.y;
+		float tilt = -static_cast<float>(time)*angularVelocity.z;
 
-		modelObject->SetRotation(horizontal, vertical, tilt);
+		modelObject->Rotate(horizontal, vertical, tilt);
         
         float v = velocity.length();
 		float w = angularVelocity.length();
@@ -74,7 +74,7 @@ void GolfBall::Strike() {
     /// @todo Calculate velocity based on club mass, loft and velocity.
     
     velocity = glm::vec3(20.f, 5.f, 0.f);
-	angularVelocity = glm::vec3(0.f,0.f,-80.f);
+	angularVelocity = glm::vec3(0.f,0.f,-800.f);
 }
 
 void GolfBall::SetRadius(float radius) {
