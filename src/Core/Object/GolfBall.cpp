@@ -31,11 +31,11 @@ GolfBall::~GolfBall() {
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)* velocity);
-		float horizontal = modelObject->HorizontalAngle() + static_cast<float>(time)*angularVelocity.x;
-		float vertical = modelObject->VerticalAngle() + static_cast<float>(time)*angularVelocity.y;
-		float tilt = modelObject->TiltAngle() + static_cast<float>(time)*angularVelocity.z;
+		float horizontal = static_cast<float>(time)*angularVelocity.x;
+		float vertical = static_cast<float>(time)*angularVelocity.y;
+		float tilt = static_cast<float>(time)*angularVelocity.z;
 
-		modelObject->SetRotation(horizontal, vertical, tilt);
+		modelObject->Rotate(horizontal, vertical, tilt);
         
         float v = velocity.length();
 		float w = angularVelocity.length();
