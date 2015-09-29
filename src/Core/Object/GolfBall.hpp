@@ -6,6 +6,7 @@
 #include "../Shader/ShaderProgram.hpp"
 #include "../Texture/Texture2D.hpp"
 #include "../Physics/Sphere.hpp"
+#include "TerrainObject.hpp"
 
 /** @ingroup Core
  * @{
@@ -28,8 +29,9 @@ class GolfBall : public Object {
         /// Create new golf ball.
         /**
          * @param ballType The type of ball to be created.
+		 * @param terrain Reference to the terrain with which the ball will interact
          */
-        GolfBall(BallType ballType);
+        GolfBall(BallType ballType, TerrainObject* terrain);
         
         /// Destructor.
         ~GolfBall();
@@ -59,6 +61,8 @@ class GolfBall : public Object {
         
     private:
 		ModelObject* modelObject;
+		TerrainObject* terrain;
+		float groundLevel;
 		Geometry::Model* modelGeometry;
         glm::vec3 velocity;
 		glm::vec3 angularVelocity;
