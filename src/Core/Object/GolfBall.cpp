@@ -31,9 +31,9 @@ GolfBall::~GolfBall() {
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)*velocity);
-		float horizontal = -static_cast<float>(time)*angularVelocity.x;
-		float vertical = -static_cast<float>(time)*angularVelocity.y;
-		float tilt = -static_cast<float>(time)*angularVelocity.z;
+		float horizontal = -static_cast<float>(time)*angularVelocity.x*(180.f / glm::pi<float>());
+		float vertical = -static_cast<float>(time)*angularVelocity.y*(180.f / glm::pi<float>());
+		float tilt = -static_cast<float>(time)*angularVelocity.z*(180.f / glm::pi<float>());
 
 		modelObject->Rotate(horizontal, vertical, tilt);
         
