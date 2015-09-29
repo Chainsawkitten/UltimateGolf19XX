@@ -31,6 +31,11 @@ GolfBall::~GolfBall() {
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)* velocity);
+		float horizontal = modelObject->HorizontalAngle() + static_cast<float>(time)*angularVelocity.x;
+		float vertical = modelObject->VerticalAngle() + static_cast<float>(time)*angularVelocity.y;
+		float tilt = modelObject->TiltAngle() + static_cast<float>(time)*angularVelocity.z;
+
+		modelObject->SetRotation(horizontal, vertical, tilt);
         
         float v = velocity.length();
 		float w = angularVelocity.length();
@@ -49,7 +54,6 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         }
         glm::vec3 driveForce = -0.5f * 1.23f * area * cD * u * u * eU;
         
-        /// @todo Calculate magnus force.
 		glm::vec3 magnusForce = Fm*(cross(eU, (angularVelocity / w)));
 
         // Calculate gravitational force.

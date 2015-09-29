@@ -18,6 +18,11 @@ class GolfBall : public Object {
             TWOPIECE, ///< Two-piece ball.
             THREEPIECE ///< Three-piece ball.
         };
+
+		struct ClubType{
+			float mass;
+			float loft;
+		};
         
         /// Create new golf ball.
         /**
