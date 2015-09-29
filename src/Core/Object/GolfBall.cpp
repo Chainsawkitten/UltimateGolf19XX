@@ -3,6 +3,7 @@
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
+#include <cmath>
 
 GolfBall::GolfBall() : GeometryObject(Resources().CreateCube()) {
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
@@ -86,4 +87,5 @@ void GolfBall::Strike() {
 void GolfBall::SetRadius(float radius) {
     this->radius = radius;
     SetScale(2.f * glm::vec3(radius, radius, radius));
+    area = M_PI * radius * radius;
 }

@@ -53,6 +53,7 @@ class GolfBall : public GeometryObject {
         
         float mass;
         float radius;
+        float area;
 };
 
 /** @} */
