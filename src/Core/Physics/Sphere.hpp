@@ -11,6 +11,9 @@ namespace Physics{
 		*/
 		Sphere(glm::vec3 origin, float radius);
 
+		/// Create new sphere.
+		Sphere();
+
 		glm::vec3 position;
 		float radius;
 	private:

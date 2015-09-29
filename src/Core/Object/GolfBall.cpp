@@ -4,10 +4,13 @@
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
 #include "glm\gtc\constants.hpp"
+#include "../Util/Log.hpp"
 
-GolfBall::GolfBall(BallType ballType) : Object() {
+GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
     active = false;
-	resistution = 0.78f;
+	resistution = 0.78f;	
+	this->terrain = terrain;
+	groundLevel = this->terrain->Position().y;
 
 	modelGeometry = new Geometry::Model("Resources/Models/rock/Rock.bin");
 	std::string diffusePath = "Resources/Models/rock/diffuse.tga";
@@ -21,9 +24,9 @@ GolfBall::GolfBall(BallType ballType) : Object() {
     mass = 0.0459f;
     this->ballType = ballType;
 
-	
-    
-	sphere = new Physics::Sphere(modelObject->Position(), 0.0214f);
+	//sphere = new Physics::Sphere(modelObject->Position(), 0.0214f);
+	this->sphere.position = modelObject->Position();
+	SetRadius(0.0214f);
 }
 
 GolfBall::~GolfBall() {
@@ -38,6 +41,28 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 		float horizontal = -static_cast<float>(time)*angularVelocity.x*(180.f / glm::pi<float>());
 		float vertical = -static_cast<float>(time)*angularVelocity.y*(180.f / glm::pi<float>());
 		float tilt = -static_cast<float>(time)*angularVelocity.z*(180.f / glm::pi<float>());
+
+		if ((sphere.position.y - sphere.radius) < groundLevel){
+			float e = 0.f;
+			float mu = 0.51f;
+			this->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
+			modelObject->SetPosition(this->Position());
+
+			if (ballType == TWOPIECE){
+				float e = 0.78f;
+			} else {
+				float e = 0.68f;
+			}
+
+			glm::vec3 eNormal = glm::vec3(0.f, 1.f, 0.f);
+			glm::vec3 eRoh = glm::vec3(0.f, 1.f, 0.f);
+			glm::vec3 muNormal = mu*eNormal;
+			glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
+			glm::vec3 velocityAfterCollisionProjectedOneRoh = e*velocityProjectedOneRoh;
+			velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh + muNormal);
+			angularVelocity = ((mass*sphere.radius)/(2*sphere.radius))*(velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(glm::cross(eRoh,eNormal));
+			return;
+		}
 
 		modelObject->Rotate(horizontal, vertical, tilt);
         
@@ -84,6 +109,7 @@ void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
 
 	float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
 	velocity = glm::vec3(velocitybx*cos(horizontalAngle), velocityby, velocitybx*sin(horizontalAngle));
+
 }
 
 void GolfBall::SetRadius(float radius) {
