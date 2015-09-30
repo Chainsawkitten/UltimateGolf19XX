@@ -8,7 +8,7 @@
 
 GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
     active = false;
-	
+	resistution = 0.78f;	
 	this->terrain = terrain;
 	groundLevel = this->terrain->Position().y;
 
@@ -96,17 +96,24 @@ void GolfBall::Render(Camera* camera, const glm::vec2& screenSize) const{
 	modelObject->Render(camera, screenSize);
 }
 
-void GolfBall::Strike() {
-    active = true;
-    
-    /// @todo Calculate velocity based on club mass, loft and velocity.
-    
-    velocity = glm::vec3(5.f, 5.f, 0.f);
-	angularVelocity = glm::vec3(0.f,0.f,-800.f);
+void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
+	active = true;
+	float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
+
+	angularVelocity = glm::vec3(0.f, 0.f, -360.f*(5.f / 7.f)*(sin(clubLoft)*translatedVelocity));
+
+
+	float massCoefficient = clubMass / (clubMass + mass);
+	float velocitybx = translatedVelocity*massCoefficient*((1 + resistution)*pow(cos(clubLoft), 2) + (2.f / 7.f)*pow(sin(clubLoft), 2));
+	float velocityby = translatedVelocity*massCoefficient*sin(clubLoft)*cos(clubLoft)*((5.f / 7.f) + resistution);
+
+	float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
+	velocity = glm::vec3(velocitybx*cos(horizontalAngle), velocityby, velocitybx*sin(horizontalAngle));
+
 }
 
 void GolfBall::SetRadius(float radius) {
-	this->sphere.radius = radius;
+	sphere.radius = radius;
     SetScale(2.f * glm::vec3(radius, radius, radius));
     area = glm::pi<float>() * radius * radius;
 }
