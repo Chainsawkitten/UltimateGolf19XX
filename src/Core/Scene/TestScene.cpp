@@ -50,7 +50,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
     
-    golfBall = new GolfBall(GolfBall::TWOPIECE);
+    golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject);
     golfBall->SetPosition(2.f, 0.f, 0.f);
     
     wind = glm::vec3(0.f, 0.f, 4.f);
@@ -110,7 +110,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     player->Update(time);
     
     if (Input()->Triggered(InputHandler::STRIKE))
-        golfBall->Strike();
+		golfBall->Strike(golfBall->iron3, glm::vec3(5.f, 0.f, 0.f));
     golfBall->Update(time, wind);
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());

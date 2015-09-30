@@ -170,6 +170,7 @@ set(CORE_SRCS
         src/Core/Particles/ParticleSystem.cpp
         src/Core/Particles/PointParticleEmitter.cpp
 	src/Core/Physics/AABB.cpp
+	src/Core/Physics/Sphere.cpp
 	src/Core/Physics/Frustum.cpp
 	src/Core/Physics/OBB.cpp
 	src/Core/Physics/Ray.cpp
@@ -230,6 +231,7 @@ set(CORE_HEADERS
         src/Core/Particles/PointParticleEmitter.hpp
         src/Core/Particles/ParticleType.hpp
 	src/Core/Physics/AABB.hpp
+	src/Core/Physics/Sphere.hpp
 	src/Core/Physics/Frustum.hpp
 	src/Core/Physics/OBB.hpp
 	src/Core/Physics/Ray.hpp
