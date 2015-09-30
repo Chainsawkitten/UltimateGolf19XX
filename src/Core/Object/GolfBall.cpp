@@ -108,7 +108,7 @@ void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
 	float velocityby = translatedVelocity*massCoefficient*sin(clubLoft)*cos(clubLoft)*((5.f / 7.f) + resistution);
 
 	float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
-	velocity = glm::vec3(velocitybx*cos(horizontalAngle), velocityby, velocitybx*sin(horizontalAngle));
+	velocity = glm::vec3(velocitybx*sin(horizontalAngle), velocityby, velocitybx*cos(horizontalAngle));
 
 }
 
