@@ -69,7 +69,7 @@ class GolfBall : public Object {
         bool active;
         
 		Physics::Sphere sphere;
-		float resistution;
+		float restitution;
         float mass;
         float area;
         BallType ballType;
