@@ -43,9 +43,9 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 		modelObject->Move(static_cast<float>(time)*velocity);
 		sphere.position = modelObject->Position();
 
-		float horizontal = -static_cast<float>(time)*angularVelocity.x*(180.f / glm::pi<float>());
-		float vertical = -static_cast<float>(time)*angularVelocity.y*(180.f / glm::pi<float>());
-		float tilt = -static_cast<float>(time)*angularVelocity.z*(180.f / glm::pi<float>());
+		float horizontal = -static_cast<float>(time)*angularVelocity.x*(glm::pi<float>());
+		float vertical = -static_cast<float>(time)*angularVelocity.y*(glm::pi<float>());
+		float tilt = -static_cast<float>(time)*angularVelocity.z*(glm::pi<float>());
 
 		if ((sphere.position.y - sphere.radius) < groundLevel){
 			float mu = 0.11f;
@@ -53,14 +53,14 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 
 			modelObject->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
 
-			glm::vec3 eRoh = glm::vec3(0.f, 1.f, 0.f);
+			glm::vec3 eRoh = surfaceNormal;
 			glm::vec3 er = glm::normalize(glm::cross(-surfaceNormal, eRoh));
 			glm::vec3 velocityCrosseRoh = glm::normalize(cross(velocity, eRoh));
-			glm::vec3 eNormal = glm::cross(velocityCrosseRoh, eRoh);
+			glm::vec3 eNormal = glm::cross(glm::normalize(glm::cross(velocityCrosseRoh, eRoh)), eRoh);
 			glm::vec3 muNormal = mu*eNormal;
 			glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
 			glm::vec3 velocityAfterCollisionProjectedOneRoh = restitution*velocityProjectedOneRoh;
-			velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh + muNormal);
+			velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh);
 			//angularVelocity = ((mass*sphere.radius)/(2*sphere.radius))*(velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(glm::cross(glm::cross(eRoh,eNormal),eNormal));
 		}
 
@@ -109,7 +109,7 @@ void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
 	float velocityby = translatedVelocity*massCoefficient*sin(clubLoft)*cos(clubLoft)*((5.f / 7.f) + restitution);
 
 	float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
-	velocity = glm::vec3(velocitybx*cos(horizontalAngle), velocityby, velocitybx*sin(horizontalAngle));
+	velocity = glm::vec3(velocitybx*sin(horizontalAngle), velocityby, velocitybx*cos(horizontalAngle));
 
 }
 
