@@ -56,7 +56,7 @@ set(RESOURCES
     assets/TropicalSunnyDay
     assets/CGTextures
     assets/Terrain
-	assets/Models
+    assets/Models
     assets/DustParticle.png
 )
 
@@ -83,7 +83,7 @@ set(EMBEDDED_INPUT
     shaders/Particle.vert
     shaders/Particle.geom
     shaders/Particle.frag
-	shaders/NormalSpecularMap.frag
+    shaders/NormalSpecularMap.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
@@ -143,14 +143,15 @@ set(CORE_SRCS
         src/Core/Camera/Camera.cpp
         src/Core/Camera/FirstPersonCamera.cpp
         src/Core/Geometry/Geometry2D.cpp
-		src/Core/Geometry/Model.cpp
+        src/Core/Geometry/Model.cpp
+        src/Core/Geometry/OBJModel.cpp
         src/Core/Geometry/Rectangle.cpp
         src/Core/Geometry/Geometry3D.cpp
         src/Core/Geometry/Cube.cpp
         src/Core/Geometry/Square.cpp
 	src/Core/Geometry/Terrain.cpp
         src/Core/Object/Object.cpp
-		src/Core/Object/ModelObject.cpp
+        src/Core/Object/ModelObject.cpp
 	src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Object/GolfBall.cpp
@@ -200,14 +201,15 @@ set(CORE_HEADERS
         src/Core/Camera/Camera.hpp
         src/Core/Camera/FirstPersonCamera.hpp
         src/Core/Geometry/Model.hpp
+        src/Core/Geometry/OBJModel.hpp
         src/Core/Geometry/Rectangle.hpp
         src/Core/Geometry/Geometry3D.hpp
-		src/Core/Geometry/Geometry2D.hpp
+        src/Core/Geometry/Geometry2D.hpp
         src/Core/Geometry/Cube.hpp
         src/Core/Geometry/Square.hpp
 	src/Core/Geometry/Terrain.hpp
         src/Core/Object/Object.hpp
-		src/Core/Object/ModelObject.hpp
+        src/Core/Object/ModelObject.hpp
 	src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Object/GolfBall.hpp

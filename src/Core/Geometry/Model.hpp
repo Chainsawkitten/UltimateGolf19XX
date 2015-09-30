@@ -4,9 +4,10 @@
 #include <vector>
 #include "Geometry3D.hpp"
 
-/** @ingroup core
+/** @ingroup Core
  * @{
  */
+
 namespace Geometry {
 	class Model;
 
@@ -62,4 +63,5 @@ namespace Geometry {
 		unsigned int indexNr = 0;
 	};
 }
+
 /** @} */

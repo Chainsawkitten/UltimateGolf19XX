@@ -4,18 +4,18 @@
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
 #include <cmath>
+#include "../Geometry/OBJModel.hpp"
 
 GolfBall::GolfBall(BallType ballType) : Object() {
     active = false;
-
-	modelGeometry = new Geometry::Model("Resources/Models/rock/Rock.bin");
-	std::string diffusePath = "Resources/Models/rock/diffuse.tga";
-	std::string normalPath = "Resources/Models/rock/normal.tga";
-	std::string specularPath = "Resources/Models/rock/specular.tga";
+    
+	modelGeometry = new Geometry::OBJModel("Resources/Models/GolfBall/GolfBall.obj");
+	std::string diffusePath = "Resources/Models/GolfBall/Diffuse.png";
+	std::string normalPath = "Resources/Models/GolfBall/Normal.png";
+	std::string specularPath = "Resources/Models/GolfBall/Specular.png";
 	modelObject = new ModelObject(modelGeometry, diffusePath, normalPath, specularPath);
-	modelObject->SetPosition(2.f, 0.f, 0.f);
-	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
-
+	modelObject->SetPosition(1.f, 0.f, 1.f);
+    
     /// @todo Mass based on explosive material.
     mass = 0.0459f;
     this->ballType = ballType;
@@ -32,8 +32,8 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)* velocity);
         
-        float v = velocity.length();
-        float u = (velocity - wind).length();
+        float v = glm::length(velocity);
+        float u = glm::length(velocity - wind);
         glm::vec3 eU = (velocity - wind) / u;
         
         /// Calculate drive force.
@@ -54,6 +54,8 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         glm::vec3 acceleration = (driveForce + magnusForce + gravitationForce) / mass;
         velocity += acceleration * static_cast<float>(time);
     }
+    
+    modelObject->Rotate(0.2f, 0.f, 0.f);
 }
 
 void GolfBall::Render(Camera* camera, const glm::vec2& screenSize) const{
@@ -70,6 +72,6 @@ void GolfBall::Strike() {
 
 void GolfBall::SetRadius(float radius) {
     this->radius = radius;
-    SetScale(2.f * glm::vec3(radius, radius, radius));
+    modelObject->SetScale(glm::vec3(radius, radius, radius));
     area = M_PI * radius * radius;
 }
