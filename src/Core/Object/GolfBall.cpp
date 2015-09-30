@@ -66,9 +66,9 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 
 		modelObject->Rotate(horizontal, vertical, tilt);
         
-        float v = velocity.length();
-		float w = angularVelocity.length();
-        float u = (velocity - wind).length();
+        float v = glm::length(velocity);
+		float w = glm::length(angularVelocity);
+		float u = glm::length(velocity - wind);
 		float Cm = (sqrt(1.f + 0.31f*(v/w))-1.f)/20.f;
 		float Fm = 0.5f*Cm*1.23*area*u*u;
 
