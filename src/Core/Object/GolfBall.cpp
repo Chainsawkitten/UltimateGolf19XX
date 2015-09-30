@@ -53,7 +53,7 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 
 			modelObject->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
 			glm::vec3 eRoh = surfaceNormal;
-			glm::vec3 er = glm::normalize(glm::cross(-surfaceNormal, eRoh));
+			glm::vec3 er = glm::normalize(glm::cross(velocity, eRoh));
 			glm::vec3 velocityCrosseRoh = glm::normalize(cross(velocity, eRoh));
 
 			glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
