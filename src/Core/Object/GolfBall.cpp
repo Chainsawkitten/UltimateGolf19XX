@@ -8,7 +8,12 @@
 
 GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
     active = false;
-	restitution = 0.78f;	
+	if (ballType == TWOPIECE){
+		restitution = 0.78f;
+	}
+	else {
+		restitution = 0.68f;
+	}	
 	this->terrain = terrain;
 	groundLevel = this->terrain->Position().y;
 
@@ -37,31 +42,26 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
 		modelObject->Move(static_cast<float>(time)*velocity);
 		sphere.position = modelObject->Position();
+
 		float horizontal = -static_cast<float>(time)*angularVelocity.x*(180.f / glm::pi<float>());
 		float vertical = -static_cast<float>(time)*angularVelocity.y*(180.f / glm::pi<float>());
 		float tilt = -static_cast<float>(time)*angularVelocity.z*(180.f / glm::pi<float>());
 
 		if ((sphere.position.y - sphere.radius) < groundLevel){
-			float e = 0.f;
 			float mu = 0.11f;
-			this->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
-			modelObject->SetPosition(this->Position());
+			glm::vec3 surfaceNormal = glm::vec3(0.f, 1.f, 0.f);
 
-			if (ballType == TWOPIECE){
-				float e = 0.78f;
-			} else {
-				float e = 0.68f;
-			}
+			modelObject->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
 
 			glm::vec3 eRoh = glm::vec3(0.f, 1.f, 0.f);
-			glm::vec3 velocityCrosseRoh = glm::normalize(glm::cross(glm::normalize(velocity), eRoh));
+			glm::vec3 er = glm::normalize(glm::cross(-surfaceNormal, eRoh));
+			glm::vec3 velocityCrosseRoh = glm::normalize(cross(velocity, eRoh));
 			glm::vec3 eNormal = glm::cross(velocityCrosseRoh, eRoh);
 			glm::vec3 muNormal = mu*eNormal;
 			glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
-			glm::vec3 velocityAfterCollisionProjectedOneRoh = e*velocityProjectedOneRoh;
+			glm::vec3 velocityAfterCollisionProjectedOneRoh = restitution*velocityProjectedOneRoh;
 			velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh + muNormal);
-			angularVelocity = ((mass*sphere.radius)/(2*sphere.radius))*(velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(glm::cross(glm::cross(eRoh,eNormal),eNormal));
-			return;
+			//angularVelocity = ((mass*sphere.radius)/(2*sphere.radius))*(velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(glm::cross(glm::cross(eRoh,eNormal),eNormal));
 		}
 
 		modelObject->Rotate(horizontal, vertical, tilt);
