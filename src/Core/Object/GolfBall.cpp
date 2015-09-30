@@ -97,16 +97,14 @@ void GolfBall::Render(Camera* camera, const glm::vec2& screenSize) const{
 	modelObject->Render(camera, screenSize);
 }
 
-void GolfBall::Strike(float clubMass, float clubLoft, glm::vec3 clubVelocity) {
+void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {
 	active = true;
 	float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
 
-	angularVelocity = glm::vec3(0.f, 0.f, -360.f*(5.f / 7.f)*(sin(clubLoft)*translatedVelocity));
-
-
-	float massCoefficient = clubMass / (clubMass + mass);
-	float velocitybx = translatedVelocity*massCoefficient*((1 + restitution)*pow(cos(clubLoft), 2) + (2.f / 7.f)*pow(sin(clubLoft), 2));
-	float velocityby = translatedVelocity*massCoefficient*sin(clubLoft)*cos(clubLoft)*((5.f / 7.f) + restitution);
+	angularVelocity = glm::vec3(0.f, 0.f, -360.f*(5.f / 7.f)*(sin(club.loft)*translatedVelocity));
+	float massCoefficient = club.mass / (club.mass + mass);
+	float velocitybx = translatedVelocity*massCoefficient*((1 + restitution)*pow(cos(club.loft), 2) + (2.f / 7.f)*pow(sin(club.loft), 2));
+	float velocityby = translatedVelocity*massCoefficient*sin(club.loft)*cos(club.loft)*((5.f / 7.f) + restitution);
 
 	float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
 	velocity = glm::vec3(velocitybx*sin(horizontalAngle), velocityby, velocitybx*cos(horizontalAngle));
