@@ -19,9 +19,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     );
 
 	model = new Geometry::Model("Resources/Models/rock/Rock.bin");
-	std::string diffusePath = "Resources/Models/rock/diffuse.tga";
-	std::string normalPath = "Resources/Models/rock/normal.tga";
-	std::string specularPath = "Resources/Models/rock/specular.tga";
+	std::string diffusePath = "Resources/Models/rock/Diffuse.png";
+	std::string normalPath = "Resources/Models/rock/Normal.png";
+	std::string specularPath = "Resources/Models/rock/Specular.png";
 	modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
 	modelObject->SetPosition(4.f,0.f,0.f);
 	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
