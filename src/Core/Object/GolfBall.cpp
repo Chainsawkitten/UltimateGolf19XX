@@ -52,17 +52,37 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 			glm::vec3 surfaceNormal = glm::vec3(0.f, 1.f, 0.f);
 
 			modelObject->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
-
 			glm::vec3 eRoh = surfaceNormal;
 			glm::vec3 er = glm::normalize(glm::cross(-surfaceNormal, eRoh));
 			glm::vec3 velocityCrosseRoh = glm::normalize(cross(velocity, eRoh));
-			glm::vec3 eNormal = glm::cross(glm::normalize(glm::cross(velocityCrosseRoh, eRoh)), eRoh);
-			glm::vec3 muNormal = mu*eNormal;
+
 			glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
 			glm::vec3 velocityAfterCollisionProjectedOneRoh = restitution*velocityProjectedOneRoh;
 			velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh);
 			//angularVelocity = ((mass*sphere.radius)/(2*sphere.radius))*(velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(glm::cross(glm::cross(eRoh,eNormal),eNormal));
+
 		}
+
+		//float e = 0.f;
+		//float mu = 0.51f;
+		//this->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
+		//modelObject->SetPosition(this->Position());
+
+		//if (ballType == TWOPIECE){
+		//	float e = 0.78f;
+
+		//}
+		//else {
+		//	float e = 0.68f;
+
+		//}
+
+		//glm::vec3 eNormal = glm::vec3(0.f, 1.f, 0.f);
+		//glm::vec3 eRoh = glm::vec3(0.f, 1.f, 0.f);
+		//glm::vec3 muNormal = mu*eNormal;
+		//glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
+		//glm::vec3 velocityAfterCollisionProjectedOneRoh = e*velocityProjectedOneRoh;
+		//velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh + muNormal);
 
 		modelObject->Rotate(horizontal, vertical, tilt);
         
