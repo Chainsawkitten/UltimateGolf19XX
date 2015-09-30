@@ -70,15 +70,13 @@ namespace Geometry {
         
         vertexNr = vertices.size();
         vertexData = new Vertex[vertexNr];
-        for (unsigned int i = 0; i < vertexNr; i++) {
+        for (unsigned int i = 0; i < vertexNr; i++)
             vertexData[i] = vertices[i];
-        }
         
         indexNr = vertexNr;
         indexData = new unsigned int[indexNr];
-        for (unsigned int i = 0; i < indexNr; i++) {
+        for (unsigned int i = 0; i < indexNr; i++)
             indexData[i] = i;
-        }
         
         GenerateBuffers();
         GenerateVertexArray();
