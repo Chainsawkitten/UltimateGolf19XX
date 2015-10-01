@@ -60,6 +60,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     water =  new Water(screenSize);
     water->SetScale(400.f, 400.f, 400.f);
     water->SetPosition(0.f, -1.f, 0.f);
+    water->SetTextureRepeat(glm::vec2(50.f, 50.f));
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");

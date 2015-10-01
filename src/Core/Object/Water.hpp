@@ -3,6 +3,7 @@
 #include "GeometryObject.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../RenderTarget.hpp"
+#include "../Texture/Texture2D.hpp"
 
 /** @ingroup Core
  * @{
@@ -51,6 +52,12 @@ class Water : public GeometryObject {
          */
         glm::vec4 ReflectionClippingPlane() const;
         
+        /// Set how much the water textures should repat.
+        /**
+         * @param textureRepeat How many times the water textures should repeat.
+         */
+        void SetTextureRepeat(const glm::vec2& textureRepeat);
+        
     private:
         // Water shaders.
         Shader* vertexShader;
@@ -61,6 +68,10 @@ class Water : public GeometryObject {
         // Render targets.
         RenderTarget* refractionTarget;
         RenderTarget* reflectionTarget;
+        
+        // Textures.
+        Texture2D* dudvMap;
+        glm::vec2 textureRepeat;
         
 };
 

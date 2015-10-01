@@ -14,9 +14,14 @@ Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSqu
     
     refractionTarget = new RenderTarget(screenSize);
     reflectionTarget = new RenderTarget(screenSize * 0.25f);
+    
+    dudvMap = Resources().CreateTexture2DFromFile("Resources/Terrain/WaterDUDV.png");
+    textureRepeat = glm::vec2(1.f, 1.f);
 }
 
 Water::~Water() {
+    Resources().FreeTexture2DFromFile(dudvMap);
+    
     delete refractionTarget;
     delete reflectionTarget;
     
@@ -37,6 +42,7 @@ void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
     // Set texture locations
     glUniform1i(shaderProgram->UniformLocation("tRefraction"), 0);
     glUniform1i(shaderProgram->UniformLocation("tReflection"), 1);
+    glUniform1i(shaderProgram->UniformLocation("tDuDvMap"), 2);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, refractionTarget->ColorTexture());
@@ -44,7 +50,11 @@ void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, reflectionTarget->ColorTexture());
     
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, dudvMap->TextureID());
+    
     glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
+    glUniform2fv(shaderProgram->UniformLocation("textureRepeat"), 1, &textureRepeat[0]);
     
     glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &glm::vec4(0.f, 0.f, 0.f, 0.f)[0]);
     
@@ -76,4 +86,8 @@ glm::vec4 Water::RefractionClippingPlane() const {
 glm::vec4 Water::ReflectionClippingPlane() const {
     /// @todo Don't hardcore clipping planes
     return glm::vec4(0.f, 1.f, 0.f, -Position().y);
+}
+
+void Water::SetTextureRepeat(const glm::vec2& textureRepeat) {
+    this->textureRepeat = textureRepeat;
 }

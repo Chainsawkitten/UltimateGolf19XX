@@ -11,8 +11,12 @@ in VertexData {
 
 uniform sampler2D tRefraction;
 uniform sampler2D tReflection;
+uniform sampler2D tDuDvMap;
 
 uniform vec2 screenSize;
+uniform vec2 textureRepeat;
+
+const float waveStrength = 0.02;
 
 out vec4 fragmentColor;
 
@@ -22,9 +26,13 @@ vec2 calculateTexCoord() {
 }
 
 void main() {
+    vec2 distortion1 = (texture(tDuDvMap, vertexIn.texCoords * textureRepeat).rg * 2.0 - 1.0) * waveStrength;    
     vec2 refractionTexCoord = calculateTexCoord();
     vec2 reflectionTexCoord = refractionTexCoord;
     reflectionTexCoord.y = 1.0 - reflectionTexCoord.y;
+    
+    refractionTexCoord += distortion1;
+    reflectionTexCoord += distortion1;
     
     vec4 refractionColor = texture(tRefraction, refractionTexCoord);
     vec4 reflectionColor = texture(tReflection, reflectionTexCoord);
