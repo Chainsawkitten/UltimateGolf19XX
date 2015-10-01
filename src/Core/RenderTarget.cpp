@@ -1,5 +1,8 @@
 #include "RenderTarget.hpp"
 #include "Util/Log.hpp"
+#include "Resources.hpp"
+#include "Post.vert.hpp"
+#include "PostCopy.frag.hpp"
 
 RenderTarget::RenderTarget(const glm::vec2 &size) {
     width = static_cast<int>(size.x);
@@ -40,12 +43,24 @@ RenderTarget::RenderTarget(const glm::vec2 &size) {
     
     // Default framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    vertexShader = Resources().CreateShader(POST_VERT, POST_VERT_LENGTH, GL_VERTEX_SHADER);
+    fragmentShader = Resources().CreateShader(POSTCOPY_FRAG, POSTCOPY_FRAG_LENGTH, GL_FRAGMENT_SHADER);
+    shaderProgram = Resources().CreateShaderProgram({ vertexShader, fragmentShader });
+    
+    rectangle = Resources().CreateRectangle();
 }
 
 RenderTarget::~RenderTarget() {
     glDeleteTextures(1, &depthBuffer);
     glDeleteTextures(1, &colorBuffer);
     glDeleteFramebuffers(1, &frameBuffer);
+    
+    Resources().FreeShaderProgram(shaderProgram);
+    Resources().FreeShader(vertexShader);
+    Resources().FreeShader(fragmentShader);
+    
+    Resources().FreeRectangle();
 }
 
 void RenderTarget::SetTarget() {
@@ -66,4 +81,37 @@ GLuint RenderTarget::ColorTexture() const {
 
 GLuint RenderTarget::DepthTexture() const {
     return depthBuffer;
+}
+
+void RenderTarget::Render() {
+    // Disable depth testing
+    GLboolean depthTest = glIsEnabled(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+    
+    GLint oldDepthFunctionMode;
+    glGetIntegerv(GL_DEPTH_FUNC, &oldDepthFunctionMode);
+    glDepthFunc(GL_ALWAYS);
+    
+    shaderProgram->Use();
+    
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    SetSource();
+    
+    glUniform1i(shaderProgram->UniformLocation("tDiffuse"), 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, colorBuffer);
+    
+    glUniform1i(shaderProgram->UniformLocation("tDepth"), 1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, depthBuffer);
+    
+    glBindVertexArray(rectangle->VertexArray());
+    
+    glDrawElements(GL_TRIANGLES, rectangle->IndexCount(), GL_UNSIGNED_INT, (void*)0);
+    
+    if (depthTest)
+        glEnable(GL_DEPTH_TEST);
+    
+    glDepthFunc(oldDepthFunctionMode);
 }

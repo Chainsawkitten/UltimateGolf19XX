@@ -41,11 +41,6 @@ class PostProcessing {
         RenderTarget* buffers[2];
         
         Geometry::Rectangle* rectangle;
-        
-        // Shaders
-        Shader* vertexShader;
-        Shader* fragmentShader;
-        ShaderProgram* shaderProgram;
 };
 
 /** @} */

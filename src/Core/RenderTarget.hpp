@@ -1,7 +1,7 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
+#include "Shader/ShaderProgram.hpp"
+#include "Geometry/Rectangle.hpp"
 
 /** @ingroup Core
  * @{
@@ -53,6 +53,13 @@ class RenderTarget {
         GLuint frameBuffer;
 		GLuint colorBuffer;
 		GLuint depthBuffer;
+        
+        Geometry::Rectangle* rectangle;
+        
+        // Shaders
+        Shader* vertexShader;
+        Shader* fragmentShader;
+        ShaderProgram* shaderProgram;
 };
 
 /** @} */
