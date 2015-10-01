@@ -118,14 +118,16 @@ TestScene::~TestScene() {
 TestScene::SceneEnd* TestScene::Update(double time) {
     player->Update(time);
     
+    glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
     if (Input()->Triggered(InputHandler::STRIKE))
-		golfBall->Strike(golfBall->iron3, glm::vec3(5.f, 0.f, 0.f));
+		golfBall->Strike(golfBall->iron3, wind);
     golfBall->Update(time, wind);
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
     particleSystem->Update(time, player->GetCamera());
+    water->Update(time, wind);
     
     return nullptr;
 }

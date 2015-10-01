@@ -21,6 +21,13 @@ class Water : public GeometryObject {
         /// Destructor.
         ~Water();
         
+        /// Update the water.
+        /**
+         * @param time Time since last frame (in seconds).
+         * @param wind The wind velocity.
+         */
+        void Update(double time, const glm::vec3& wind);
+        
         /// Render the object.
         /**
          * @param camera %Camera to render through.
@@ -72,7 +79,7 @@ class Water : public GeometryObject {
         // Textures.
         Texture2D* dudvMap;
         glm::vec2 textureRepeat;
-        
+        glm::vec2 texOffset;
 };
 
 /** @} */

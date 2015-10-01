@@ -3,6 +3,7 @@
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
 #include "Water.frag.hpp"
+#include <cmath>
 
 Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSquare()) {
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
@@ -17,6 +18,8 @@ Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSqu
     
     dudvMap = Resources().CreateTexture2DFromFile("Resources/Terrain/WaterDUDV.png");
     textureRepeat = glm::vec2(1.f, 1.f);
+    
+    texOffset = glm::vec2(0.f, 0.f);
 }
 
 Water::~Water() {
@@ -31,6 +34,12 @@ Water::~Water() {
     Resources().FreeShader(vertexShader);
     Resources().FreeShader(geometryShader);
     Resources().FreeShader(fragmentShader);
+}
+
+void Water::Update(double time, const glm::vec3& wind) {
+    texOffset += 0.02f * static_cast<float>(time) * -glm::vec2(wind.x, wind.z);
+    texOffset.x = fmod(texOffset.x, 1.f);
+    texOffset.y = fmod(texOffset.y, 1.f);
 }
 
 void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
@@ -55,7 +64,7 @@ void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
     
     glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
     glUniform2fv(shaderProgram->UniformLocation("textureRepeat"), 1, &textureRepeat[0]);
-    
+    glUniform2fv(shaderProgram->UniformLocation("texOffset"), 1, &texOffset[0]);
     glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &glm::vec4(0.f, 0.f, 0.f, 0.f)[0]);
     
     // Send matrices to shader.
