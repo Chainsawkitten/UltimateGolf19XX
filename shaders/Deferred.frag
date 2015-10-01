@@ -19,6 +19,8 @@ uniform vec4 lightPosition;
 uniform vec3 lightIntensity;
 uniform vec3 diffuseCoefficient;
 
+uniform float scale;
+
 in vec2 texCoords;
 
 out vec4 fragmentColor;
@@ -77,11 +79,11 @@ vec3 reconstructPos(vec2 texCoord, float depth){
 }
 
 void main () {
-	float depth = texture(tDepth, texCoords).r;
+	float depth = texture(tDepth, texCoords * scale).r;
 	vec3 position = reconstructPos(texCoords, depth);
-	vec3 diffuse = texture(tDiffuse, texCoords).rgb;
-	vec3 normal = texture(tNormals, texCoords).xyz;
-	vec3 specular = texture(tSpecular, texCoords).xyz;
+	vec3 diffuse = texture(tDiffuse, texCoords * scale).rgb;
+	vec3 normal = texture(tNormals, texCoords * scale).xyz;
+	vec3 specular = texture(tSpecular, texCoords * scale).xyz;
 	
 	fragmentColor = vec4(ads(diffuse, normal, position, specular), 1.0);
 	gl_FragDepth = depth;

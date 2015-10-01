@@ -129,7 +129,7 @@ void DeferredLighting::ResetWriting() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void DeferredLighting::Render(Camera* camera, const glm::vec2& screenSize) {
+void DeferredLighting::Render(Camera* camera, const glm::vec2& screenSize, float scale) {
     // Disable depth testing
     GLboolean depthTest = glIsEnabled(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_TEST);
@@ -146,7 +146,7 @@ void DeferredLighting::Render(Camera* camera, const glm::vec2& screenSize) {
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
     
-    BindLighting(camera, screenSize);
+    BindLighting(camera, screenSize, scale);
     BindForReading();
     
     glClear(GL_COLOR_BUFFER_BIT);
@@ -171,7 +171,7 @@ void DeferredLighting::AttachTexture(GLuint texture, unsigned int width, unsigne
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0);
 }
 
-void DeferredLighting::BindLighting(Camera* camera, const glm::vec2& screenSize){
+void DeferredLighting::BindLighting(Camera* camera, const glm::vec2& screenSize, float scale){
     // Bind light information for lighting pass
     glm::mat4 view = camera->View();
     
@@ -179,6 +179,8 @@ void DeferredLighting::BindLighting(Camera* camera, const glm::vec2& screenSize)
     glUniform1i(shaderProgram->UniformLocation("tNormals"), DeferredLighting::NORMAL);
     glUniform1i(shaderProgram->UniformLocation("tSpecular"), DeferredLighting::SPECULAR);
     glUniform1i(shaderProgram->UniformLocation("tDepth"), DeferredLighting::NUM_TEXTURES);
+    
+    glUniform1f(shaderProgram->UniformLocation("scale"), scale);
     
     glUniform4fv(shaderProgram->UniformLocation("lightPosition"), 1, &(view * light.position)[0]);
     glUniform3fv(shaderProgram->UniformLocation("lightIntensity"), 1, &light.intensity[0]);

@@ -4,16 +4,22 @@
 #include "Default3D.geom.hpp"
 #include "Water.frag.hpp"
 
-Water::Water() : GeometryObject(Resources().CreateSquare()) {
+Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSquare()) {
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
     geometryShader = Resources().CreateShader(DEFAULT3D_GEOM, DEFAULT3D_GEOM_LENGTH, GL_GEOMETRY_SHADER);
     fragmentShader = Resources().CreateShader(WATER_FRAG, WATER_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
     SetRotation(0.f, 270.f, 0.f);
+    
+    refractionTarget = new RenderTarget(screenSize * 0.25f);
+    reflectionTarget = new RenderTarget(screenSize);
 }
 
 Water::~Water() {
+    delete refractionTarget;
+    delete reflectionTarget;
+    
     Resources().FreeSquare();
     
     Resources().FreeShaderProgram(shaderProgram);
@@ -40,4 +46,12 @@ void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
 	glBindVertexArray(Geometry()->VertexArray());
 
 	glDrawElements(GL_TRIANGLES, Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
+}
+
+RenderTarget* Water::RefractionTarget() const {
+    return refractionTarget;
+}
+
+RenderTarget* Water::ReflectionTarget() const {
+    return reflectionTarget;
 }

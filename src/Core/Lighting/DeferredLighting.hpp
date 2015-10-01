@@ -70,15 +70,16 @@ class DeferredLighting {
 		/**
 		 * @param camera Camera to use.
 		 * @param screenSize Size of the screen in pixels.
+		 * @param scale Scaling to apply to texture coordinates.
 		 */
-		void Render(Camera* camera, const glm::vec2& screenSize);
+		void Render(Camera* camera, const glm::vec2& screenSize, float scale = 1.f);
         
 		/// Light.
 		Light light;
         
 	private:
         static void AttachTexture(GLuint texture, unsigned int width, unsigned int height, GLenum attachment, GLint internalFormat);
-		void BindLighting(Camera* camera, const glm::vec2& screenSize);
+		void BindLighting(Camera* camera, const glm::vec2& screenSize, float scale);
 		void BindQuad();
         
 		GLuint textures[NUM_TEXTURES];

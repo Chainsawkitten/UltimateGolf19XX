@@ -26,7 +26,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	modelObject->SetPosition(4.f,0.f,0.f);
 	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 
-	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
+	terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
@@ -57,7 +57,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     wind = glm::vec3(0.f, 0.f, 4.f);
     
-    water =  new Water();
+    water =  new Water(screenSize);
     water->SetScale(400.f, 400.f, 400.f);
     water->SetPosition(0.f, -1.f, 0.f);
     
@@ -130,7 +130,14 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 }
 
 void TestScene::Render(const glm::vec2& screenSize) {
-    RenderToTarget(postProcessing->GetRenderTarget());
+    // Render refractions.
+    RenderToTarget(water->RefractionTarget(), 0.25f);
+    
+    // Render reflections
+    RenderToTarget(water->ReflectionTarget(), 1.f);
+    
+    // Render to screen.
+    RenderToTarget(postProcessing->GetRenderTarget(), 1.f);
     
     water->Render(player->GetCamera(), screenSize);
     
@@ -144,7 +151,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     postProcessing->Render();
 }
 
-void TestScene::RenderToTarget(RenderTarget *renderTarget) {
+void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale) {
     deferredLighting->BindForWriting();
     
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
@@ -186,6 +193,6 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget) {
 	terrainObject->Render(player->GetCamera(), renderTarget->Size());
     renderTarget->SetTarget();
     
-    deferredLighting->Render(player->GetCamera(), renderTarget->Size());
+    deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
     skybox->Render(player->GetCamera(), renderTarget->Size());
 }
