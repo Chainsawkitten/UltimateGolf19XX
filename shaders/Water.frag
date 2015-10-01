@@ -14,10 +14,12 @@ uniform sampler2D tRefraction;
 uniform sampler2D tReflection;
 uniform sampler2D tDuDvMap;
 uniform sampler2D tWater;
+uniform sampler2D tNormalMap;
 
 uniform vec2 screenSize;
 uniform vec2 textureRepeat;
 uniform vec2 texOffset;
+uniform float moveFactor;
 const float waveStrength = 0.02;
 
 uniform vec4 lightPosition;
@@ -30,8 +32,22 @@ vec2 calculateTexCoord() {
     return gl_FragCoord.xy / screenSize;
 }
 
+vec3 calculateNormal(in vec3 normal, in vec3 tangent, in vec3 mapNormal) {
+    vec3 n = normalize(normal);
+    vec3 t = normalize(tangent);
+    t = normalize(t - dot(t, n) * n);
+    vec3 b = cross(t, n);
+    if (dot(cross(n, t), b) < 0.0)
+        t = -t;
+    
+    vec3 mn = normalize(2.0 * mapNormal - vec3(1.0, 1.0, 1.0));
+    mat3 TBN = mat3(t, b, n);
+    return TBN * mn;
+}
+
 void main() {
-    vec2 texCoords = vertexIn.texCoords * textureRepeat + texOffset;
+    vec2 texCoords = texture(tDuDvMap, vertexIn.texCoords * textureRepeat + vec2(moveFactor, 0.f)).rg * 0.1;
+    texCoords += vertexIn.texCoords * textureRepeat + texOffset + vec2(0.f, moveFactor);
     vec2 distortion1 = (texture(tDuDvMap, texCoords).rg * 2.0 - 1.0) * waveStrength;
     
     vec2 refractionTexCoord = calculateTexCoord();
@@ -44,6 +60,8 @@ void main() {
     vec4 refractionColor = texture(tRefraction, refractionTexCoord);
     vec4 reflectionColor = texture(tReflection, reflectionTexCoord);
     
+    vec3 normal = calculateNormal(vertexIn.normal, vertexIn.tangent, texture(tNormalMap, texCoords).xyz);
+    
     float refractiveFactor = sqrt(dot(normalize(-vertexIn.viewPosition), normalize(vertexIn.normal)));
     
 	fragmentColor = mix(reflectionColor, refractionColor, refractiveFactor);
@@ -52,7 +70,7 @@ void main() {
     float shinyPower = 20.0;
     vec3 v = normalize(-vertexIn.viewPosition);
     vec3 lightDirection = normalize(vec3(lightPosition) - vertexIn.viewPosition);
-	vec3 r = normalize(reflect(-lightDirection, vertexIn.normal));
+	vec3 r = normalize(reflect(-lightDirection, normal));
     vec3 specularLight = vec3(1.0, 1.0, 1.0) * pow(max(dot(r, v), 0.0), shinyPower);
 	fragmentColor = vec4(lightIntensity * (fragmentColor.rgb + specularLight), 1.0);
 }

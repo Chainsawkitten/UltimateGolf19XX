@@ -81,8 +81,10 @@ class Water : public GeometryObject {
         // Textures.
         Texture2D* waterTexture;
         Texture2D* dudvMap;
+        Texture2D* normalMap;
         glm::vec2 textureRepeat;
         glm::vec2 texOffset;
+        float moveFactor;
 };
 
 /** @} */

@@ -18,14 +18,17 @@ Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSqu
     
     waterTexture = Resources().CreateTexture2DFromFile("Resources/Terrain/Water.png");
     dudvMap = Resources().CreateTexture2DFromFile("Resources/Terrain/WaterDUDV.png");
+    normalMap = Resources().CreateTexture2DFromFile("Resources/Terrain/WaterNormal.png");
     textureRepeat = glm::vec2(1.f, 1.f);
     
     texOffset = glm::vec2(0.f, 0.f);
+    moveFactor = 0.f;
 }
 
 Water::~Water() {
     Resources().FreeTexture2DFromFile(waterTexture);
     Resources().FreeTexture2DFromFile(dudvMap);
+    Resources().FreeTexture2DFromFile(normalMap);
     
     delete refractionTarget;
     delete reflectionTarget;
@@ -42,6 +45,9 @@ void Water::Update(double time, const glm::vec3& wind) {
     texOffset += 0.02f * static_cast<float>(time) * -glm::vec2(wind.x, wind.z);
     texOffset.x = fmod(texOffset.x, 1.f);
     texOffset.y = fmod(texOffset.y, 1.f);
+    
+    moveFactor += static_cast<float>(time) * 0.02f;
+    moveFactor = fmod(moveFactor, 1.f);
 }
 
 void Water::Render(Camera* camera, const Light& light, const glm::vec2& screenSize) const {
@@ -55,6 +61,7 @@ void Water::Render(Camera* camera, const Light& light, const glm::vec2& screenSi
     glUniform1i(shaderProgram->UniformLocation("tReflection"), 1);
     glUniform1i(shaderProgram->UniformLocation("tDuDvMap"), 2);
     glUniform1i(shaderProgram->UniformLocation("tWater"), 3);
+    glUniform1i(shaderProgram->UniformLocation("tNormalMap"), 4);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, refractionTarget->ColorTexture());
@@ -68,10 +75,14 @@ void Water::Render(Camera* camera, const Light& light, const glm::vec2& screenSi
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, waterTexture->TextureID());
     
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, normalMap->TextureID());
+    
     glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
     glUniform2fv(shaderProgram->UniformLocation("textureRepeat"), 1, &textureRepeat[0]);
     glUniform2fv(shaderProgram->UniformLocation("texOffset"), 1, &texOffset[0]);
     glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &glm::vec4(0.f, 0.f, 0.f, 0.f)[0]);
+    glUniform1f(shaderProgram->UniformLocation("moveFactor"), moveFactor);
     
     // Send matrices to shader.
     glm::mat4 view = camera->View();
