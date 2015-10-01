@@ -55,6 +55,10 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     wind = glm::vec3(0.f, 0.f, 4.f);
     
+    water =  new Water();
+    water->SetScale(400.f, 400.f, 400.f);
+    water->SetPosition(0.f, -1.f, 0.f);
+    
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
     
@@ -97,6 +101,8 @@ TestScene::~TestScene() {
     Resources().FreeCube();
     
     delete golfBall;
+    
+    delete water;
     
     Resources().FreeTexture2DFromFile(texture);
     
@@ -165,6 +171,7 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     
     renderTarget->Render(player->GetCamera(), screenSize);
     skybox->Render(player->GetCamera(), screenSize);
+    water->Render(player->GetCamera(), screenSize);
     particleSystem->Render(player->GetCamera(), screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA"))

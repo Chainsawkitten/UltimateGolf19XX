@@ -15,6 +15,7 @@
 #include "../Geometry/Terrain.hpp"
 #include "../Geometry/Model.hpp"
 #include "../Object/GolfBall.hpp"
+#include "../Object/Water.hpp"
 
 /** @ingroup Core
  * @{
@@ -71,6 +72,8 @@ class TestScene : public Scene {
         
         GolfBall* golfBall;
         glm::vec3 wind;
+        
+        Water* water;
         
         // Particles
         ParticleSystem* particleSystem;

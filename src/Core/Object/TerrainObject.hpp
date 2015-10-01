@@ -9,7 +9,6 @@
 #include <glm/glm.hpp>
 #include "../Geometry/Terrain.hpp"
 
-
 /** @ingroup Core
  * @{
  */

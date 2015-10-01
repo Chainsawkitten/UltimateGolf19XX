@@ -84,6 +84,7 @@ set(EMBEDDED_INPUT
     shaders/Particle.geom
     shaders/Particle.frag
     shaders/NormalSpecularMap.frag
+    shaders/Water.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
@@ -155,6 +156,7 @@ set(CORE_SRCS
 	src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Object/GolfBall.cpp
+        src/Core/Object/Water.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
         src/Core/PostProcessing/PostProcessing.cpp
@@ -214,6 +216,7 @@ set(CORE_HEADERS
 	src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Object/GolfBall.hpp
+        src/Core/Object/Water.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
         src/Core/PostProcessing/PostProcessing.hpp
