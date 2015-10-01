@@ -8,21 +8,18 @@
 TerrainObject::TerrainObject(const Geometry::Terrain* terrain) : GeometryObject(terrain) {
 	this->terrain = terrain;
 
-	//Allocate resources from manager.
+	// Allocate resources from manager.
 	blendMap = Resources().CreateTexture2DFromFile("Resources/Terrain/blendmap.png");
 	grassTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/grass.png");
 	cliffTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
 	sandTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/sand.png");
 	snowTexture = Resources().CreateTexture2DFromFile("Resources/CGTextures/snow.png");
 
-	//Allocate shaders
+	// Allocate shaders
 	vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH,GL_VERTEX_SHADER);
 	geometryShader = Resources().CreateShader(DEFAULT3D_GEOM, DEFAULT3D_GEOM_LENGTH, GL_GEOMETRY_SHADER);
 	fragmentShader = Resources().CreateShader(BLENDMAP_FRAG, BLENDMAP_FRAG_LENGTH, GL_FRAGMENT_SHADER);
 	shaderProgram = Resources().CreateShaderProgram({vertexShader, geometryShader, fragmentShader});
-
-	SetPosition(0.f, -5.f, 0.f);
-	SetScale(50.f, 10.f, 50.f);
 }
 
 const Geometry::Geometry3D* TerrainObject::Geometry() const {
@@ -51,14 +48,14 @@ float TerrainObject::GetY(float x, float z) const {
 
 void TerrainObject::Render(Camera* camera, const glm::vec2& screenSize) const{
 	shaderProgram->Use();
-	//Set texture locations
+	// Set texture locations
 	glUniform1i(shaderProgram->UniformLocation("blendMapTexture"), 0);
 	glUniform1i(shaderProgram->UniformLocation("redTexture"), 1);
 	glUniform1i(shaderProgram->UniformLocation("greenTexture"), 2);
 	glUniform1i(shaderProgram->UniformLocation("blueTexture"), 3);
 	glUniform1i(shaderProgram->UniformLocation("alphaTexture"), 4);
 
-	//Blend map
+	// Blend map
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, blendMap->TextureID());
 
@@ -72,10 +69,10 @@ void TerrainObject::Render(Camera* camera, const glm::vec2& screenSize) const{
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, snowTexture->TextureID());
 
-	//Texture Repeat
+	// Texture Repeat
 	glUniform2fv(shaderProgram->UniformLocation("textureRepeat"), 1, &terrain->TextureRepeat()[0]);
 
-	//Send matrices to shader.
+	// Send matrices to shader.
 	glm::mat4 ModelView = camera->View()*ModelMatrix();
 	glm::mat4 Normal = glm::transpose(glm::inverse(ModelView));
 
