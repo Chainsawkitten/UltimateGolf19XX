@@ -17,9 +17,11 @@ uniform sampler2D tWater;
 
 uniform vec2 screenSize;
 uniform vec2 textureRepeat;
-
 uniform vec2 texOffset;
 const float waveStrength = 0.02;
+
+uniform vec4 lightPosition;
+uniform vec3 lightIntensity;
 
 out vec4 fragmentColor;
 
@@ -42,6 +44,15 @@ void main() {
     vec4 refractionColor = texture(tRefraction, refractionTexCoord);
     vec4 reflectionColor = texture(tReflection, reflectionTexCoord);
     
-	fragmentColor = mix(reflectionColor, refractionColor, dot(normalize(-vertexIn.viewPosition), normalize(vertexIn.normal)));
+    float refractiveFactor = sqrt(dot(normalize(-vertexIn.viewPosition), normalize(vertexIn.normal)));
+    
+	fragmentColor = mix(reflectionColor, refractionColor, refractiveFactor);
     fragmentColor = fragmentColor * mix(texture(tWater, texCoords), vec4(1.0, 1.0, 1.0, 1.0), 0.5);
+    
+    float shinyPower = 20.0;
+    vec3 v = normalize(-vertexIn.viewPosition);
+    vec3 lightDirection = normalize(vec3(lightPosition) - vertexIn.viewPosition);
+	vec3 r = normalize(reflect(-lightDirection, vertexIn.normal));
+    vec3 specularLight = vec3(1.0, 1.0, 1.0) * pow(max(dot(r, v), 0.0), shinyPower);
+	fragmentColor = vec4(lightIntensity * (fragmentColor.rgb + specularLight), 1.0);
 }

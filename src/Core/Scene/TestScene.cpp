@@ -148,7 +148,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    water->Render(player->GetCamera(), screenSize);
+    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);
@@ -183,11 +183,11 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     // Send the matrices to the shader.
     glm::mat4 view = player->GetCamera()->View();
-    glm::mat4 N = glm::transpose(glm::inverse(view * model));
+    glm::mat4 normal = glm::transpose(glm::inverse(view * model));
     
     glUniformMatrix4fv(shaderProgram->UniformLocation("modelMatrix"), 1, GL_FALSE, &model[0][0]);
     glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &view[0][0]);
-    glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(N)[0][0]);
+    glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(normal)[0][0]);
     glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &player->GetCamera()->Projection(renderTarget->Size())[0][0]);
     
     glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &clippingPlane[0]);

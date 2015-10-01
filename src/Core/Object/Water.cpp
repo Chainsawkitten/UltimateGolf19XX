@@ -44,7 +44,7 @@ void Water::Update(double time, const glm::vec3& wind) {
     texOffset.y = fmod(texOffset.y, 1.f);
 }
 
-void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
+void Water::Render(Camera* camera, const Light& light, const glm::vec2& screenSize) const {
     refractionTarget->SetSource();
     reflectionTarget->SetSource();
     
@@ -74,11 +74,15 @@ void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
     glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &glm::vec4(0.f, 0.f, 0.f, 0.f)[0]);
     
     // Send matrices to shader.
-    glm::mat4 Normal = glm::transpose(glm::inverse(camera->View() * ModelMatrix()));
+    glm::mat4 view = camera->View();
+    glm::mat4 normal = glm::transpose(glm::inverse(view * ModelMatrix()));
     glUniformMatrix4fv(shaderProgram->UniformLocation("modelMatrix"), 1, GL_FALSE, &ModelMatrix()[0][0]);
-    glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &camera->View()[0][0]);
-    glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(Normal)[0][0]);
+    glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &view[0][0]);
+    glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(normal)[0][0]);
     glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &camera->Projection(screenSize)[0][0]);
+    
+    glUniform4fv(shaderProgram->UniformLocation("lightPosition"), 1, &(view * light.position)[0]);
+    glUniform3fv(shaderProgram->UniformLocation("lightIntensity"), 1, &light.intensity[0]);
     
     glBindVertexArray(Geometry()->VertexArray());
     

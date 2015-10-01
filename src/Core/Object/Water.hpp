@@ -4,6 +4,7 @@
 #include "../Shader/ShaderProgram.hpp"
 #include "../RenderTarget.hpp"
 #include "../Texture/Texture2D.hpp"
+#include "../Lighting/Light.hpp"
 
 /** @ingroup Core
  * @{
@@ -31,9 +32,10 @@ class Water : public GeometryObject {
         /// Render the object.
         /**
          * @param camera %Camera to render through.
+         * @param light %Light to light the water with.
          * @param screenSize Size of the screen in pixels.
          */
-		void Render(Camera* camera, const glm::vec2& screenSize) const;
+		void Render(Camera* camera, const Light& light, const glm::vec2& screenSize) const;
         
         /// Get refraction render target.
         /**
