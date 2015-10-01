@@ -29,8 +29,9 @@ class ModelObject : public GeometryObject {
          * @param shaderProgram %Shader program to render the object with.
          * @param camera %Camera to render through.
          * @param screenSize Size of the screen in pixels.
+         * @param clippingPlane Clipping plane equation.
          */
-        virtual void Render(Camera* camera, const glm::vec2& screenSize) const;
+        void Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const;
         
     private:
         // Shaders.

@@ -24,13 +24,6 @@ class GeometryObject : public Object {
 		 */
 		virtual const Geometry::Geometry3D* Geometry() const;
 
-		/// Render the object.
-        /**
-         * @param camera %Camera to render through.
-         * @param screenSize Size of the screen in pixels.
-         */
-		virtual void Render(Camera* camera, const glm::vec2& screenSize) const;
-
 		/// Get relative drawing distance (compared to other objects).
 		/**
 		 * Default: 1.0

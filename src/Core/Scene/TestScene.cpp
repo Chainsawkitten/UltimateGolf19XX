@@ -131,13 +131,13 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 
 void TestScene::Render(const glm::vec2& screenSize) {
     // Render refractions.
-    RenderToTarget(water->RefractionTarget(), 0.25f);
+    RenderToTarget(water->RefractionTarget(), 0.25f, glm::vec4(0.f, -1.f, 0.f, 1.f));
     
     // Render reflections
-    RenderToTarget(water->ReflectionTarget(), 1.f);
+    RenderToTarget(water->ReflectionTarget(), 1.f, glm::vec4(0.f, -1.f, 0.f, 1.f));
     
     // Render to screen.
-    RenderToTarget(postProcessing->GetRenderTarget(), 1.f);
+    RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, -1.f, 0.f, 1.f));
     
     water->Render(player->GetCamera(), screenSize);
     
@@ -151,7 +151,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     postProcessing->Render();
 }
 
-void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale) {
+void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const glm::vec4& clippingPlane) {
     deferredLighting->BindForWriting();
     
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
@@ -174,23 +174,25 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale) {
     
     // Send the matrices to the shader.
     glm::mat4 view = player->GetCamera()->View();
-    glm::mat4 MV = view * model;
-    glm::mat4 N = glm::transpose(glm::inverse(MV));
+    glm::mat4 N = glm::transpose(glm::inverse(view * model));
     
-    glUniformMatrix4fv(shaderProgram->UniformLocation("modelViewMatrix"), 1, GL_FALSE, &MV[0][0]);
+    glUniformMatrix4fv(shaderProgram->UniformLocation("modelMatrix"), 1, GL_FALSE, &model[0][0]);
+    glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &view[0][0]);
     glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(N)[0][0]);
     glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &player->GetCamera()->Projection(renderTarget->Size())[0][0]);
+    
+    glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &clippingPlane[0]);
     
     // Draw the triangles
     glDrawElements(GL_TRIANGLES, geometryObject->Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
     
     // End - render cube
     
-	modelObject->Render(player->GetCamera(), renderTarget->Size());
+	modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
 
-    golfBall->Render(player->GetCamera(), renderTarget->Size());
+    golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
-	terrainObject->Render(player->GetCamera(), renderTarget->Size());
+	terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     renderTarget->SetTarget();
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);

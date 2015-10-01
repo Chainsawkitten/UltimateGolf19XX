@@ -51,6 +51,7 @@ void GameWindow::Init() {
     currentScene = new TestScene(size);
     
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CLIP_DISTANCE0);
     
     lastTime = glfwGetTime();
     lastTimeRender = glfwGetTime();

@@ -13,9 +13,6 @@ const Geometry::Geometry3D* GeometryObject::Geometry() const {
 	return geometry;
 }
 
-void GeometryObject::Render(Camera* camera, const glm::vec2& screenSize) const {
-}
-
 float GeometryObject::RelativeDrawingDistance() const {
 	return drawingDistance;
 }

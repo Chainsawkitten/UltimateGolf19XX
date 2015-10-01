@@ -26,7 +26,7 @@ ModelObject::~ModelObject(){
 	Resources().FreeShaderProgram(shaderProgram);
 }
 
-void ModelObject::Render(Camera* camera, const glm::vec2& screenSize) const {
+void ModelObject::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const {
 	shaderProgram->Use();
 	
 	//Set texture locations
@@ -42,12 +42,13 @@ void ModelObject::Render(Camera* camera, const glm::vec2& screenSize) const {
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, specular->TextureID());
 
-	glm::mat4 ModelView = camera->View()*ModelMatrix();
-	glm::mat4 Normal = glm::transpose(glm::inverse(ModelView));
-
-	glUniformMatrix4fv(shaderProgram->UniformLocation("modelViewMatrix"), 1, GL_FALSE, &ModelView[0][0]);
+	glm::mat4 Normal = glm::transpose(glm::inverse(camera->View() * ModelMatrix()));
+	glUniformMatrix4fv(shaderProgram->UniformLocation("modelMatrix"), 1, GL_FALSE, &ModelMatrix()[0][0]);
+    glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &camera->View()[0][0]);
 	glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(Normal)[0][0]);
 	glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &camera->Projection(screenSize)[0][0]);
+    
+    glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &clippingPlane[0]);
 
 	glBindVertexArray(Geometry()->VertexArray());
 
