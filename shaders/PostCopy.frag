@@ -5,19 +5,13 @@ Copy fragment shader.
 
 uniform sampler2D tDiffuse;
 uniform sampler2D tDepth;
-uniform vec2 screenSize;
+
+in vec2 texCoords;
 
 out vec4 fragmentColor;
 
-// Calculate texcoord
-vec2 calculateTexCoord() {
-	return gl_FragCoord.xy / screenSize;
-}
-
 void main () {
-	vec2 texCoord = calculateTexCoord();
-	fragmentColor = texture(tDiffuse, texCoord);
-
-	float depth = texture(tDepth, texCoord).r;
+	fragmentColor = texture(tDiffuse, texCoords);
+	float depth = texture(tDepth, texCoords).r;
 	gl_FragDepth = depth;
 }

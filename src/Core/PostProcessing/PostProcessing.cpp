@@ -49,8 +49,6 @@ void PostProcessing::ApplyFilter(Filter* filter) {
     
     filter->GetShaderProgram()->Use();
     
-    glUniform2fv(filter->GetShaderProgram()->UniformLocation("screenSize"), 1, &buffers[0]->Size()[0]);
-    
     glUniform1i(filter->GetShaderProgram()->UniformLocation("tDiffuse"), 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, buffers[which]->ColorTexture());
@@ -89,8 +87,6 @@ void PostProcessing::Render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     buffers[which]->SetSource();
-    
-    glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &buffers[0]->Size()[0]);
     
     glUniform1i(shaderProgram->UniformLocation("tDiffuse"), 0);
     glActiveTexture(GL_TEXTURE0);

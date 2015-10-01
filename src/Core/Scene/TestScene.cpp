@@ -129,13 +129,15 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     return nullptr;
 }
 
-void TestScene::Render(const glm::vec2 &screenSize) {
+void TestScene::Render(const glm::vec2& screenSize) {
     RenderToTarget(postProcessing->GetRenderTarget());
     
     water->Render(player->GetCamera(), screenSize);
     
-    if (GameSettings::GetInstance().GetBool("FXAA"))
+    if (GameSettings::GetInstance().GetBool("FXAA")) {
+        fxaaFilter->SetScreenSize(screenSize);
         postProcessing->ApplyFilter(fxaaFilter);
+    }
     
     particleSystem->Render(player->GetCamera(), screenSize);
     

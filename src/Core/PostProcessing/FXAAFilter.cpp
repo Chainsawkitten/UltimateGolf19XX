@@ -20,5 +20,9 @@ ShaderProgram* FXAAFilter::GetShaderProgram() const {
 }
 
 void FXAAFilter::SetUniforms() {
-	// FXAA shader doesn't need any special uniforms.
+	glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
+}
+
+void FXAAFilter::SetScreenSize(const glm::vec2& screenSize) {
+    this->screenSize = screenSize;
 }

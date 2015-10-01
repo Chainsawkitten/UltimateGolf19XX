@@ -43,6 +43,9 @@ class RenderTarget {
          */
         GLuint DepthTexture() const;
         
+        /// Render resulting image to screen.
+        void Render();
+        
     private:
         unsigned int width;
 		unsigned int height;
