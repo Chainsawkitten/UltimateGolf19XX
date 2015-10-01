@@ -125,7 +125,7 @@ void GameWindow::SetWindowTitle() {
     std::string title = "Ultimate Golf 19XX";
     
     if (GameSettings::GetInstance().GetBool("Show Frame Times"))
-        title += " - " + std::to_string(lastTimeRendered - lastTime) + "ms";
+        title += " - " + std::to_string((lastTimeRendered - lastTime) * 1000.0) + " ms";
     
     glfwSetWindowTitle(window, title.c_str());
 }
