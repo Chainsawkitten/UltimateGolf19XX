@@ -2,6 +2,7 @@
 
 #include "Filter.hpp"
 #include "../Geometry/Rectangle.hpp"
+#include "../RenderTarget.hpp"
 
 /** @ingroup Core
  * @{
@@ -32,14 +33,9 @@ class PostProcessing {
 		void Render();
 
 	private:
-		unsigned int width;
-		unsigned int height;
+		short int which;
 
-		short int which = 0;
-
-		GLuint frameBuffer[2];
-		GLuint bufferTexture[2];
-		GLuint depthBuffer[2];
+		RenderTarget* buffers[2];
 
 		Geometry::Rectangle* rectangle;
 

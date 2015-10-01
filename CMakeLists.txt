@@ -125,6 +125,7 @@ set(CORE_SRCS
         src/Core/GameWindow.cpp
         src/Core/Resources.cpp
         src/Core/Skybox.cpp
+        src/Core/RenderTarget.cpp
         src/Core/Audio/Listener.cpp
         src/Core/Audio/Sound.cpp
         src/Core/Audio/SoundBuffer.cpp
@@ -184,6 +185,7 @@ set(CORE_HEADERS
         src/Core/GameWindow.hpp
         src/Core/Resources.hpp
         src/Core/Skybox.hpp
+        src/Core/RenderTarget.hpp
         src/Core/Audio/Listener.hpp
         src/Core/Audio/Sound.hpp
         src/Core/Audio/SoundBuffer.hpp
