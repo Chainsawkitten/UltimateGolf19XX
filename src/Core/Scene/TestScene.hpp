@@ -47,6 +47,8 @@ class TestScene : public Scene {
 		void Render(const glm::vec2& screenSize);
         
     private:
+        void RenderToTarget(RenderTarget* renderTarget);
+        
         CubeMapTexture* skyboxTexture;
         Skybox* skybox;
         Player* player;

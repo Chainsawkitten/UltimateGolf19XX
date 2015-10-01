@@ -130,9 +130,22 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 }
 
 void TestScene::Render(const glm::vec2 &screenSize) {
+    RenderToTarget(postProcessing->GetRenderTarget());
+    
+    water->Render(player->GetCamera(), screenSize);
+    
+    if (GameSettings::GetInstance().GetBool("FXAA"))
+        postProcessing->ApplyFilter(fxaaFilter);
+    
+    particleSystem->Render(player->GetCamera(), screenSize);
+    
+    postProcessing->Render();
+}
+
+void TestScene::RenderToTarget(RenderTarget *renderTarget) {
     deferredLighting->BindForWriting();
     
-    glViewport(0, 0, static_cast<int>(screenSize.x), static_cast<int>(screenSize.y));
+    glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // Start - render cube
@@ -157,27 +170,20 @@ void TestScene::Render(const glm::vec2 &screenSize) {
     
     glUniformMatrix4fv(shaderProgram->UniformLocation("modelViewMatrix"), 1, GL_FALSE, &MV[0][0]);
     glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(N)[0][0]);
-    glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &player->GetCamera()->Projection(screenSize)[0][0]);
+    glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &player->GetCamera()->Projection(renderTarget->Size())[0][0]);
     
     // Draw the triangles
     glDrawElements(GL_TRIANGLES, geometryObject->Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
     
     // End - render cube
     
-	modelObject->Render(player->GetCamera(), screenSize);
+	modelObject->Render(player->GetCamera(), renderTarget->Size());
 
-    golfBall->Render(player->GetCamera(), screenSize);
+    golfBall->Render(player->GetCamera(), renderTarget->Size());
     
-	terrainObject->Render(player->GetCamera(), screenSize);
-    postProcessing->SetTarget();
+	terrainObject->Render(player->GetCamera(), renderTarget->Size());
+    renderTarget->SetTarget();
     
-    deferredLighting->Render(player->GetCamera(), screenSize);
-    skybox->Render(player->GetCamera(), screenSize);
-    water->Render(player->GetCamera(), screenSize);
-    particleSystem->Render(player->GetCamera(), screenSize);
-    
-    if (GameSettings::GetInstance().GetBool("FXAA"))
-        postProcessing->ApplyFilter(fxaaFilter);
-    
-    postProcessing->Render();
+    deferredLighting->Render(player->GetCamera(), renderTarget->Size());
+    skybox->Render(player->GetCamera(), renderTarget->Size());
 }

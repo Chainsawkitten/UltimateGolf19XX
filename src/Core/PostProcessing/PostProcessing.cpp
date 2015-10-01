@@ -28,9 +28,8 @@ PostProcessing::~PostProcessing() {
     Resources().FreeRectangle();
 }
 
-void PostProcessing::SetTarget() {
-    buffers[0]->SetTarget();
-    which = 0;
+RenderTarget* PostProcessing::GetRenderTarget() const {
+    return buffers[which];
 }
 
 void PostProcessing::ApplyFilter(Filter* filter) {
