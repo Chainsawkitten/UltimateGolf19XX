@@ -124,8 +124,6 @@ include_directories(src)
 set(CORE_SRCS
         src/Core/GameWindow.cpp
         src/Core/Resources.cpp
-        src/Core/RenderTarget.cpp
-        src/Core/Light.cpp
         src/Core/Skybox.cpp
         src/Core/Audio/Listener.cpp
         src/Core/Audio/Sound.cpp
@@ -151,6 +149,8 @@ set(CORE_SRCS
         src/Core/Geometry/Cube.cpp
         src/Core/Geometry/Square.cpp
 	src/Core/Geometry/Terrain.cpp
+        src/Core/Lighting/DeferredLighting.cpp
+        src/Core/Lighting/Light.cpp
         src/Core/Object/Object.cpp
         src/Core/Object/ModelObject.cpp
 	src/Core/Object/TerrainObject.cpp
@@ -183,8 +183,6 @@ set(CORE_SRCS
 set(CORE_HEADERS
         src/Core/GameWindow.hpp
         src/Core/Resources.hpp
-        src/Core/RenderTarget.hpp
-        src/Core/Light.hpp
         src/Core/Skybox.hpp
         src/Core/Audio/Listener.hpp
         src/Core/Audio/Sound.hpp
@@ -211,6 +209,8 @@ set(CORE_HEADERS
         src/Core/Geometry/Cube.hpp
         src/Core/Geometry/Square.hpp
 	src/Core/Geometry/Terrain.hpp
+        src/Core/Lighting/DeferredLighting.hpp
+        src/Core/Lighting/Light.hpp
         src/Core/Object/Object.hpp
         src/Core/Object/ModelObject.hpp
 	src/Core/Object/TerrainObject.hpp

@@ -1,10 +1,10 @@
-#include "RenderTarget.hpp"
-#include "Util/Log.hpp"
-#include "Resources.hpp"
+#include "DeferredLighting.hpp"
+#include "../Util/Log.hpp"
+#include "../Resources.hpp"
 #include "Post.vert.hpp"
 #include "Deferred.frag.hpp"
 
-RenderTarget::RenderTarget(const glm::vec2& size) {
+DeferredLighting::DeferredLighting(const glm::vec2& size) {
 	vertexShader = Resources().CreateShader(POST_VERT, POST_VERT_LENGTH, GL_VERTEX_SHADER);
     fragmentShader = Resources().CreateShader(DEFERRED_FRAG, DEFERRED_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, fragmentShader });
@@ -51,7 +51,7 @@ RenderTarget::RenderTarget(const glm::vec2& size) {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-RenderTarget::~RenderTarget() {
+DeferredLighting::~DeferredLighting() {
 	if (fbo != 0)
 		glDeleteFramebuffers(1, &fbo);
 
@@ -68,15 +68,15 @@ RenderTarget::~RenderTarget() {
     Resources().FreeRectangle();
 }
 
-GLuint RenderTarget::Texture(TEXTURE_TYPE textureType) const {
+GLuint DeferredLighting::Texture(TEXTURE_TYPE textureType) const {
 	return textures[textureType];
 }
 
-void RenderTarget::BindForWriting() {
+void DeferredLighting::BindForWriting() {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 }
 
-void RenderTarget::BindForReading() {
+void DeferredLighting::BindForReading() {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
 
 	for (unsigned int i = 0; i < NUM_TEXTURES; i++) {
@@ -88,15 +88,15 @@ void RenderTarget::BindForReading() {
 	glBindTexture(GL_TEXTURE_2D, depthHandle);
 }
 
-void RenderTarget::BindForTexReading() {
+void DeferredLighting::BindForTexReading() {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
 }
 
-void RenderTarget::SetReadBuffer(TEXTURE_TYPE textureType){
+void DeferredLighting::SetReadBuffer(TEXTURE_TYPE textureType){
 	glReadBuffer(GL_COLOR_ATTACHMENT0 + textureType);
 }
 
-void RenderTarget::ShowTextures(const glm::vec2& size) {
+void DeferredLighting::ShowTextures(const glm::vec2& size) {
 	// Disable depth testing
 	GLboolean depthTest = glIsEnabled(GL_DEPTH_TEST);
 	glDisable(GL_DEPTH_TEST);
@@ -112,24 +112,24 @@ void RenderTarget::ShowTextures(const glm::vec2& size) {
 
 	BindForTexReading();
 
-	SetReadBuffer(RenderTarget::DIFFUSE);
+	SetReadBuffer(DeferredLighting::DIFFUSE);
 	glBlitFramebuffer(0, 0, width, height, 0, 0, halfWidth, halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-	SetReadBuffer(RenderTarget::NORMAL);
+	SetReadBuffer(DeferredLighting::NORMAL);
 	glBlitFramebuffer(0, 0, width, height, 0, halfHeight, halfWidth, height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-	SetReadBuffer(RenderTarget::SPECULAR);
+	SetReadBuffer(DeferredLighting::SPECULAR);
 	glBlitFramebuffer(0, 0, width, height, halfWidth, halfHeight, width, height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	if (depthTest)
 		glEnable(GL_DEPTH_TEST);
 }
 
-void RenderTarget::ResetWriting() {
+void DeferredLighting::ResetWriting() {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void RenderTarget::Render(Camera* camera, const glm::vec2& screenSize) {
+void DeferredLighting::Render(Camera* camera, const glm::vec2& screenSize) {
 	// Disable depth testing
 	GLboolean depthTest = glIsEnabled(GL_DEPTH_TEST);
 	glEnable(GL_DEPTH_TEST);
@@ -163,7 +163,7 @@ void RenderTarget::Render(Camera* camera, const glm::vec2& screenSize) {
 	glDepthFunc(oldDepthFunctionMode);
 }
 
-void RenderTarget::AttachTexture(GLuint texture, unsigned int width, unsigned int height, GLenum attachment, GLint internalFormat) {
+void DeferredLighting::AttachTexture(GLuint texture, unsigned int width, unsigned int height, GLenum attachment, GLint internalFormat) {
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -171,14 +171,14 @@ void RenderTarget::AttachTexture(GLuint texture, unsigned int width, unsigned in
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture, 0);
 }
 
-void RenderTarget::BindLighting(Camera* camera, const glm::vec2& screenSize){
+void DeferredLighting::BindLighting(Camera* camera, const glm::vec2& screenSize){
 	// Bind light information for lighting pass
 	glm::mat4 view = camera->View();
 
-	glUniform1i(shaderProgram->UniformLocation("tDiffuse"), RenderTarget::DIFFUSE);
-	glUniform1i(shaderProgram->UniformLocation("tNormals"), RenderTarget::NORMAL);
-	glUniform1i(shaderProgram->UniformLocation("tSpecular"), RenderTarget::SPECULAR);
-	glUniform1i(shaderProgram->UniformLocation("tDepth"), RenderTarget::NUM_TEXTURES);
+	glUniform1i(shaderProgram->UniformLocation("tDiffuse"), DeferredLighting::DIFFUSE);
+	glUniform1i(shaderProgram->UniformLocation("tNormals"), DeferredLighting::NORMAL);
+	glUniform1i(shaderProgram->UniformLocation("tSpecular"), DeferredLighting::SPECULAR);
+	glUniform1i(shaderProgram->UniformLocation("tDepth"), DeferredLighting::NUM_TEXTURES);
 
 	glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
 	glUniform4fv(shaderProgram->UniformLocation("lightPosition"), 1, &(view * light.position)[0]);

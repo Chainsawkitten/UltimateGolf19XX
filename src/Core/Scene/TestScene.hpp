@@ -4,7 +4,7 @@
 #include "../Skybox.hpp"
 #include "../Player/Player.hpp"
 #include "../Util/Input.hpp"
-#include "../RenderTarget.hpp"
+#include "../Lighting/DeferredLighting.hpp"
 #include "../Object/GeometryObject.hpp"
 #include "../Object/ModelObject.hpp"
 #include "../Texture/Texture2D.hpp"
@@ -50,7 +50,7 @@ class TestScene : public Scene {
         CubeMapTexture* skyboxTexture;
         Skybox* skybox;
         Player* player;
-        RenderTarget* renderTarget;
+        DeferredLighting* deferredLighting;
         Geometry::Geometry3D* geometry;
         GeometryObject* geometryObject;
 

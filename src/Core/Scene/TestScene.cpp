@@ -35,7 +35,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     player = new Player();
     player->SetMovementSpeed(2.f);
     
-    renderTarget = new RenderTarget(screenSize);
+    deferredLighting = new DeferredLighting(screenSize);
     
     postProcessing = new PostProcessing(screenSize);
     fxaaFilter = new FXAAFilter();
@@ -92,7 +92,7 @@ TestScene::~TestScene() {
     
     delete player;
     
-    delete renderTarget;
+    delete deferredLighting;
     
     delete fxaaFilter;
     delete postProcessing;
@@ -128,7 +128,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 }
 
 void TestScene::Render(const glm::vec2 &screenSize) {
-    renderTarget->BindForWriting();
+    deferredLighting->BindForWriting();
     
     glViewport(0, 0, static_cast<int>(screenSize.x), static_cast<int>(screenSize.y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -169,7 +169,7 @@ void TestScene::Render(const glm::vec2 &screenSize) {
 	terrainObject->Render(player->GetCamera(), screenSize);
     postProcessing->SetTarget();
     
-    renderTarget->Render(player->GetCamera(), screenSize);
+    deferredLighting->Render(player->GetCamera(), screenSize);
     skybox->Render(player->GetCamera(), screenSize);
     water->Render(player->GetCamera(), screenSize);
     particleSystem->Render(player->GetCamera(), screenSize);

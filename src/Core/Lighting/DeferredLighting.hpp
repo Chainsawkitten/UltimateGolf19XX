@@ -1,16 +1,16 @@
 #pragma once
 
 #include "Light.hpp"
-#include "Geometry/Rectangle.hpp"
-#include "Shader/ShaderProgram.hpp"
-#include "Camera/Camera.hpp"
+#include "../Geometry/Rectangle.hpp"
+#include "../Shader/ShaderProgram.hpp"
+#include "../Camera/Camera.hpp"
 
 /** @ingroup Core
  * @{
  */
 
 /// Holds the frame buffers used for deferred rendering.
-class RenderTarget {
+class DeferredLighting {
 	public:
 		/// The different buffer types.
 		enum TEXTURE_TYPE {
@@ -24,13 +24,13 @@ class RenderTarget {
 		/**
 		 * @param size Size of the context.
 		 */
-		RenderTarget(const glm::vec2& size);
+		DeferredLighting(const glm::vec2& size);
         
 		/// Destructor
 		/**
 		 * Free allocated resources.
 		 */
-		~RenderTarget();
+		~DeferredLighting();
         
 		/// Get texture.
 		/**
