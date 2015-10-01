@@ -141,7 +141,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     float distance = 2.f * (player->GetCamera()->Position().y - water->Position().y);
     player->GetCamera()->SetPosition(player->GetCamera()->Position() - glm::vec3(0.f, distance, 0.f));
     player->GetCamera()->SetRotation(player->GetCamera()->HorizontalAngle(), -player->GetCamera()->VerticalAngle(), player->GetCamera()->TiltAngle());
-    RenderToTarget(water->ReflectionTarget(), 0.25f, water->ReflectionClippingPlane());
+    RenderToTarget(water->ReflectionTarget(), 0.5f, water->ReflectionClippingPlane());
     player->GetCamera()->SetRotation(player->GetCamera()->HorizontalAngle(), -player->GetCamera()->VerticalAngle(), player->GetCamera()->TiltAngle());
     player->GetCamera()->SetPosition(player->GetCamera()->Position() + glm::vec3(0.f, distance, 0.f));
     

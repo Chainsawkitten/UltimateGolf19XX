@@ -14,7 +14,7 @@ Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSqu
     SetRotation(0.f, 270.f, 0.f);
     
     refractionTarget = new RenderTarget(screenSize);
-    reflectionTarget = new RenderTarget(screenSize * 0.25f);
+    reflectionTarget = new RenderTarget(screenSize * 0.5f);
     
     waterTexture = Resources().CreateTexture2DFromFile("Resources/Terrain/Water.png");
     dudvMap = Resources().CreateTexture2DFromFile("Resources/Terrain/WaterDUDV.png");
@@ -125,12 +125,12 @@ RenderTarget* Water::ReflectionTarget() const {
 
 glm::vec4 Water::RefractionClippingPlane() const {
     /// @todo Don't hardcore clipping planes
-    return glm::vec4(0.f, -1.f, 0.f, Position().y);
+    return glm::vec4(0.f, -1.f, 0.f, Position().y + 0.01f);
 }
 
 glm::vec4 Water::ReflectionClippingPlane() const {
     /// @todo Don't hardcore clipping planes
-    return glm::vec4(0.f, 1.f, 0.f, -Position().y);
+    return glm::vec4(0.f, 1.f, 0.f, -Position().y + 0.01f);
 }
 
 void Water::SetTextureRepeat(const glm::vec2& textureRepeat) {
