@@ -56,12 +56,19 @@ void Water::Render(Camera* camera, const Light& light, const glm::vec2& screenSi
     
     shaderProgram->Use();
     
+    // Blending
+    GLboolean blending;
+    glGetBooleanv(GL_BLEND, &blending);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
     // Set texture locations
     glUniform1i(shaderProgram->UniformLocation("tRefraction"), 0);
     glUniform1i(shaderProgram->UniformLocation("tReflection"), 1);
     glUniform1i(shaderProgram->UniformLocation("tDuDvMap"), 2);
     glUniform1i(shaderProgram->UniformLocation("tWater"), 3);
     glUniform1i(shaderProgram->UniformLocation("tNormalMap"), 4);
+    glUniform1i(shaderProgram->UniformLocation("tDepthMap"), 5);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, refractionTarget->ColorTexture());
@@ -78,11 +85,16 @@ void Water::Render(Camera* camera, const Light& light, const glm::vec2& screenSi
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D, normalMap->TextureID());
     
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, refractionTarget->DepthTexture());
+    
     glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
     glUniform2fv(shaderProgram->UniformLocation("textureRepeat"), 1, &textureRepeat[0]);
     glUniform2fv(shaderProgram->UniformLocation("texOffset"), 1, &texOffset[0]);
     glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &glm::vec4(0.f, 0.f, 0.f, 0.f)[0]);
     glUniform1f(shaderProgram->UniformLocation("moveFactor"), moveFactor);
+    glUniform1f(shaderProgram->UniformLocation("zNear"), camera->NearPlane());
+    glUniform1f(shaderProgram->UniformLocation("zFar"), camera->FarPlane());
     
     // Send matrices to shader.
     glm::mat4 view = camera->View();
@@ -98,6 +110,9 @@ void Water::Render(Camera* camera, const Light& light, const glm::vec2& screenSi
     glBindVertexArray(Geometry()->VertexArray());
     
     glDrawElements(GL_TRIANGLES, Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
+    
+    if (!blending)
+        glDisable(GL_BLEND);
 }
 
 RenderTarget* Water::RefractionTarget() const {
