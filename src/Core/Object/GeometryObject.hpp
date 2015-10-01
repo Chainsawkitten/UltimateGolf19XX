@@ -4,10 +4,6 @@
 #include "../Geometry/Geometry3D.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../Camera/Camera.hpp"
-#include "Default3D.vert.hpp"
-#include "Default3D.geom.hpp"
-#include "Default3D.frag.hpp"
-#include "../Resources.hpp"
 
 /** @ingroup Core
  * @{

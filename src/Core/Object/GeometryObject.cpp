@@ -1,4 +1,8 @@
 #include "GeometryObject.hpp"
+#include "../Resources.hpp"
+#include "Default3D.vert.hpp"
+#include "Default3D.geom.hpp"
+#include "Default3D.frag.hpp"
 
 GeometryObject::GeometryObject(const Geometry::Geometry3D* geometry) {
 	this->geometry = geometry;
