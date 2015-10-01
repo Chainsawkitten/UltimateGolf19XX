@@ -131,13 +131,19 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 
 void TestScene::Render(const glm::vec2& screenSize) {
     // Render refractions.
-    RenderToTarget(water->RefractionTarget(), 0.25f, glm::vec4(0.f, -1.f, 0.f, 1.f));
+    RenderToTarget(water->RefractionTarget(), 0.25f, water->RefractionClippingPlane());
     
     // Render reflections
-    RenderToTarget(water->ReflectionTarget(), 1.f, glm::vec4(0.f, -1.f, 0.f, 1.f));
+    /// @todo Don't hardcore camera inversion.
+    float distance = 2.f * (player->GetCamera()->Position().y - water->Position().y);
+    player->GetCamera()->SetPosition(player->GetCamera()->Position() - glm::vec3(0.f, distance, 0.f));
+    player->GetCamera()->SetRotation(player->GetCamera()->HorizontalAngle(), -player->GetCamera()->VerticalAngle(), player->GetCamera()->TiltAngle());
+    RenderToTarget(water->ReflectionTarget(), 1.f, water->ReflectionClippingPlane());
+    player->GetCamera()->SetRotation(player->GetCamera()->HorizontalAngle(), -player->GetCamera()->VerticalAngle(), player->GetCamera()->TiltAngle());
+    player->GetCamera()->SetPosition(player->GetCamera()->Position() + glm::vec3(0.f, distance, 0.f));
     
     // Render to screen.
-    RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, -1.f, 0.f, 1.f));
+    RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
     water->Render(player->GetCamera(), screenSize);
     

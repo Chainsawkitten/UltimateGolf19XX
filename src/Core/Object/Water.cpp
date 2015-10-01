@@ -55,3 +55,13 @@ RenderTarget* Water::RefractionTarget() const {
 RenderTarget* Water::ReflectionTarget() const {
     return reflectionTarget;
 }
+
+glm::vec4 Water::RefractionClippingPlane() const {
+    /// @todo Don't hardcore clipping planes
+    return glm::vec4(0.f, 1.f, 0.f, -Position().y);
+}
+
+glm::vec4 Water::ReflectionClippingPlane() const {
+    /// @todo Don't hardcore clipping planes
+    return glm::vec4(0.f, -1.f, 0.f, Position().y);
+}

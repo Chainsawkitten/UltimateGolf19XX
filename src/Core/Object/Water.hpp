@@ -39,6 +39,18 @@ class Water : public GeometryObject {
          */
         RenderTarget* ReflectionTarget() const;
         
+        /// Get the clipping plane for refractions.
+        /**
+         * @return The clipping plane
+         */
+        glm::vec4 RefractionClippingPlane() const;
+        
+        /// Get the clipping plane for reflections.
+        /**
+         * @return The clipping plane
+         */
+        glm::vec4 ReflectionClippingPlane() const;
+        
     private:
         // Water shaders.
         Shader* vertexShader;
