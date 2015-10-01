@@ -131,14 +131,14 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 
 void TestScene::Render(const glm::vec2& screenSize) {
     // Render refractions.
-    RenderToTarget(water->RefractionTarget(), 0.25f, water->RefractionClippingPlane());
+    RenderToTarget(water->RefractionTarget(), 1.f, water->RefractionClippingPlane());
     
     // Render reflections
     /// @todo Don't hardcore camera inversion.
     float distance = 2.f * (player->GetCamera()->Position().y - water->Position().y);
     player->GetCamera()->SetPosition(player->GetCamera()->Position() - glm::vec3(0.f, distance, 0.f));
     player->GetCamera()->SetRotation(player->GetCamera()->HorizontalAngle(), -player->GetCamera()->VerticalAngle(), player->GetCamera()->TiltAngle());
-    RenderToTarget(water->ReflectionTarget(), 1.f, water->ReflectionClippingPlane());
+    RenderToTarget(water->ReflectionTarget(), 0.25f, water->ReflectionClippingPlane());
     player->GetCamera()->SetRotation(player->GetCamera()->HorizontalAngle(), -player->GetCamera()->VerticalAngle(), player->GetCamera()->TiltAngle());
     player->GetCamera()->SetPosition(player->GetCamera()->Position() + glm::vec3(0.f, distance, 0.f));
     
@@ -172,7 +172,7 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     glUniform1i(shaderProgram->UniformLocation("baseImage"), 0);
     
     // Base image texture
-    glActiveTexture(GL_TEXTURE0 + 0);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture->TextureID());
     
     // Model matrix, unique for each model.

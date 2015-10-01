@@ -12,8 +12,8 @@ Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSqu
     
     SetRotation(0.f, 270.f, 0.f);
     
-    refractionTarget = new RenderTarget(screenSize * 0.25f);
-    reflectionTarget = new RenderTarget(screenSize);
+    refractionTarget = new RenderTarget(screenSize);
+    reflectionTarget = new RenderTarget(screenSize * 0.25f);
 }
 
 Water::~Water() {
@@ -29,12 +29,24 @@ Water::~Water() {
 }
 
 void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
+    refractionTarget->SetSource();
+    reflectionTarget->SetSource();
+    
     shaderProgram->Use();
     
     // Set texture locations
-    glUniform1i(shaderProgram->UniformLocation("baseImage"), 0);
-    glUniform1i(shaderProgram->UniformLocation("normalMap"), 1);
-    glUniform1i(shaderProgram->UniformLocation("specularMap"), 2);
+    glUniform1i(shaderProgram->UniformLocation("tRefraction"), 0);
+    glUniform1i(shaderProgram->UniformLocation("tReflection"), 1);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, refractionTarget->ColorTexture());
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, reflectionTarget->ColorTexture());
+    
+    glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
+    
+    glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &glm::vec4(0.f, 0.f, 0.f, 0.f)[0]);
     
     // Send matrices to shader.
     glm::mat4 Normal = glm::transpose(glm::inverse(camera->View() * ModelMatrix()));
@@ -58,10 +70,10 @@ RenderTarget* Water::ReflectionTarget() const {
 
 glm::vec4 Water::RefractionClippingPlane() const {
     /// @todo Don't hardcore clipping planes
-    return glm::vec4(0.f, 1.f, 0.f, -Position().y);
+    return glm::vec4(0.f, -1.f, 0.f, Position().y);
 }
 
 glm::vec4 Water::ReflectionClippingPlane() const {
     /// @todo Don't hardcore clipping planes
-    return glm::vec4(0.f, -1.f, 0.f, Position().y);
+    return glm::vec4(0.f, 1.f, 0.f, -Position().y);
 }
