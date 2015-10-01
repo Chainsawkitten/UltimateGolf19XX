@@ -77,6 +77,7 @@ class Water : public GeometryObject {
         RenderTarget* reflectionTarget;
         
         // Textures.
+        Texture2D* waterTexture;
         Texture2D* dudvMap;
         glm::vec2 textureRepeat;
         glm::vec2 texOffset;

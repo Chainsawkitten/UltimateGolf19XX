@@ -16,6 +16,7 @@ Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSqu
     refractionTarget = new RenderTarget(screenSize);
     reflectionTarget = new RenderTarget(screenSize * 0.25f);
     
+    waterTexture = Resources().CreateTexture2DFromFile("Resources/Terrain/Water.png");
     dudvMap = Resources().CreateTexture2DFromFile("Resources/Terrain/WaterDUDV.png");
     textureRepeat = glm::vec2(1.f, 1.f);
     
@@ -23,6 +24,7 @@ Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSqu
 }
 
 Water::~Water() {
+    Resources().FreeTexture2DFromFile(waterTexture);
     Resources().FreeTexture2DFromFile(dudvMap);
     
     delete refractionTarget;
@@ -52,6 +54,7 @@ void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
     glUniform1i(shaderProgram->UniformLocation("tRefraction"), 0);
     glUniform1i(shaderProgram->UniformLocation("tReflection"), 1);
     glUniform1i(shaderProgram->UniformLocation("tDuDvMap"), 2);
+    glUniform1i(shaderProgram->UniformLocation("tWater"), 3);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, refractionTarget->ColorTexture());
@@ -61,6 +64,9 @@ void Water::Render(Camera* camera, const glm::vec2& screenSize) const {
     
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, dudvMap->TextureID());
+    
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, waterTexture->TextureID());
     
     glUniform2fv(shaderProgram->UniformLocation("screenSize"), 1, &screenSize[0]);
     glUniform2fv(shaderProgram->UniformLocation("textureRepeat"), 1, &textureRepeat[0]);
