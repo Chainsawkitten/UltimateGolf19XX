@@ -1,13 +1,13 @@
 #include "Water.hpp"
 #include "../Resources.hpp"
 #include "Default3D.vert.hpp"
-#include "Default3D.geom.hpp"
+#include "Water.geom.hpp"
 #include "Water.frag.hpp"
 #include <cmath>
 
 Water::Water(const glm::vec2& screenSize) : GeometryObject(Resources().CreateSquare()) {
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
-    geometryShader = Resources().CreateShader(DEFAULT3D_GEOM, DEFAULT3D_GEOM_LENGTH, GL_GEOMETRY_SHADER);
+    geometryShader = Resources().CreateShader(WATER_GEOM, WATER_GEOM_LENGTH, GL_GEOMETRY_SHADER);
     fragmentShader = Resources().CreateShader(WATER_FRAG, WATER_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     

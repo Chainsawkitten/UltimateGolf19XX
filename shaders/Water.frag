@@ -7,6 +7,7 @@ in VertexData {
 	vec3 normal;
 	vec3 tangent;
 	vec2 texCoords;
+    vec3 viewPosition;
 } vertexIn;
 
 uniform sampler2D tRefraction;
@@ -41,6 +42,6 @@ void main() {
     vec4 refractionColor = texture(tRefraction, refractionTexCoord);
     vec4 reflectionColor = texture(tReflection, reflectionTexCoord);
     
-	fragmentColor = mix(refractionColor, reflectionColor, 0.5);
+	fragmentColor = mix(reflectionColor, refractionColor, dot(normalize(-vertexIn.viewPosition), normalize(vertexIn.normal)));
     fragmentColor = fragmentColor * mix(texture(tWater, texCoords), vec4(1.0, 1.0, 1.0, 1.0), 0.5);
 }
