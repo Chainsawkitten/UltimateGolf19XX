@@ -25,6 +25,7 @@ out VertexData {
 	vec3 normal;
 	vec3 tangent;
 	vec2 texCoords;
+    vec3 viewPosition;
 } vertexOut;
 
 void main() {
@@ -40,9 +41,8 @@ void main() {
 			vertexOut.normal =  normalize(normalMatrix * vertexIn[i].normal);
 			vertexOut.tangent = normalize(normalMatrix * vertexIn[i].tangent);
 			vertexOut.texCoords = vertexIn[i].texCoords;
-            vec4 worldPosition = modelMatrix * gl_in[i].gl_Position;
-			gl_Position = projectionMatrix * (viewMatrix * worldPosition);
-            gl_ClipDistance[0] = dot(worldPosition, clippingPlane);
+            vertexOut.viewPosition = vec3(viewMatrix * (modelMatrix * gl_in[i].gl_Position));
+			gl_Position = projectionMatrix * vec4(vertexOut.viewPosition, 1.0);
 		
 			// Done with the vertex
 			EmitVertex();

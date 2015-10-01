@@ -110,8 +110,8 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
     modelObject->Rotate(0.2f, 0.f, 0.f);
 }
 
-void GolfBall::Render(Camera* camera, const glm::vec2& screenSize) const{
-    modelObject->Render(camera, screenSize);
+void GolfBall::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const{
+    modelObject->Render(camera, screenSize, clippingPlane);
 }
 
 void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {

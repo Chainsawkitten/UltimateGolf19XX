@@ -84,6 +84,8 @@ set(EMBEDDED_INPUT
     shaders/Particle.geom
     shaders/Particle.frag
     shaders/NormalSpecularMap.frag
+    shaders/Water.geom
+    shaders/Water.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png
@@ -123,9 +125,8 @@ include_directories(src)
 set(CORE_SRCS
         src/Core/GameWindow.cpp
         src/Core/Resources.cpp
-        src/Core/RenderTarget.cpp
-        src/Core/Light.cpp
         src/Core/Skybox.cpp
+        src/Core/RenderTarget.cpp
         src/Core/Audio/Listener.cpp
         src/Core/Audio/Sound.cpp
         src/Core/Audio/SoundBuffer.cpp
@@ -150,11 +151,14 @@ set(CORE_SRCS
         src/Core/Geometry/Cube.cpp
         src/Core/Geometry/Square.cpp
 	src/Core/Geometry/Terrain.cpp
+        src/Core/Lighting/DeferredLighting.cpp
+        src/Core/Lighting/Light.cpp
         src/Core/Object/Object.cpp
         src/Core/Object/ModelObject.cpp
 	src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Object/GolfBall.cpp
+        src/Core/Object/Water.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
         src/Core/PostProcessing/PostProcessing.cpp
@@ -181,9 +185,8 @@ set(CORE_SRCS
 set(CORE_HEADERS
         src/Core/GameWindow.hpp
         src/Core/Resources.hpp
-        src/Core/RenderTarget.hpp
-        src/Core/Light.hpp
         src/Core/Skybox.hpp
+        src/Core/RenderTarget.hpp
         src/Core/Audio/Listener.hpp
         src/Core/Audio/Sound.hpp
         src/Core/Audio/SoundBuffer.hpp
@@ -209,11 +212,14 @@ set(CORE_HEADERS
         src/Core/Geometry/Cube.hpp
         src/Core/Geometry/Square.hpp
 	src/Core/Geometry/Terrain.hpp
+        src/Core/Lighting/DeferredLighting.hpp
+        src/Core/Lighting/Light.hpp
         src/Core/Object/Object.hpp
         src/Core/Object/ModelObject.hpp
 	src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Object/GolfBall.hpp
+        src/Core/Object/Water.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
         src/Core/PostProcessing/PostProcessing.hpp

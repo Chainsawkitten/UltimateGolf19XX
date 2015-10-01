@@ -1,98 +1,65 @@
 #pragma once
 
-#include "Light.hpp"
-#include "Geometry/Rectangle.hpp"
 #include "Shader/ShaderProgram.hpp"
-#include "Camera/Camera.hpp"
+#include "Geometry/Rectangle.hpp"
 
 /** @ingroup Core
  * @{
  */
 
-/// Holds the frame buffers used for deferred rendering.
+/// Render target containing a color and depth buffer.
 class RenderTarget {
-	public:
-		/// The different buffer types.
-		enum TEXTURE_TYPE {
-			DIFFUSE, ///< Diffuse texture
-			NORMAL, ///< Normals
-			SPECULAR, ///< Specular
-			NUM_TEXTURES ///< Total number of textures (excluding depth buffer)
-		};
-        
-		/// Create new render target.
+    public:
+        /// Create new render target.
 		/**
-		 * @param size Size of the context.
+		 * @param size Size of the new render target.
 		 */
 		RenderTarget(const glm::vec2& size);
         
-		/// Destructor
-		/**
-		 * Free allocated resources.
-		 */
-		~RenderTarget();
+        /// Destructor.
+        ~RenderTarget();
         
-		/// Get texture.
-		/**
-		 * @param textureType The type of texture to get.
-		 * @return The texture identifier
-		 */
-		GLuint Texture(TEXTURE_TYPE textureType) const;
+        /// Set as render target.
+		void SetTarget();
         
-		/// Enable frame buffer object for writing.
-		void BindForWriting();
+        /// Set as source.
+        void SetSource();
         
-		/// Enable frame buffer object for reading.
-		void BindForReading();
+        /// Get size of the render target.
+        /**
+         * @return The size of the render target in pixels
+         */
+        glm::vec2 Size() const;
         
-		/// Enable frame buffer object for reading textures.
-		void BindForTexReading();
+        /// Get color texture.
+        /**
+         * @return The color buffer's texture
+         */
+        GLuint ColorTexture() const;
         
-		/// Set buffer to read from.
-		/**
-		 * @param textureType Texture type of the buffer to read from.
-		 */
-		void SetReadBuffer(TEXTURE_TYPE textureType);
+        /// Get depth texture.
+        /**
+         * @return The depth buffer's texture
+         */
+        GLuint DepthTexture() const;
         
-		/// Render the content of diffuse, position and normal textures.
-		/**
-		 * @param screenSize Size of the screen in pixels.
-		 */
-		void ShowTextures(const glm::vec2& screenSize);
+        /// Render resulting image to screen.
+        void Render();
         
-		/// Resets the render target.
-		/**
-		 * Needs to be called before rendering to the screen.
-		 */
-		void ResetWriting();
+    private:
+        unsigned int width;
+		unsigned int height;
         
-		/// Render the lighting in the scene.
-		/**
-		 * @param camera Camera to use.
-		 * @param screenSize Size of the screen in pixels.
-		 */
-		void Render(Camera* camera, const glm::vec2& screenSize);
-        
-		/// Light.
-		Light light;
-        
-	private:
-        static void AttachTexture(GLuint texture, unsigned int width, unsigned int height, GLenum attachment, GLint internalFormat);
-		void BindLighting(Camera* camera, const glm::vec2& screenSize);
-		void BindQuad();
-        
-		GLuint textures[NUM_TEXTURES];
-        
-		GLuint fbo;
-		GLuint depthHandle;
-        
-        Shader* vertexShader;
-        Shader* fragmentShader;
-		ShaderProgram* shaderProgram;
-        
-		glm::vec2 size;
+        GLuint frameBuffer;
+		GLuint colorBuffer;
+		GLuint depthBuffer;
         
         Geometry::Rectangle* rectangle;
+        
+        // Shaders
+        Shader* vertexShader;
+        Shader* fragmentShader;
+        ShaderProgram* shaderProgram;
 };
 
 /** @} */

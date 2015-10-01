@@ -1,6 +1,5 @@
 #pragma once
 
-#include <gl/glew.h>
 #include <initializer_list>
 #include "Shader.hpp"
 
