@@ -11,7 +11,10 @@
 /** @ingroup Core
  * @{
  */
-
+struct ClubType{
+	float mass;
+	float loft;
+};
 /// A golf ball that can be struck.
 class GolfBall : public Object {
     public:
@@ -20,11 +23,6 @@ class GolfBall : public Object {
             TWOPIECE, ///< Two-piece ball.
             THREEPIECE ///< Three-piece ball.
         };
-
-		struct ClubType{
-			float mass;
-			float loft;
-		};
         
         /// Create new golf ball.
         /**
@@ -62,22 +60,6 @@ class GolfBall : public Object {
 
 		///Resets ball to original position
 		void GolfBall::Reset();
-
-		/// List of all available clubtypes
-		ClubType wood1 = ClubType{ 0.2f, glm::radians<float>(11.f) };
-		ClubType wood3 = ClubType{ 0.208f, glm::radians<float>(15.f) };
-		ClubType wood5 = ClubType{ 0.218f, glm::radians<float>(18.f) };
-		ClubType iron2 = ClubType{ 0.232f, glm::radians<float>(18.f) };
-		ClubType iron3 = ClubType{ 0.239f, glm::radians<float>(21.f) };
-		ClubType iron4 = ClubType{ 0.246f, glm::radians<float>(24.f) };
-		ClubType iron5 = ClubType{ 0.253f, glm::radians<float>(27.f) };
-		ClubType iron6 = ClubType{ 0.260f, glm::radians<float>(31.f) };
-		ClubType iron7 = ClubType{ 0.267f, glm::radians<float>(35.f) };
-		ClubType iron8 = ClubType{ 0.274f, glm::radians<float>(39.f) };
-		ClubType iron9 = ClubType{ 0.281f, glm::radians<float>(43.f) };
-		ClubType pitchingWedge = ClubType{ 0.285f, glm::radians<float>(48.f) };
-		ClubType sandWedge = ClubType{ 0.296f, glm::radians<float>(55.f) };
-		ClubType putter = ClubType{ 0.33f, glm::radians<float>(4.f) };
 		
     private:
 		ModelObject* modelObject;
