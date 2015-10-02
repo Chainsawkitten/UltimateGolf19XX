@@ -34,6 +34,14 @@ GolfBall::~GolfBall() {
     delete modelGeometry;
 }
 
+void GolfBall::Reset(){
+	active = false;
+	velocity = glm::vec3(0, 0, 0);
+	angularVelocity = glm::vec3(0, 0, 0);
+	modelObject->SetPosition(1.f, 0.f, 1.f);
+	sphere.position = modelObject->Position();
+}
+
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
         modelObject->Move(static_cast<float>(time)*velocity);
@@ -43,7 +51,11 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         float vertical = -static_cast<float>(time)*angularVelocity.y*(glm::pi<float>());
         float tilt = -static_cast<float>(time)*angularVelocity.z*(glm::pi<float>());
         
+		//check for collision
 		if ((sphere.position.y - sphere.radius) < groundLevel){
+			//@TODO: Move ball along surfacenormal instead of 
+			modelObject->SetPosition(modelObject->Position().x, groundLevel+sphere.radius, modelObject->Position().z);
+			sphere.position = modelObject->Position();
 			float mu = 0.30f;
 			glm::vec3 surfaceNormal = glm::vec3(0.f, 1.f, 0.f);
 			glm::vec3 eRoh= glm::normalize(surfaceNormal);

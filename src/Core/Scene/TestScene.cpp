@@ -122,6 +122,9 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     if (Input()->Triggered(InputHandler::STRIKE))
 		golfBall->Strike(golfBall->iron3, wind);
     golfBall->Update(time, wind);
+
+	if (Input()->Triggered(InputHandler::RESET))
+		golfBall->Reset();
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
