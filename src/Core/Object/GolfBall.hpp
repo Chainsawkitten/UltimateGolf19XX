@@ -60,6 +60,9 @@ class GolfBall : public Object {
          */
         void SetRadius(float radius);
 
+		///Resets ball to original position
+		void GolfBall::Reset();
+
 		/// List of all available clubtypes
 		ClubType wood1 = ClubType{ 0.2f, glm::radians<float>(11.f) };
 		ClubType wood3 = ClubType{ 0.208f, glm::radians<float>(15.f) };
@@ -75,7 +78,7 @@ class GolfBall : public Object {
 		ClubType pitchingWedge = ClubType{ 0.285f, glm::radians<float>(48.f) };
 		ClubType sandWedge = ClubType{ 0.296f, glm::radians<float>(55.f) };
 		ClubType putter = ClubType{ 0.33f, glm::radians<float>(4.f) };
-
+		
     private:
 		ModelObject* modelObject;
 		TerrainObject* terrain;

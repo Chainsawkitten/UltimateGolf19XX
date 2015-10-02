@@ -26,7 +26,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	modelObject->SetPosition(4.f,0.f,0.f);
 	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 
-	terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
+	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
@@ -122,12 +122,15 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     if (Input()->Triggered(InputHandler::STRIKE))
 		golfBall->Strike(golfBall->iron3, wind);
     golfBall->Update(time, wind);
+
+	if (Input()->Triggered(InputHandler::RESET))
+		golfBall->Reset();
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
     particleSystem->Update(time, player->GetCamera());
-    water->Update(time, wind);
+    //water->Update(time, wind);
     
     return nullptr;
 }
@@ -148,7 +151,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
+    //water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);
