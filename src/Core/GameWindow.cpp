@@ -51,6 +51,7 @@ void GameWindow::Init() {
     currentScene = new TestScene(size);
     
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CLIP_DISTANCE0);
     
     lastTime = glfwGetTime();
     lastTimeRender = glfwGetTime();
@@ -125,7 +126,7 @@ void GameWindow::SetWindowTitle() {
     std::string title = "Ultimate Golf 19XX";
     
     if (GameSettings::GetInstance().GetBool("Show Frame Times"))
-        title += " - " + std::to_string(lastTimeRendered - lastTime) + "ms";
+        title += " - " + std::to_string((lastTimeRendered - lastTime) * 1000.0) + " ms";
     
     glfwSetWindowTitle(window, title.c_str());
 }

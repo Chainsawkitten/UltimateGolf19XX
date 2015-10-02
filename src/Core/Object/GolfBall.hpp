@@ -47,8 +47,9 @@ class GolfBall : public Object {
         /**
          * @param camera %Camera to render through.
          * @param screenSize Size of the screen in pixels.
+         * @param clippingPlane Clipping plane equation.
          */
-		void Render(Camera* camera, const glm::vec2& screenSize) const;
+		void Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const;
         
         /// Hit the golf ball with a club.
 		void Strike(ClubType club, glm::vec3 clubVelocity);

@@ -11,23 +11,19 @@ const float FXAA_SPAN_MAX = 8.0;
 const float FXAA_REDUCE_MUL = 1.0/8.0;
 const float FXAA_REDUCE_MIN = 1.0/128.0;
 
+in vec2 texCoords;
+
 out vec4 fragmentColor;
 
-// Calculate texcoord
-vec2 calculateTexCoord() {
-	return gl_FragCoord.xy / screenSize;
-}
-
 void main () {
-	vec2 texCoord = calculateTexCoord();
 	vec2 invScreenSize = 1.0 / screenSize;
 	
 	vec3 luma = vec3(0.299, 0.587, 0.114);	
-	float lumaTL = dot(luma, texture(tDiffuse, texCoord + (vec2(-1.0, -1.0) * invScreenSize)).xyz);
-	float lumaTR = dot(luma, texture(tDiffuse, texCoord + (vec2(1.0, -1.0) * invScreenSize)).xyz);
-	float lumaBL = dot(luma, texture(tDiffuse, texCoord + (vec2(-1.0, 1.0) * invScreenSize)).xyz);
-	float lumaBR = dot(luma, texture(tDiffuse, texCoord + (vec2(1.0, 1.0) * invScreenSize)).xyz);
-	float lumaM  = dot(luma, texture(tDiffuse, texCoord).xyz);
+	float lumaTL = dot(luma, texture(tDiffuse, texCoords + (vec2(-1.0, -1.0) * invScreenSize)).xyz);
+	float lumaTR = dot(luma, texture(tDiffuse, texCoords + (vec2(1.0, -1.0) * invScreenSize)).xyz);
+	float lumaBL = dot(luma, texture(tDiffuse, texCoords + (vec2(-1.0, 1.0) * invScreenSize)).xyz);
+	float lumaBR = dot(luma, texture(tDiffuse, texCoords + (vec2(1.0, 1.0) * invScreenSize)).xyz);
+	float lumaM  = dot(luma, texture(tDiffuse, texCoords).xyz);
 
 	vec2 dir;
 	dir.x = -((lumaTL + lumaTR) - (lumaBL + lumaBR));
@@ -40,12 +36,12 @@ void main () {
 		max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * inverseDirAdjustment)) * invScreenSize;
 
 	vec3 result1 = (1.0/2.0) * (
-		texture(tDiffuse, texCoord + (dir * vec2(1.0/3.0 - 0.5))).xyz +
-		texture(tDiffuse, texCoord + (dir * vec2(2.0/3.0 - 0.5))).xyz);
+		texture(tDiffuse, texCoords + (dir * vec2(1.0/3.0 - 0.5))).xyz +
+		texture(tDiffuse, texCoords + (dir * vec2(2.0/3.0 - 0.5))).xyz);
 
 	vec3 result2 = result1 * (1.0/2.0) + (1.0/4.0) * (
-		texture(tDiffuse, texCoord + (dir * vec2(0.0/3.0 - 0.5))).xyz +
-		texture(tDiffuse, texCoord + (dir * vec2(3.0/3.0 - 0.5))).xyz);
+		texture(tDiffuse, texCoords + (dir * vec2(0.0/3.0 - 0.5))).xyz +
+		texture(tDiffuse, texCoords + (dir * vec2(3.0/3.0 - 0.5))).xyz);
 
 	float lumaMin = min(lumaM, min(min(lumaTL, lumaTR), min(lumaBL, lumaBR)));
 	float lumaMax = max(lumaM, max(max(lumaTL, lumaTR), max(lumaBL, lumaBR)));
@@ -56,6 +52,6 @@ void main () {
 	else
 		fragmentColor = vec4(result2, 1.0);
 
-	float depth = texture(tDepth, texCoord).r;
+	float depth = texture(tDepth, texCoords).r;
 	gl_FragDepth = depth;
 }

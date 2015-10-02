@@ -9,7 +9,6 @@
 #include <glm/glm.hpp>
 #include "../Geometry/Terrain.hpp"
 
-
 /** @ingroup Core
  * @{
  */
@@ -42,7 +41,13 @@ class TerrainObject : public GeometryObject {
 		float GetY(float x, float z) const;
         
 		/// Renders terrain.
-		void Render(Camera* camera, const glm::vec2& screenSize) const;
+        /**
+         * @param shaderProgram %Shader program to render the object with.
+         * @param camera %Camera to render through.
+         * @param screenSize Size of the screen in pixels.
+         * @param clippingPlane Clipping plane equation.
+         */
+		void Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const;
         
 	private:
 		Texture2D* blendMap;

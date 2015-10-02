@@ -4,7 +4,7 @@
 #include "../Skybox.hpp"
 #include "../Player/Player.hpp"
 #include "../Util/Input.hpp"
-#include "../RenderTarget.hpp"
+#include "../Lighting/DeferredLighting.hpp"
 #include "../Object/GeometryObject.hpp"
 #include "../Object/ModelObject.hpp"
 #include "../Texture/Texture2D.hpp"
@@ -15,6 +15,7 @@
 #include "../Geometry/Terrain.hpp"
 #include "../Geometry/Model.hpp"
 #include "../Object/GolfBall.hpp"
+#include "../Object/Water.hpp"
 
 /** @ingroup Core
  * @{
@@ -46,10 +47,12 @@ class TestScene : public Scene {
 		void Render(const glm::vec2& screenSize);
         
     private:
+        void RenderToTarget(RenderTarget* renderTarget, float scale, const glm::vec4& clippingPlane);
+        
         CubeMapTexture* skyboxTexture;
         Skybox* skybox;
         Player* player;
-        RenderTarget* renderTarget;
+        DeferredLighting* deferredLighting;
         Geometry::Geometry3D* geometry;
         GeometryObject* geometryObject;
 
@@ -71,6 +74,8 @@ class TestScene : public Scene {
         
         GolfBall* golfBall;
         glm::vec3 wind;
+        
+        Water* water;
         
         // Particles
         ParticleSystem* particleSystem;

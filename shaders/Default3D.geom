@@ -13,10 +13,12 @@ in VertexData {
 	vec2 texCoords;
 } vertexIn[3];
 
-// Uniform matrices.
-uniform mat4 modelViewMatrix;
+// Uniforms.
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
 uniform mat3 normalMatrix;
 uniform mat4 projectionMatrix;
+uniform vec4 clippingPlane;
 
 // Output
 out VertexData {
@@ -31,14 +33,16 @@ void main() {
 	vec3 normal = normalMatrix * n;
 	
 	// Only display triangle if it's facing the viewer.
-	float d = dot(normal, -vec3(modelViewMatrix * gl_in[0].gl_Position));
+	float d = dot(normal, -vec3(viewMatrix * (modelMatrix * gl_in[0].gl_Position)));
 	if (d > 0.0) {
 		for(int i = 0; i < gl_in.length(); i++) {
 			// Copy attributes
 			vertexOut.normal =  normalize(normalMatrix * vertexIn[i].normal);
 			vertexOut.tangent = normalize(normalMatrix * vertexIn[i].tangent);
 			vertexOut.texCoords = vertexIn[i].texCoords;
-			gl_Position = projectionMatrix * (modelViewMatrix * gl_in[i].gl_Position);
+            vec4 worldPosition = modelMatrix * gl_in[i].gl_Position;
+			gl_Position = projectionMatrix * (viewMatrix * worldPosition);
+            gl_ClipDistance[0] = dot(worldPosition, clippingPlane);
 		
 			// Done with the vertex
 			EmitVertex();
