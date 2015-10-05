@@ -3,7 +3,6 @@
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
 #include "Default3D.frag.hpp"
-#include "../Geometry/OBJModel.hpp"
 #include "glm/gtc/constants.hpp"
 #include "../Util/Log.hpp"
 
@@ -11,7 +10,7 @@
 GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
     active = false;
     
-    modelGeometry = new Geometry::OBJModel("Resources/Models/GolfBall/GolfBall.obj");
+    modelGeometry = Resources().CreateOBJModel("Resources/Models/GolfBall/GolfBall.obj");
     std::string diffusePath = "Resources/Models/GolfBall/Diffuse.png";
     std::string normalPath = "Resources/Models/GolfBall/Normal.png";
     std::string specularPath = "Resources/Models/GolfBall/Specular.png";
@@ -32,7 +31,7 @@ GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
 
 GolfBall::~GolfBall() {
     delete modelObject;
-    delete modelGeometry;
+    Resources().FreeOBJModel(modelGeometry);
 }
 
 void GolfBall::Reset(){

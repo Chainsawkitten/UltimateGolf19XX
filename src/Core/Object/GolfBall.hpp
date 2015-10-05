@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Object.hpp"
-#include "../Geometry/Model.hpp"
+#include "../Geometry/OBJModel.hpp"
 #include "ModelObject.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../Texture/Texture2D.hpp"
@@ -65,7 +65,7 @@ class GolfBall : public Object {
 		ModelObject* modelObject;
 		TerrainObject* terrain;
 		float groundLevel;
-		Geometry::Model* modelGeometry;
+		Geometry::OBJModel* modelGeometry;
         glm::vec3 velocity;
 		glm::vec3 angularVelocity;
         bool active;

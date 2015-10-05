@@ -132,6 +132,29 @@ void ResourceManager::FreeSquare() {
         delete square;
 }
 
+Geometry::OBJModel* ResourceManager::CreateOBJModel(std::string filename) {
+    if (objModels.find(filename) == objModels.end()) {
+        objModels[filename].model = new Geometry::OBJModel(filename.c_str());
+        objModelsInverse[objModels[filename].model] = filename;
+        objModels[filename].count = 1;
+    } else {
+        objModels[filename].count++;
+    }
+    
+    return objModels[filename].model;
+}
+
+void ResourceManager::FreeOBJModel(Geometry::OBJModel* model) {
+    string filename = objModelsInverse[model];
+    
+    objModels[filename].count--;
+    if (objModels[filename].count <= 0) {
+        objModelsInverse.erase(model);
+        delete model;
+        objModels.erase(filename);
+    }
+}
+
 ResourceManager::ShaderProgramKey::ShaderProgramKey() {
     computeShader = nullptr;
     vertexShader = nullptr;
