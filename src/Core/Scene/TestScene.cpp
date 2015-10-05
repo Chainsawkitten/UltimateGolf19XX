@@ -7,6 +7,7 @@
 #include "../Audio/SoundSystem.hpp"
 #include "../Util/GameSettings.hpp"
 #include "../Util/Input.hpp"
+#include "../Util/Log.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
     skyboxTexture = new CubeMapTexture(
@@ -26,7 +27,23 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	modelObject->SetPosition(4.f,0.f,0.f);
 	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 
-	terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
+	/// Map of all available clubtypes
+	clubs.insert(std::pair<std::string, ClubType>("Wood 1", ClubType{ 0.2f, glm::radians<float>(11.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Wood 3", ClubType{ 0.208f, glm::radians<float>(15.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Wood 5", ClubType{ 0.218f, glm::radians<float>(18.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 2", ClubType{ 0.232f, glm::radians<float>(18.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 3", ClubType{ 0.239f, glm::radians<float>(21.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 4", ClubType{ 0.246f, glm::radians<float>(24.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 5", ClubType{ 0.253f, glm::radians<float>(27.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 6", ClubType{ 0.260f, glm::radians<float>(31.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 7", ClubType{ 0.267f, glm::radians<float>(35.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 8", ClubType{ 0.274f, glm::radians<float>(39.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Iron 9", ClubType{ 0.281f, glm::radians<float>(43.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Pitching Wedge", ClubType{ 0.285f, glm::radians<float>(48.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Sand Wedge", ClubType{ 0.296f, glm::radians<float>(55.f) }));
+	clubs.insert(std::pair<std::string, ClubType>("Putter", ClubType{ 0.33f, glm::radians<float>(4.f) }));
+	clubIterator = clubs.begin();
+	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
@@ -120,14 +137,24 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     
     glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
     if (Input()->Triggered(InputHandler::STRIKE))
-		golfBall->Strike(golfBall->iron3, wind);
+		golfBall->Strike(clubIterator->second, wind);
     golfBall->Update(time, wind);
-    
+
+	if (Input()->Triggered(InputHandler::RESET))
+		golfBall->Reset();
+	
+	if (Input()->Triggered(InputHandler::NEXTCLUB)){
+		clubIterator++;
+		if (clubIterator == clubs.end())
+			clubIterator = clubs.begin();
+		Log() << clubIterator->first;
+		Log() << "\n";
+	}
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
     particleSystem->Update(time, player->GetCamera());
-    water->Update(time, wind);
+    //water->Update(time, wind);
     
     return nullptr;
 }
@@ -148,7 +175,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
+    //water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);

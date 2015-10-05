@@ -7,6 +7,7 @@
 #include "glm/gtc/constants.hpp"
 #include "../Util/Log.hpp"
 
+
 GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
     active = false;
     
@@ -34,6 +35,14 @@ GolfBall::~GolfBall() {
     delete modelGeometry;
 }
 
+void GolfBall::Reset(){
+	active = false;
+	velocity = glm::vec3(0, 0, 0);
+	angularVelocity = glm::vec3(0, 0, 0);
+	modelObject->SetPosition(1.f, 0.f, 1.f);
+	sphere.position = modelObject->Position();
+}
+
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
         modelObject->Move(static_cast<float>(time)*velocity);
@@ -43,43 +52,28 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         float vertical = -static_cast<float>(time)*angularVelocity.y*(glm::pi<float>());
         float tilt = -static_cast<float>(time)*angularVelocity.z*(glm::pi<float>());
         
-        if ((sphere.position.y - sphere.radius) < groundLevel){
-            float mu = 0.11f;
-            glm::vec3 surfaceNormal = glm::vec3(0.f, 1.f, 0.f);
-            
-            modelObject->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
-            glm::vec3 eRoh = surfaceNormal;
-            glm::vec3 er = glm::normalize(glm::cross(velocity, eRoh));
-            glm::vec3 velocityCrosseRoh = glm::normalize(cross(velocity, eRoh));
-            
-            glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
-            glm::vec3 velocityAfterCollisionProjectedOneRoh = restitution*velocityProjectedOneRoh;
-            velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh);
-            //angularVelocity = ((mass*sphere.radius)/(2*sphere.radius))*(velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(glm::cross(glm::cross(eRoh,eNormal),eNormal));
-            
-        }
-        
-        //float e = 0.f;
-        //float mu = 0.51f;
-        //this->SetPosition(sphere.position.x, groundLevel + sphere.radius, sphere.position.z);
-        //modelObject->SetPosition(this->Position());
-        
-        //if (ballType == TWOPIECE){
-        //	float e = 0.78f;
-        
-        //}
-        //else {
-        //	float e = 0.68f;
-        
-        //}
-        
-        //glm::vec3 eNormal = glm::vec3(0.f, 1.f, 0.f);
-        //glm::vec3 eRoh = glm::vec3(0.f, 1.f, 0.f);
-        //glm::vec3 muNormal = mu*eNormal;
-        //glm::vec3 velocityProjectedOneRoh = glm::dot(velocity, eRoh)*eRoh;
-        //glm::vec3 velocityAfterCollisionProjectedOneRoh = e*velocityProjectedOneRoh;
-        //velocity = velocity + (velocityAfterCollisionProjectedOneRoh - velocityProjectedOneRoh)*(eRoh + muNormal);
-        
+		//check for collision
+		if ((sphere.position.y - sphere.radius) < groundLevel){
+			//@TODO: Find appropriate collision-coefficient for various materials vs golf ball, 0.30f used temporarily.
+			float e = 0.30f;
+			float mu = 0.30f;
+			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
+			modelObject->SetPosition(modelObject->Position().x, groundLevel+sphere.radius, modelObject->Position().z);
+			glm::vec3 surfaceNormal = glm::vec3(0.f, 1.f, 0.f);
+			//glm::vec3 originAtTriangle
+			//glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
+			//modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
+			glm::vec3 eRoh= glm::normalize(surfaceNormal);
+			glm::vec3 vRoh = velocity*eRoh;
+			glm::vec3 deltaU = -(e + 1.f)*vRoh;
+			//@TODO: 
+			glm::vec3 eNormal = glm::normalize(sphere.radius*(glm::cross(eRoh, angularVelocity) + glm::vec3(velocity.x, 0, velocity.z)));
+			velocity = velocity + (deltaU)*(eRoh + mu*eNormal);
+			float angularCoefficient = mu / 0.4f*sphere.radius;
+			glm::vec3 eR = glm::normalize(glm::cross(eRoh, velocity));
+			angularVelocity = deltaU*(glm::cross(eR, eNormal));
+		}
+
         modelObject->Rotate(horizontal, vertical, tilt);
         
         float v = glm::length(velocity);

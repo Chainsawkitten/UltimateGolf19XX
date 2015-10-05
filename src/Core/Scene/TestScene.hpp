@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include "Scene.hpp"
 #include "../Skybox.hpp"
 #include "../Player/Player.hpp"
@@ -29,7 +30,7 @@ class TestScene : public Scene {
          * @param screenSize Size of the screen in pixels.
          */
         TestScene(const glm::vec2& screenSize);
-        
+
         /// Destructor.
         ~TestScene();
         
@@ -71,7 +72,8 @@ class TestScene : public Scene {
         
         PostProcessing* postProcessing;
         FXAAFilter* fxaaFilter;
-        
+		std::map<std::string, ClubType> clubs;
+		std::map<std::string, ClubType>::iterator clubIterator;
         GolfBall* golfBall;
         glm::vec3 wind;
         
