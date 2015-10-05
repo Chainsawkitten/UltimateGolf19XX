@@ -58,8 +58,8 @@ class GolfBall : public Object {
          */
         void SetRadius(float radius);
 
-		///Resets ball to original position
-		void GolfBall::Reset();
+		/// Resets ball to original position.
+		void Reset();
 		
     private:
 		ModelObject* modelObject;
