@@ -161,6 +161,7 @@ set(CORE_SRCS
         src/Core/Object/Water.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
+        src/Core/Player/ThirdPersonPlayer.cpp
         src/Core/PostProcessing/PostProcessing.cpp
         src/Core/PostProcessing/ColorFilter.cpp
         src/Core/PostProcessing/FXAAFilter.cpp
@@ -222,6 +223,7 @@ set(CORE_HEADERS
         src/Core/Object/Water.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
+        src/Core/Player/ThirdPersonPlayer.hpp
         src/Core/PostProcessing/PostProcessing.hpp
         src/Core/PostProcessing/Filter.hpp
         src/Core/PostProcessing/ColorFilter.hpp
