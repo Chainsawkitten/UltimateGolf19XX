@@ -7,45 +7,41 @@
 #include "../Util/Log.hpp"
 
 
-GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : Object() {
+GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : ModelObject(modelGeometry = Resources().CreateOBJModel("Resources/Models/GolfBall/GolfBall.obj"),
+                                                                            "Resources/Models/GolfBall/Diffuse.png",
+                                                                            "Resources/Models/GolfBall/Normal.png",
+                                                                            "Resources/Models/GolfBall/Specular.png") {
     active = false;
-    
-    modelGeometry = Resources().CreateOBJModel("Resources/Models/GolfBall/GolfBall.obj");
-    std::string diffusePath = "Resources/Models/GolfBall/Diffuse.png";
-    std::string normalPath = "Resources/Models/GolfBall/Normal.png";
-    std::string specularPath = "Resources/Models/GolfBall/Specular.png";
     
     restitution = ballType == TWOPIECE ? 0.78f : 0.68f;
     this->terrain = terrain;
     groundLevel = this->terrain->Position().y;
-    modelObject = new ModelObject(modelGeometry, diffusePath, normalPath, specularPath);
-    modelObject->SetPosition(1.f, 0.f, 1.f);
+    SetPosition(1.f, 0.f, 1.f);
     
     /// @todo Mass based on explosive material.
     mass = 0.0459f;
     this->ballType = ballType;
     
-    this->sphere.position = modelObject->Position();
+    this->sphere.position = Position();
     SetRadius(0.0214f);
 }
 
 GolfBall::~GolfBall() {
-    delete modelObject;
     Resources().FreeOBJModel(modelGeometry);
 }
 
 void GolfBall::Reset(){
 	active = false;
-	velocity = glm::vec3(0, 0, 0);
-	angularVelocity = glm::vec3(0, 0, 0);
-	modelObject->SetPosition(1.f, 0.f, 1.f);
-	sphere.position = modelObject->Position();
+	velocity = glm::vec3(0.f, 0.f, 0.f);
+	angularVelocity = glm::vec3(0.f, 0.f, 0.f);
+	SetPosition(1.f, 0.f, 1.f);
+	sphere.position = Position();
 }
 
 void GolfBall::Update(double time, const glm::vec3& wind) {
     if (active) {
-        modelObject->Move(static_cast<float>(time)*velocity);
-        sphere.position = modelObject->Position();
+        Move(static_cast<float>(time)*velocity);
+        sphere.position = Position();
         
         float horizontal = -static_cast<float>(time)*angularVelocity.x*(glm::pi<float>());
         float vertical = -static_cast<float>(time)*angularVelocity.y*(glm::pi<float>());
@@ -57,7 +53,7 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 			float e = 0.30f;
 			float mu = 0.30f;
 			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
-			modelObject->SetPosition(modelObject->Position().x, groundLevel+sphere.radius, modelObject->Position().z);
+			SetPosition(Position().x, groundLevel+sphere.radius, Position().z);
 			glm::vec3 surfaceNormal = glm::vec3(0.f, 1.f, 0.f);
 			//glm::vec3 originAtTriangle
 			//glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
@@ -73,13 +69,13 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 			angularVelocity = deltaU*(glm::cross(eR, eNormal));
 		}
 
-        modelObject->Rotate(horizontal, vertical, tilt);
+        Rotate(horizontal, vertical, tilt);
         
         float v = glm::length(velocity);
         float u = glm::length(velocity - wind);
         float w = glm::length(angularVelocity);
-        float Cm = (sqrt(1.f + 0.31f*(v/w))-1.f)/20.f;
-        float Fm = 0.5f*Cm*1.23*area*u*u;
+        float Cm = (sqrt(1.f + 0.31f * (v/w)) - 1.f) / 20.f;
+        float Fm = 0.5f * Cm * 1.23f * area * u * u;
         glm::vec3 eU = (velocity - wind) / u;
         
         /// Calculate drive force.
@@ -91,7 +87,7 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         }
         glm::vec3 dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
         
-        glm::vec3 magnusForce = Fm*(cross(eU, (angularVelocity / w)));
+        glm::vec3 magnusForce = Fm * (cross(eU, (angularVelocity / w)));
         
         // Calculate gravitational force.
         glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
@@ -100,21 +96,21 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         velocity += acceleration * static_cast<float>(time);
     }
     
-    modelObject->Rotate(0.2f, 0.f, 0.f);
+    Rotate(0.2f, 0.f, 0.f);
 }
 
 void GolfBall::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const{
-    modelObject->Render(camera, screenSize, clippingPlane);
+    ModelObject::Render(camera, screenSize, clippingPlane);
 }
 
 void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {
     active = true;
     float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
     
-    angularVelocity = glm::vec3(0.f, 0.f, -360.f*(5.f / 7.f)*(sin(club.loft)*translatedVelocity));
+    angularVelocity = glm::vec3(0.f, 0.f, -360.f * (5.f / 7.f) * (sin(club.loft) * translatedVelocity));
     float massCoefficient = club.mass / (club.mass + mass);
-    float velocitybx = translatedVelocity*massCoefficient*((1 + restitution)*pow(cos(club.loft), 2) + (2.f / 7.f)*pow(sin(club.loft), 2));
-    float velocityby = translatedVelocity*massCoefficient*sin(club.loft)*cos(club.loft)*((5.f / 7.f) + restitution);
+    float velocitybx = translatedVelocity * massCoefficient * ((1 + restitution)*pow(cos(club.loft), 2) + (2.f / 7.f) * pow(sin(club.loft), 2));
+    float velocityby = translatedVelocity * massCoefficient * sin(club.loft)*cos(club.loft)*((5.f / 7.f) + restitution);
     
     float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
     velocity = glm::vec3(velocitybx*sin(horizontalAngle), velocityby, velocitybx*cos(horizontalAngle));
@@ -122,6 +118,6 @@ void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {
 
 void GolfBall::SetRadius(float radius) {
     sphere.radius = radius;
-    modelObject->SetScale(glm::vec3(radius, radius, radius));
+    SetScale(glm::vec3(radius, radius, radius));
     area = glm::pi<float>() * radius * radius;
 }

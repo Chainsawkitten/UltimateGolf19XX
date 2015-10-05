@@ -16,7 +16,7 @@ struct ClubType{
 	float loft;
 };
 /// A golf ball that can be struck.
-class GolfBall : public Object {
+class GolfBall : public ModelObject {
     public:
         /// The type of ball.
         enum BallType {
@@ -62,13 +62,12 @@ class GolfBall : public Object {
 		void Reset();
 		
     private:
-		ModelObject* modelObject;
 		TerrainObject* terrain;
 		float groundLevel;
-		Geometry::OBJModel* modelGeometry;
         glm::vec3 velocity;
 		glm::vec3 angularVelocity;
         bool active;
+        Geometry::OBJModel* modelGeometry;
         
 		Physics::Sphere sphere;
 		float restitution;
