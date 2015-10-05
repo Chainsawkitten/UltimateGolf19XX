@@ -56,7 +56,7 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 		if ((sphere.position.y - sphere.radius) < groundLevel){
 			//@TODO: Find appropriate collision-coefficient for various materials vs golf ball, 0.30f used temporarily.
 			float e = 0.55f;
-			float mu = 0.11f;
+			float mu = 0.51f;
 			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
 			modelObject->SetPosition(modelObject->Position().x, groundLevel+sphere.radius, modelObject->Position().z);
 			sphere.position = modelObject->Position();
@@ -67,7 +67,7 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 			glm::vec3 eRoh = glm::normalize(surfaceNormal);
 			glm::vec3 vRoh = velocity*eRoh;
 			//uRoh = -evRoh
-			glm::vec3 deltaU = (e + 1.f)*vRoh;
+			glm::vec3 deltaU = -(e + 1.f)*vRoh;
 			glm::vec3 eNormal = glm::normalize(sphere.radius*(glm::cross(eRoh, angularVelocity) + glm::vec3(velocity.x, 0.f, velocity.z)));
 			velocity = velocity + (deltaU)*(eRoh + mu*eNormal);
 			//float angularCoefficient = (mu*sphere.radius*mass) / (0.4f*mass*sphere.radius*sphere.radius);
