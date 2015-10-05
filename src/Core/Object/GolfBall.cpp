@@ -65,13 +65,15 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 			//modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
 			glm::vec3 eRoh= glm::normalize(surfaceNormal);
 			glm::vec3 vRoh = velocity*eRoh;
-			glm::vec3 deltaU = -(e + 1.f)*vRoh;
+			//uRoh = -evRoh
+			glm::vec3 deltaU = (-e - 1.f)*vRoh;
 			//@TODO: 
-			glm::vec3 eNormal = glm::normalize(sphere.radius*(glm::cross(eRoh, angularVelocity) + glm::vec3(velocity.x, 0, velocity.z)));
+			glm::vec3 eNormal = -glm::normalize(sphere.radius*(glm::cross(-eRoh, angularVelocity) + glm::vec3(velocity.x, 0.f, velocity.z)));
 			velocity = velocity + (deltaU)*(eRoh + mu*eNormal);
 			float angularCoefficient = mu / 0.4f*sphere.radius;
-			glm::vec3 eR = glm::normalize(glm::cross(eRoh, velocity));
-			angularVelocity = deltaU*(glm::cross(eR, eNormal));
+			glm::vec3 eR = glm::normalize(eRoh);
+			angularVelocity = angularCoefficient*deltaU*(glm::cross(eR, eNormal));
+			Log() << angularVelocity << "\n";
 		}
 
         modelObject->Rotate(horizontal, vertical, tilt);
