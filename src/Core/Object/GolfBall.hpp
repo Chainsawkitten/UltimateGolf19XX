@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Object.hpp"
 #include "../Geometry/OBJModel.hpp"
 #include "ModelObject.hpp"
-#include "../Shader/ShaderProgram.hpp"
-#include "../Texture/Texture2D.hpp"
 #include "../Physics/Sphere.hpp"
 #include "TerrainObject.hpp"
 
@@ -15,6 +12,7 @@ struct ClubType{
 	float mass;
 	float loft;
 };
+
 /// A golf ball that can be struck.
 class GolfBall : public ModelObject {
     public:
