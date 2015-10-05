@@ -55,25 +55,26 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
 		//check for collision
 		if ((sphere.position.y - sphere.radius) < groundLevel){
 			//@TODO: Find appropriate collision-coefficient for various materials vs golf ball, 0.30f used temporarily.
-			float e = 0.30f;
-			float mu = 0.30f;
+			float e = 0.55f;
+			float mu = 0.11f;
 			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
 			modelObject->SetPosition(modelObject->Position().x, groundLevel+sphere.radius, modelObject->Position().z);
+			sphere.position = modelObject->Position();
 			glm::vec3 surfaceNormal = glm::vec3(0.f, 1.f, 0.f);
 			//glm::vec3 originAtTriangle
 			//glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
 			//modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
-			glm::vec3 eRoh= glm::normalize(surfaceNormal);
+			glm::vec3 eRoh = glm::normalize(surfaceNormal);
 			glm::vec3 vRoh = velocity*eRoh;
 			//uRoh = -evRoh
-			glm::vec3 deltaU = (-e - 1.f)*vRoh;
-			//@TODO: 
-			glm::vec3 eNormal = -glm::normalize(sphere.radius*(glm::cross(-eRoh, angularVelocity) + glm::vec3(velocity.x, 0.f, velocity.z)));
+			glm::vec3 deltaU = (e + 1.f)*vRoh;
+			glm::vec3 eNormal = glm::normalize(sphere.radius*(glm::cross(eRoh, angularVelocity) + glm::vec3(velocity.x, 0.f, velocity.z)));
 			velocity = velocity + (deltaU)*(eRoh + mu*eNormal);
-			float angularCoefficient = mu / 0.4f*sphere.radius;
-			glm::vec3 eR = glm::normalize(eRoh);
-			angularVelocity = angularCoefficient*deltaU*(glm::cross(eR, eNormal));
-			Log() << angularVelocity << "\n";
+			//float angularCoefficient = (mu*sphere.radius*mass) / (0.4f*mass*sphere.radius*sphere.radius);
+			//Log() << "Angular coefficient: " << angularCoefficient << "\n";
+			glm::vec3 angularDeltaU = (mass*sphere.radius*mu*deltaU)/(mass*sphere.radius*sphere.radius);
+			glm::vec3 eR = -eRoh;
+			//angularVelocity = angularDeltaU*(glm::cross(eNormal, eR));
 		}
 
         modelObject->Rotate(horizontal, vertical, tilt);
@@ -81,7 +82,7 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         float v = glm::length(velocity);
         float u = glm::length(velocity - wind);
         float w = glm::length(angularVelocity);
-        float Cm = (sqrt(1.f + 0.31f*(v/w))-1.f)/20.f;
+        float Cm = (sqrt(1.f + 0.31f*(w/v))-1.f)/20.f;
         float Fm = 0.5f*Cm*1.23*area*u*u;
         glm::vec3 eU = (velocity - wind) / u;
         
