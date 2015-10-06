@@ -78,9 +78,13 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
         float v = glm::length(velocity);
         float u = glm::length(velocity - wind);
         float w = glm::length(angularVelocity);
-        float Cm = (sqrt(1.f + 0.31f * (w/v)) - 1.f) / 20.f;
-        float Fm = 0.5f * Cm * 1.23f * area * u * u;
-        glm::vec3 eU = (velocity - wind) / u;
+		glm::vec3 eU = (velocity - wind) / u;
+		glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
+		if(v > 0.f){
+			float Cm = (sqrt(1.f + 0.31f * (w/v)) - 1.f) / 20.f;
+			float Fm = 0.5f * Cm * 1.23f * area * u * u;
+			magnusForce = Fm * (cross(eU, (angularVelocity / w)));
+		}
         
         /// Calculate drive force.
         float cD;
@@ -90,8 +94,6 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
             cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
         }
         glm::vec3 dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
-        
-        glm::vec3 magnusForce = Fm * (cross(eU, (angularVelocity / w)));
         
         // Calculate gravitational force.
         glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
