@@ -28,22 +28,28 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	modelObject->SetPosition(4.f,0.f,0.f);
 	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 
+
+
 	/// Map of all available clubtypes
-	clubs.insert(std::pair<std::string, ClubType>("Wood 1", ClubType{ 0.2f, glm::radians<float>(11.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Wood 3", ClubType{ 0.208f, glm::radians<float>(15.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Wood 5", ClubType{ 0.218f, glm::radians<float>(18.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 2", ClubType{ 0.232f, glm::radians<float>(18.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 3", ClubType{ 0.239f, glm::radians<float>(21.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 4", ClubType{ 0.246f, glm::radians<float>(24.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 5", ClubType{ 0.253f, glm::radians<float>(27.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 6", ClubType{ 0.260f, glm::radians<float>(31.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 7", ClubType{ 0.267f, glm::radians<float>(35.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 8", ClubType{ 0.274f, glm::radians<float>(39.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Iron 9", ClubType{ 0.281f, glm::radians<float>(43.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Pitching Wedge", ClubType{ 0.285f, glm::radians<float>(48.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Sand Wedge", ClubType{ 0.296f, glm::radians<float>(55.f) }));
-	clubs.insert(std::pair<std::string, ClubType>("Putter", ClubType{ 0.33f, glm::radians<float>(4.f) }));
+	clubs["Wood 1"] = ClubType{ 0.2f, glm::radians<float>(11.f) };
+	clubs["Wood 3"] = ClubType{ 0.208f, glm::radians<float>(15.f) };
+	clubs["Wood 5"] = ClubType{ 0.218f, glm::radians<float>(18.f) };
+	clubs["Iron 2"] = ClubType{ 0.232f, glm::radians<float>(18.f) };
+	clubs["Iron 3"] = ClubType{ 0.239f, glm::radians<float>(21.f) };
+	clubs["Iron 4"] = ClubType{ 0.246f, glm::radians<float>(24.f) };
+	clubs["Iron 5"] = ClubType{ 0.253f, glm::radians<float>(27.f) };
+	clubs["Iron 6"] = ClubType{ 0.260f, glm::radians<float>(31.f) };
+	clubs["Iron 7"] = ClubType{ 0.267f, glm::radians<float>(35.f) };
+	clubs["Iron 8"] = ClubType{ 0.274f, glm::radians<float>(39.f) };
+	clubs["Iron 9"] = ClubType{ 0.281f, glm::radians<float>(43.f) };
+	clubs["Pitching Wedge"] = ClubType{ 0.285f, glm::radians<float>(48.f) };
+	clubs["Sand Wedge"] = ClubType{ 0.296f, glm::radians<float>(55.f) };
+	clubs["Putter"] = ClubType{ 0.33f, glm::radians<float>(4.f) };
 	clubIterator = clubs.begin();
+
+	///Initiate players
+	playerObjects.push_back(PlayerObject{});
+
 	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
@@ -135,9 +141,10 @@ TestScene::~TestScene() {
 
 TestScene::SceneEnd* TestScene::Update(double time) {
     glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
-    if (Input()->Triggered(InputHandler::STRIKE))
-		golfBall->Strike(clubIterator->second, wind);
-    golfBall->Update(time, wind);
+	//average speed of a golf swing ~= 45 m/s
+	if (Input()->Triggered(InputHandler::STRIKE))
+		golfBall->Strike(clubIterator->second, glm::vec3(8.f,0.f,-8.f));
+    golfBall->Update(time, wind, playerObjects);
 
 	if (Input()->Triggered(InputHandler::RESET))
 		golfBall->Reset();
@@ -151,6 +158,10 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 		Log() << clubIterator->first;
 		Log() << "\n";
 	}
+	if (Input()->Triggered(InputHandler::EXPLODE)){
+		golfBall->Explode(playerObjects);
+	}
+
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
