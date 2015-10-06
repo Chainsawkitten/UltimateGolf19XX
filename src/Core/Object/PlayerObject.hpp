@@ -6,7 +6,7 @@ class PlayerObject : public Object {
 public:
 	void TakeDamage(float Pf);
 private:
-	int health;
+	float health = 100.f;
 };
 
 
