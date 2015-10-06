@@ -19,6 +19,9 @@ GameWindow::GameWindow() {
         /// @todo Print error to log.
     }
     
+    if (!GameSettings::GetInstance().GetBool("Show Mouse Cursor"))
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
     glfwMakeContextCurrent(window);
     
     input = new InputHandler(window);
