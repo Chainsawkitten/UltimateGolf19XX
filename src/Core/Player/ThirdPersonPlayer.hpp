@@ -29,6 +29,7 @@ class ThirdPersonPlayer : public Player {
         Object* follow;
         
         float distance;
+        float desiredDistance;
         float horizontalAngle;
         float verticalAngle;
 };

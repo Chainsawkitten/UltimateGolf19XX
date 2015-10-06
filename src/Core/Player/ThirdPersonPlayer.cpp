@@ -7,6 +7,7 @@
 ThirdPersonPlayer::ThirdPersonPlayer(Object *follow) {
     this->follow = follow;
     distance = 10.f;
+    desiredDistance = 10.f;
     horizontalAngle = 0.f;
     verticalAngle = 0.f;
 }
@@ -19,14 +20,22 @@ void ThirdPersonPlayer::Update(double time) {
     verticalAngle += mdy * 0.2f * mouseSensitivity;
     
     if (Input()->ScrollUp())
-        distance -= 1.f;
+        desiredDistance -= 1.f;
     if (Input()->ScrollDown())
-        distance += 1.f;
+        desiredDistance += 1.f;
     
-    if (distance < 0.5f)
-        distance = 0.5f;
-    if (distance > 20.f)
-        distance = 20.f;
+    if (desiredDistance < 0.5f)
+        desiredDistance = 0.5f;
+    if (desiredDistance > 20.f)
+        desiredDistance = 20.f;
+    
+    if (desiredDistance > distance) {
+        distance += 8.f * static_cast<float>(time);
+        distance = desiredDistance < distance ? desiredDistance : distance;
+    } else if (desiredDistance < distance) {
+        distance -= 8.f * static_cast<float>(time);
+        distance = desiredDistance > distance ? desiredDistance : distance;
+    }
     
     float rha = glm::radians(horizontalAngle);
     float rva = glm::radians(verticalAngle);
