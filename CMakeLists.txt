@@ -154,6 +154,7 @@ set(CORE_SRCS
         src/Core/Lighting/DeferredLighting.cpp
         src/Core/Lighting/Light.cpp
         src/Core/Object/Object.cpp
+		src/Core/Object/PlayerObject.cpp
         src/Core/Object/ModelObject.cpp
 	src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
@@ -216,6 +217,7 @@ set(CORE_HEADERS
         src/Core/Lighting/DeferredLighting.hpp
         src/Core/Lighting/Light.hpp
         src/Core/Object/Object.hpp
+		src/Core/Object/PlayerObject.hpp
         src/Core/Object/ModelObject.hpp
 	src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp

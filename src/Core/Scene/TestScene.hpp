@@ -17,6 +17,7 @@
 #include "../Geometry/Model.hpp"
 #include "../Object/GolfBall.hpp"
 #include "../Object/Water.hpp"
+#include "../Object/PlayerObject.hpp"
 
 /** @ingroup Core
  * @{
@@ -75,6 +76,7 @@ class TestScene : public Scene {
 		std::map<std::string, ClubType> clubs;
 		std::map<std::string, ClubType>::iterator clubIterator;
         GolfBall* golfBall;
+		std::vector<PlayerObject> playerObjects;
         glm::vec3 wind;
         
         Water* water;
