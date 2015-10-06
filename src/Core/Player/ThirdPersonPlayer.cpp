@@ -18,12 +18,15 @@ void ThirdPersonPlayer::Update(double time) {
     horizontalAngle += mdx * 0.2f * mouseSensitivity;
     verticalAngle += mdy * 0.2f * mouseSensitivity;
     
+    float rha = glm::radians(horizontalAngle);
+    float rva = glm::radians(verticalAngle);
+    
     glm::vec3 pos = follow->Position();
-    pos += distance * glm::vec3(cos(glm::radians(horizontalAngle)), 0.f, sin(glm::radians(horizontalAngle)));
+    pos += distance * glm::vec3(cos(rha) * cos(rva), sin(rva), sin(rha) * cos(rva));
     GetCamera()->SetPosition(pos);
     
     float hAngle = horizontalAngle + 270.f;
-    GetCamera()->SetRotation(hAngle, 0.f, 0.f);
+    GetCamera()->SetRotation(hAngle, verticalAngle, 0.f);
     
     if (GameSettings::GetInstance().GetBool("Center Mouse Cursor"))
 		Input()->CenterCursor();
