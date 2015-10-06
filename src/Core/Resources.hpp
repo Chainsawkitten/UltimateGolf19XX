@@ -5,6 +5,7 @@
 #include "Geometry/Rectangle.hpp"
 #include "Geometry/Cube.hpp"
 #include "Geometry/Square.hpp"
+#include "Geometry/OBJModel.hpp"
 #include "Texture/Texture2D.hpp"
 #include "Font/Font.hpp"
 
@@ -96,6 +97,19 @@ class ResourceManager {
          * Deletes the instance if no more references exist.
          */
         void FreeSquare();
+        
+        /// Create an OBJ model for rendering if it doesn't already exist.
+        /**
+         * @param filename Filename of model file.
+         * @return The model instance
+         */
+        Geometry::OBJModel* CreateOBJModel(std::string filename);
+        
+        /// Free the reference to the model.
+        /**
+         * @param model %Model to dereference.
+         */
+        void FreeOBJModel(Geometry::OBJModel* model);
         
         /// Create a 2D texture if it doesn't already exist.
         /**
@@ -201,6 +215,14 @@ class ResourceManager {
         // Square
         Geometry::Square* square;
         int squareCount;
+        
+        // OBJ Model
+        struct OBJModelInstance {
+            Geometry::OBJModel* model;
+            int count;
+        };
+        std::map<std::string, OBJModelInstance> objModels;
+        std::map<Geometry::OBJModel*, std::string> objModelsInverse;
         
         // Texture2D
         struct Texture2DInstance {

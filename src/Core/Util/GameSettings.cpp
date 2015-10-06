@@ -12,6 +12,7 @@ GameSettings::GameSettings() {
     
     AddDoubleSetting("Mouse Sensitivity", "Controls", "Mouse Sensitivity", 0.5);
     AddBoolSetting("Center Mouse Cursor", "Controls", "Center Mouse Cursor", true);
+    AddBoolSetting("Show Mouse Cursor", "Controls", "Show Mouse Cursor", false);
     
     AddLongSetting("Screen Width", "Graphics", "Width", 800);
     AddLongSetting("Screen Height", "Graphics", "Height", 600);
