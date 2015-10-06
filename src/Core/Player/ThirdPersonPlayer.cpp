@@ -18,6 +18,16 @@ void ThirdPersonPlayer::Update(double time) {
     horizontalAngle += mdx * 0.2f * mouseSensitivity;
     verticalAngle += mdy * 0.2f * mouseSensitivity;
     
+    if (Input()->ScrollUp())
+        distance -= 1.f;
+    if (Input()->ScrollDown())
+        distance += 1.f;
+    
+    if (distance < 0.5f)
+        distance = 0.5f;
+    if (distance > 20.f)
+        distance = 20.f;
+    
     float rha = glm::radians(horizontalAngle);
     float rva = glm::radians(verticalAngle);
     
