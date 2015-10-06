@@ -80,10 +80,10 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
         float w = glm::length(angularVelocity);
 		glm::vec3 eU = (velocity - wind) / u;
 		glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
-		if(v > 0.f){
+		if (v > 0.f && w > 0.f){
 			float Cm = (sqrt(1.f + 0.31f * (w/v)) - 1.f) / 20.f;
 			float Fm = 0.5f * Cm * 1.23f * area * u * u;
-			magnusForce = Fm * (cross(eU, (angularVelocity / w)));
+			magnusForce = Fm * cross(eU, normalize(angularVelocity));
 		}
         
         /// Calculate drive force.
@@ -131,7 +131,7 @@ void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {
     active = true;
     float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
     
-    angularVelocity = glm::vec3(0.f, 0.f, -360.f * (5.f / 7.f) * (sin(club.loft) * translatedVelocity));
+    //angularVelocity = glm::vec3(0.f, 0.f, -360.f * (5.f / 7.f) * (sin(club.loft) * translatedVelocity));
     float massCoefficient = club.mass / (club.mass + mass);
     float velocitybx = translatedVelocity * massCoefficient * ((1 + restitution)*pow(cos(club.loft), 2) + (2.f / 7.f) * pow(sin(club.loft), 2));
     float velocityby = translatedVelocity * massCoefficient * sin(club.loft)*cos(club.loft)*((5.f / 7.f) + restitution);
