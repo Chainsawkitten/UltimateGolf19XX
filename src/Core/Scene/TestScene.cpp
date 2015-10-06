@@ -134,8 +134,6 @@ TestScene::~TestScene() {
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-    player->Update(time);
-    
     glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
     if (Input()->Triggered(InputHandler::STRIKE))
 		golfBall->Strike(clubIterator->second, wind);
@@ -143,6 +141,8 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 
 	if (Input()->Triggered(InputHandler::RESET))
 		golfBall->Reset();
+    
+    player->Update(time);
 	
 	if (Input()->Triggered(InputHandler::NEXTCLUB)){
 		clubIterator++;
