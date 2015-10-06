@@ -98,8 +98,6 @@ void GolfBall::Update(double time, const glm::vec3& wind) {
         glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
         velocity += acceleration * static_cast<float>(time);
     }
-    
-    Rotate(0.2f, 0.f, 0.f);
 }
 
 void GolfBall::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const{
