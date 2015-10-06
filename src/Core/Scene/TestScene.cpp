@@ -20,12 +20,12 @@ TestScene::TestScene(const glm::vec2& screenSize) {
         "Resources/TropicalSunnyDay/Front.png"
     );
 
-	model = new Geometry::Model("Resources/Models/rock/Rock.bin");
-	std::string diffusePath = "Resources/Models/rock/Diffuse.png";
-	std::string normalPath = "Resources/Models/rock/Normal.png";
-	std::string specularPath = "Resources/Models/rock/Specular.png";
+	model = new Geometry::OBJModel("Resources/Models/Maximo/GolferFemale.obj");
+	std::string diffusePath = "Resources/Models/Maximo/GolferFemaleDiffuse.png";
+	std::string normalPath = "Resources/Models/Maximo/GolferFemaleNormal.png";
+	std::string specularPath = "Resources/Models/Maximo/GolferFemaleSpecular.png";
 	modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
-	modelObject->SetPosition(4.f,0.f,0.f);
+	modelObject->SetPosition(2.f, 0.f, 0.f);
 	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 
 	/// Map of all available clubtypes

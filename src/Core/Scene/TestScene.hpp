@@ -63,7 +63,7 @@ class TestScene : public Scene {
 		Geometry::Terrain* terrain;
         //Model
 		ModelObject* modelObject;
-		Geometry::Model* model;
+		Geometry::OBJModel* model;
 
         Shader* vertexShader;
         Shader* geometryShader;
