@@ -8,21 +8,28 @@ void characterCallback(GLFWwindow* window, unsigned int codePoint) {
     inputMap[window]->CharacterCallback(codePoint);
 }
 
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    inputMap[window]->ScrollCallback(yoffset);
+}
+
 InputHandler* InputHandler::activeInstance = nullptr;
 
-InputHandler::InputHandler(GLFWwindow *window) {
+InputHandler::InputHandler(GLFWwindow* window) {
     this->window = window;
+    inputMap[window] = this;
     
     // Init mouse state.
     for (int i=0; i<3; i++) {
         mouseState[i] = false;
         mouseStateLast[i] = false;
     }
+    glfwSetScrollCallback(window, scrollCallback);
+    lastScroll = 0.0;
+    scroll = 0.0;
     
     keyboardBindings = new std::vector<int>[BUTTONS];
     
     glfwSetCharCallback(window, characterCallback);
-    inputMap[window] = this;
     text = "";
     tempText = "";
 }
@@ -45,6 +52,8 @@ void InputHandler::Update() {
         mouseStateLast[i] = mouseState[i];
         mouseState[i] = (glfwGetMouseButton(window, i) == GLFW_PRESS);
     }
+    lastScroll = scroll;
+    scroll = 0.0;
     
     glfwGetCursorPos(window, &cursorX, &cursorY);
     
@@ -76,6 +85,14 @@ bool InputHandler::MouseDown(int button) const {
 
 bool InputHandler::MouseReleased(int button) const {
     return !mouseState[button] && mouseStateLast[button];
+}
+
+bool InputHandler::ScrollUp() const {
+    return lastScroll > 0.0;
+}
+
+bool InputHandler::ScrollDown() const {
+    return lastScroll < 0.0;
 }
 
 double InputHandler::CursorX() const {
@@ -117,6 +134,10 @@ const std::string& InputHandler::Text() const {
 
 void InputHandler::CharacterCallback(unsigned int codePoint) {
     tempText += static_cast<char>(codePoint);
+}
+
+void InputHandler::ScrollCallback(double yoffset) {
+    scroll += yoffset;
 }
 
 InputHandler* Input() {

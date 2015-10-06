@@ -8,6 +8,7 @@
 #include "../Util/GameSettings.hpp"
 #include "../Util/Input.hpp"
 #include "../Util/Log.hpp"
+#include "../Player/ThirdPersonPlayer.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
     skyboxTexture = new CubeMapTexture(
@@ -51,9 +52,6 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 
     skybox = new Skybox(skyboxTexture);
     
-    player = new Player();
-    player->SetMovementSpeed(2.f);
-    
     deferredLighting = new DeferredLighting(screenSize);
     
     postProcessing = new PostProcessing(screenSize);
@@ -71,6 +69,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject);
     golfBall->SetPosition(2.f, 0.f, 0.f);
+    
+    player = new ThirdPersonPlayer(golfBall);
+    player->SetMovementSpeed(2.f);
     
     wind = glm::vec3(0.f, 0.f, 4.f);
     
@@ -133,8 +134,6 @@ TestScene::~TestScene() {
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-    player->Update(time);
-    
     glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
     if (Input()->Triggered(InputHandler::STRIKE))
 		golfBall->Strike(clubIterator->second, wind);
@@ -142,6 +141,8 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 
 	if (Input()->Triggered(InputHandler::RESET))
 		golfBall->Reset();
+    
+    player->Update(time);
 	
 	if (Input()->Triggered(InputHandler::NEXTCLUB)){
 		clubIterator++;

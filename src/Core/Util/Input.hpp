@@ -70,6 +70,18 @@ class InputHandler {
          */
         bool MouseReleased(int button) const;
         
+        /// Get whether user has moved scroll wheel up.
+        /**
+         * @return Whether user has scrolled up
+         */
+        bool ScrollUp() const;
+        
+        /// Get whether user has moved scroll wheel down.
+        /**
+         * @return Whether user has scrolled down
+         */
+        bool ScrollDown() const;
+        
         /// Get cursor's horizontal position.
         /**
          * @return X-position of the cursor
@@ -127,6 +139,12 @@ class InputHandler {
          */
         void CharacterCallback(unsigned int codePoint);
         
+        /// GLFW scrolling callback.
+        /**
+         * @param yoffset Offset along the Y-axis.
+         */
+        void ScrollCallback(double yoffset);
+        
     private:
         static InputHandler* activeInstance;
         
@@ -137,6 +155,8 @@ class InputHandler {
         bool mouseStateLast[3];
         
         double cursorX, cursorY;
+        double lastScroll;
+        double scroll;
         
         std::string text, tempText;
         

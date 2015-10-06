@@ -12,6 +12,7 @@
  * Show Frame Times    | Display update and render times.    | bool   | false
  * Mouse Sensitivity   | Mouse sensitivity.                  | double | 0.5
  * Center Mouse Cursor | Center the mouse cursor each frame. | bool   | true
+ * Show Mouse Cursor   | Whether to show or hide the cursor. | bool   | false
  * Screen Width        | Width of the game window.           | long   | 800
  * Screen Height       | Height of the game window.          | long   | 600
  * Fullscreen          | Play in fullscreen mode.            | bool   | false
