@@ -4,7 +4,7 @@
 
 Camera::Camera() {
 	fieldOfView = 45.f;
-    zNear = 0.1f;
+    zNear = 0.05f;
     zFar = 100.f;
 }
 

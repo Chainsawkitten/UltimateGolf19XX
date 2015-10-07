@@ -1,22 +1,27 @@
 #pragma once
-#include <glm\glm.hpp>
 
-namespace Physics{
-	class Sphere{
-	public:
-		/// Create new sphere.
-		/**
-		* @param origin The spheres origin.
-		* @param radius The radius of the sphere.
-		*/
-		Sphere(glm::vec3 origin, float radius);
+#include <glm/glm.hpp>
 
-		/// Create new sphere.
-		Sphere();
+/** @ingroup Core
+ * @{
+ */
 
-		glm::vec3 position;
-		float radius;
-	private:
+namespace Physics {
+    /// Sphere.
+	class Sphere {
+        public:
+            /// Create new sphere.
+            /**
+             * @param origin The sphere's origin.
+             * @param radius The radius of the sphere.
+             */
+            Sphere(glm::vec3 origin = glm::vec3(0.f, 0.f, 0.f), float radius = 0.f);
+            
+            /// Position in the world.
+            glm::vec3 position;
+            
+            /// Radius.
+            float radius;
 	};
 }
 

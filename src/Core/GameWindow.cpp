@@ -19,6 +19,9 @@ GameWindow::GameWindow() {
         /// @todo Print error to log.
     }
     
+    if (!GameSettings::GetInstance().GetBool("Show Mouse Cursor"))
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    
     glfwMakeContextCurrent(window);
     
     input = new InputHandler(window);
@@ -51,6 +54,7 @@ void GameWindow::Init() {
     currentScene = new TestScene(size);
     
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CLIP_DISTANCE0);
     
     lastTime = glfwGetTime();
     lastTimeRender = glfwGetTime();
@@ -118,6 +122,9 @@ void GameWindow::AssignKeyboardBindings() {
     input->AssignKeyboard(InputHandler::LEFT, GLFW_KEY_A);
     input->AssignKeyboard(InputHandler::RIGHT, GLFW_KEY_D);
     input->AssignKeyboard(InputHandler::STRIKE, GLFW_KEY_SPACE);
+	input->AssignKeyboard(InputHandler::RESET, GLFW_KEY_R);
+	input->AssignKeyboard(InputHandler::NEXTCLUB, GLFW_KEY_C);
+	input->AssignKeyboard(InputHandler::EXPLODE, GLFW_KEY_E);
     input->AssignKeyboard(InputHandler::QUIT, GLFW_KEY_ESCAPE);
 }
 
@@ -125,7 +132,7 @@ void GameWindow::SetWindowTitle() {
     std::string title = "Ultimate Golf 19XX";
     
     if (GameSettings::GetInstance().GetBool("Show Frame Times"))
-        title += " - " + std::to_string(lastTimeRendered - lastTime) + "ms";
+        title += " - " + std::to_string((lastTimeRendered - lastTime) * 1000.0) + " ms";
     
     glfwSetWindowTitle(window, title.c_str());
 }

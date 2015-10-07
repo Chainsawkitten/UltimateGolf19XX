@@ -33,6 +33,16 @@ Log& Log::operator <<(time_t value) {
     return *this;
 }
 
+Log& Log::operator <<(const glm::vec2& value) {
+    fprintf(stderr, "(%f, %f)", value.x, value.y);
+	return *this;
+}
+
+Log& Log::operator <<(const glm::vec3& value) {
+    fprintf(stderr, "(%f, %f, %f)", value.x, value.y, value.z);
+	return *this;
+}
+
 void ErrorCallback(int error, const char* description) {
 	fputs(description, stderr);
 }

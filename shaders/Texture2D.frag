@@ -6,6 +6,8 @@ in VertexData {
 
 uniform sampler2D baseImage;
 
+out vec4 fragmentColor;
+
 void main () {
-    gl_FragColor = texture(baseImage, vertexIn.texCoords);
+    fragmentColor = texture(baseImage, vertexIn.texCoords);
 }

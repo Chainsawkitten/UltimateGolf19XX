@@ -4,10 +4,6 @@
 #include "../Geometry/Geometry3D.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../Camera/Camera.hpp"
-#include "Default3D.vert.hpp"
-#include "Default3D.geom.hpp"
-#include "Default3D.frag.hpp"
-#include "../Resources.hpp"
 
 /** @ingroup Core
  * @{
@@ -27,13 +23,6 @@ class GeometryObject : public Object {
 		 * @return The renderable Geometry.
 		 */
 		virtual const Geometry::Geometry3D* Geometry() const;
-
-		/// Render the object.
-        /**
-         * @param camera %Camera to render through.
-         * @param screenSize Size of the screen in pixels.
-         */
-		virtual void Render(Camera* camera, const glm::vec2& screenSize) const;
 
 		/// Get relative drawing distance (compared to other objects).
 		/**

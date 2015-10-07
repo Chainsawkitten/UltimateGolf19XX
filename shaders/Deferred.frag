@@ -18,7 +18,10 @@ uniform mat4 lightProjectionMatrix;
 uniform vec4 lightPosition;
 uniform vec3 lightIntensity;
 uniform vec3 diffuseCoefficient;
-uniform vec2 screenSize;
+
+uniform float scale;
+
+in vec2 texCoords;
 
 out vec4 fragmentColor;
 
@@ -53,11 +56,6 @@ float calculateShadow(vec4 lightSpacePosition) {
     return visibility;
 }
 
-// Calculate texcoord
-vec2 calculateTexCoord() {
-	return gl_FragCoord.xy / screenSize;
-}
-
 // Ambient, diffuse and specular lighting.
 vec3 ads(vec3 diffuse, vec3 normal, vec3 position, vec3 specular) {
 	vec4 lightSpacePos = lightProjectionMatrix * lightViewMatrix * 	inverseViewMatrix * vec4(position, 1.0);
@@ -81,12 +79,11 @@ vec3 reconstructPos(vec2 texCoord, float depth){
 }
 
 void main () {
-	vec2 texCoord = calculateTexCoord();
-	float depth = texture(tDepth, texCoord).r;
-	vec3 position = reconstructPos(texCoord, depth);
-	vec3 diffuse = texture(tDiffuse, texCoord).rgb;
-	vec3 normal = texture(tNormals, texCoord).xyz;
-	vec3 specular = texture(tSpecular, texCoord).xyz;
+	float depth = texture(tDepth, texCoords * scale).r;
+	vec3 position = reconstructPos(texCoords, depth);
+	vec3 diffuse = texture(tDiffuse, texCoords * scale).rgb;
+	vec3 normal = texture(tNormals, texCoords * scale).xyz;
+	vec3 specular = texture(tSpecular, texCoords * scale).xyz;
 	
 	fragmentColor = vec4(ads(diffuse, normal, position, specular), 1.0);
 	gl_FragDepth = depth;
