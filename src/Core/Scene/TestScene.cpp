@@ -49,7 +49,10 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	swingStrength = 0.f;
 
 	///Initiate players
-	playerObjects.push_back(PlayerObject{});
+	numberOfPlayers = 2;
+	playerIndex = 0;
+	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
 
 	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
@@ -156,6 +159,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 	}
 	golfBall->Update(time, wind, playerObjects);
 
+
 	if (Input()->Triggered(InputHandler::RESET))
 		golfBall->Reset();
     
@@ -169,7 +173,11 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 		Log() << "\n";
 	}
 	if (Input()->Triggered(InputHandler::EXPLODE)){
-		golfBall->Explode(playerObjects);
+		if (playerIndex < (numberOfPlayers-1))
+			playerIndex++;
+		else
+			playerIndex = 0;
+		golfBall->Explode(playerObjects, playerIndex);
 	}
 
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());

@@ -15,3 +15,11 @@ void PlayerObject::TakeDamage(float Pf){
 	else
 		Log() << "I was not affected by the blast. Oh noeees!\n";
 }
+
+PlayerObject::PlayerObject(glm::vec3 startingPosition){
+	SetPosition(startingPosition);
+}
+
+PlayerObject::PlayerObject(){
+
+}

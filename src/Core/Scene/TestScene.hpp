@@ -78,6 +78,8 @@ class TestScene : public Scene {
 		std::map<std::string, ClubType>::iterator clubIterator;
         GolfBall* golfBall;
 		std::vector<PlayerObject> playerObjects;
+		int playerIndex;
+		int numberOfPlayers;
         glm::vec3 wind;
         
         Water* water;
