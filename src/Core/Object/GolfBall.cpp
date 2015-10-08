@@ -111,7 +111,7 @@ void GolfBall::Render(Camera* camera, const glm::vec2& screenSize, const glm::ve
 	ModelObject::Render(camera, screenSize, clippingPlane);
 }
 
-void GolfBall::Explode(std::vector<PlayerObject>& players){
+void GolfBall::Explode(std::vector<PlayerObject>& players, int playerIndex){
 	//@TODO: Set mass equivalent depending on material used.
 	float equivalenceFactor = 1.0f;
 	float massEquivalent = mass*equivalenceFactor;
@@ -128,6 +128,7 @@ void GolfBall::Explode(std::vector<PlayerObject>& players){
 		Pf = Pf / sqrt(beta*gamma*delta);
 		player.TakeDamage(Pf);
 	}
+	origin = players[playerIndex].Position();
 	Reset();
 }
 
