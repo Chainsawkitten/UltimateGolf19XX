@@ -62,7 +62,7 @@ class GolfBall : public ModelObject {
 		void Reset();
 		
 		// Explodes golfball
-		void Explode(std::vector<PlayerObject>& players);
+		void Explode(std::vector<PlayerObject>& players, int playerIndex);
 		
     private:
 		TerrainObject* terrain;

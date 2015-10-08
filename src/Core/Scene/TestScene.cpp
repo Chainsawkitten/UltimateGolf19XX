@@ -48,7 +48,10 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	clubIterator = clubs.begin();
 
 	///Initiate players
-	playerObjects.push_back(PlayerObject{});
+	numberOfPlayers = 2;
+	playerIndex = 0;
+	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
 
 	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
@@ -143,7 +146,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
 	//average speed of a golf swing ~= 45 m/s
 	if (Input()->Triggered(InputHandler::STRIKE))
-		golfBall->Strike(clubIterator->second, glm::vec3(0.f,0.f,0.f));
+		golfBall->Strike(clubIterator->second, glm::vec3(-5.f,0.f,0.f));
     golfBall->Update(time, wind, playerObjects);
 
 	if (Input()->Triggered(InputHandler::RESET))
@@ -159,7 +162,11 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 		Log() << "\n";
 	}
 	if (Input()->Triggered(InputHandler::EXPLODE)){
-		golfBall->Explode(playerObjects);
+		if (playerIndex < (numberOfPlayers-1))
+			playerIndex++;
+		else
+			playerIndex = 0;
+		golfBall->Explode(playerObjects, playerIndex);
 	}
 
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
