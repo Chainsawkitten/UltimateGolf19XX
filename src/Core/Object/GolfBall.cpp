@@ -133,16 +133,22 @@ void GolfBall::Explode(std::vector<PlayerObject>& players, int playerIndex){
 }
 
 void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {
-	active = true;
-	float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
+    active = true;
 
-	//angularVelocity = glm::vec3(0.f, 0.f, -360.f * (5.f / 7.f) * (sin(club.loft) * translatedVelocity));
-	float massCoefficient = club.mass / (club.mass + mass);
-	float velocitybx = translatedVelocity * massCoefficient * ((1 + restitution)*pow(cos(club.loft), 2) + (2.f / 7.f) * pow(sin(club.loft), 2));
-	float velocityby = translatedVelocity * massCoefficient * sin(club.loft)*cos(club.loft)*((5.f / 7.f) + restitution);
+	float signX = clubVelocity.x / abs(clubVelocity.x);
+	float signZ = clubVelocity.z / abs(clubVelocity.z);
 
-	float horizontalAngle = atan(clubVelocity.x / clubVelocity.z);
-	velocity = glm::vec3(velocitybx*sin(horizontalAngle), velocityby, velocitybx*cos(horizontalAngle));
+    float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
+	//float tempAngular = -360.f * (((5.f / 7.f) * (sin(club.loft) * translatedVelocity))/ this->sphere.radius);
+    
+    float massCoefficient = club.mass / (club.mass + mass);
+    float velocitybx = translatedVelocity * massCoefficient * ((1 + restitution)*pow(cos(club.loft), 2) + (2.f / 7.f) * pow(sin(club.loft), 2));
+    float velocityby = translatedVelocity * massCoefficient * sin(club.loft)*cos(club.loft)*((5.f / 7.f) + restitution);
+    
+	float horizontalAngle = atan(abs(clubVelocity.x / clubVelocity.z));
+	velocity = glm::vec3(signX*velocitybx*sin(horizontalAngle), velocityby, signZ*velocitybx*cos(horizontalAngle));
+	//angularVelocity = glm::vec3(tempAngular*sin(horizontalAngle), 0.f, tempAngular*cos(horizontalAngle));
+
 }
 
 void GolfBall::SetRadius(float radius) {
