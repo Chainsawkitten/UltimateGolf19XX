@@ -46,6 +46,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	clubs["Sand Wedge"] = ClubType{ 0.296f, glm::radians<float>(55.f) };
 	clubs["Putter"] = ClubType{ 0.33f, glm::radians<float>(4.f) };
 	clubIterator = clubs.begin();
+	swingStrength = 0.f;
 
 	///Initiate players
 	playerObjects.push_back(PlayerObject{});
@@ -141,10 +142,19 @@ TestScene::~TestScene() {
 
 TestScene::SceneEnd* TestScene::Update(double time) {
     glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
-	//average speed of a golf swing ~= 45 m/s
-	if (Input()->Triggered(InputHandler::STRIKE))
-		golfBall->Strike(clubIterator->second, glm::vec3(0.f,0.f,0.f));
-    golfBall->Update(time, wind, playerObjects);
+	swingStrength += 40.f*time;
+	//Log() << (int)swingStrength << "\n";
+	
+	if (Input()->Triggered(InputHandler::STRIKE)){
+		//average speed of a golf swing ~= 45 m/s
+		swingStrength = fmodf(swingStrength, 100.f);
+		glm::vec3 tempCamera = player->GetCamera()->Position();
+		glm::vec3 tempBall = golfBall->Position();
+		glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
+		golfBall->Strike(clubIterator->second, swingStrength*0.45f*strikeDirection);
+		
+	}
+	golfBall->Update(time, wind, playerObjects);
 
 	if (Input()->Triggered(InputHandler::RESET))
 		golfBall->Reset();

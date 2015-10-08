@@ -57,6 +57,7 @@ class TestScene : public Scene {
         DeferredLighting* deferredLighting;
         Geometry::Geometry3D* geometry;
         GeometryObject* geometryObject;
+		float swingStrength;
 
         Texture2D* texture;
 		//Terrain
