@@ -143,7 +143,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
 	//average speed of a golf swing ~= 45 m/s
 	if (Input()->Triggered(InputHandler::STRIKE))
-		golfBall->Strike(clubIterator->second, glm::vec3(0.f,0.f,0.f));
+		golfBall->Strike(clubIterator->second, glm::vec3(-5.f,0.f,0.f));
     golfBall->Update(time, wind, playerObjects);
 
 	if (Input()->Triggered(InputHandler::RESET))
