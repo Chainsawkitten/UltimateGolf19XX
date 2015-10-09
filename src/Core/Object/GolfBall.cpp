@@ -50,36 +50,49 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
             orientation = deltaQuat * orientation;
         }
         
-        // Check for collision.
-        if ((sphere.position.y - sphere.radius) < groundLevel){
-            SetPosition(Position().x, groundLevel + sphere.radius, Position().z);
-            sphere.position = Position();
-            glm::vec3 surfaceNormal = glm::normalize(glm::vec3(0.f, 1.f, 0.f));
-            glm::vec3 eRoh = glm::normalize(surfaceNormal);
-            //@TODO: Find better approximative value for vCrit.
-            float vCritical = 0.2f;
-            float e = 0.55f;
-            float mu = 0.51f;
-            //If the velocity projected along the surface normal isn't enough to lift the ball off the surface, then the ball is either rolling or sliding across the surface.
-            //@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
-            //glm::vec3 originAtTriangle
-            //glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
-            //modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
-            if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
-                glm::vec3 Un = (1.f / 1.4f)*glm::vec3(velocity.x, 0.f, velocity.y);
-                angularVelocity = Un / sphere.radius;
-            }
-            glm::vec3 vRoh = velocity*eRoh;
-            glm::vec3 deltaU = -(e + 1.f)*vRoh;
-            //Log() << deltaU << "\n";
-            glm::vec3 eNormal = glm::normalize((sphere.radius*glm::cross(eRoh, angularVelocity) + (velocity - (glm::dot(velocity, surfaceNormal))*surfaceNormal)));
-            //Log() << eNormal << "\n";
-            velocity = velocity + (glm::length(deltaU))*(eRoh + mu*eNormal);
-            glm::vec3 eR = -eRoh;
-            angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eNormal));
-            //Log() << angularVelocity << "\n";
-        }
-        //Log() << angularVelocity << "\n";
+		//check for collision
+		if ((sphere.position.y - sphere.radius) < groundLevel){
+			float vCritical = 0.2f;
+			float e = 0.55f;
+			float mu = 0.91f;
+			float muRolling = 0.011f;
+			SetPosition(Position().x, groundLevel + sphere.radius, Position().z);
+			sphere.position = Position();
+			glm::vec3 surfaceNormal = glm::normalize(glm::vec3(0.f, 1.f, 0.f));
+			glm::vec3 eRoh = glm::normalize(surfaceNormal);
+			//@TODO: Find better approximative value for vCrit.
+			glm::vec3 tangentialVelocity = velocity - (glm::dot(velocity, surfaceNormal))*surfaceNormal;
+			//If the velocity projected along the surface normal isn't enough to lift the ball off the surface, then the ball is either rolling or sliding across the surface.
+			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
+			//glm::vec3 originAtTriangle
+			//glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
+			//modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
+			glm::vec3 eFriction = glm::normalize((sphere.radius*glm::cross(eRoh, angularVelocity) + tangentialVelocity));
+			glm::vec3 vRoh = velocity*eRoh;
+			glm::vec3 eR = -eRoh;
+			float deltaU = glm::length(-(e + 1.f)*vRoh);
+			//Log() << glm::length(glm::dot(velocity, eRoh));
+			glm::vec3 angularDirection = glm::cross(glm::normalize(tangentialVelocity), eR);
+			float w = glm::dot(angularVelocity, angularDirection);
+			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
+				if (w*sphere.radius >= glm::length(tangentialVelocity))
+				{
+					Log() << "Slajding.\n";
+					//slajding
+					velocity = tangentialVelocity - static_cast<float>(time)*(eFriction*mu*9.82f);
+					angularVelocity += (5.f / 2.f)*(mu*9.82f / sphere.radius)*static_cast<float>(time)*angularDirection;
+				} else {
+					Log() << "Rolling.\n";
+					velocity = tangentialVelocity - static_cast<float>(time)*(glm::normalize(tangentialVelocity)*muRolling*9.82f);
+				}
+			} else {
+				glm::vec3 vRoh = velocity*eRoh;
+				float deltaU = glm::length(-(e + 1.f)*vRoh);
+				velocity += (deltaU)*(eRoh + mu*eFriction);
+				angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
+			}
+		}
+        Log() << angularVelocity << "\n";
         //Log() << glm::dot(velocity, glm::vec3(0.f,1.f,0.f)) << "\n";
         
         // Calculate magnus force.

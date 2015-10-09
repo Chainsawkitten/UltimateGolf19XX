@@ -145,7 +145,7 @@ TestScene::~TestScene() {
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-    glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
+    glm::vec3 wind = glm::vec3(0.f, 0.f, 0.f);
 	swingStrength += 40.f*time;
 	//Log() << (int)swingStrength << "\n";
 	
@@ -155,7 +155,8 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 		glm::vec3 tempCamera = player->GetCamera()->Position();
 		glm::vec3 tempBall = golfBall->Position();
 		glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
-		golfBall->Strike(clubIterator->second, swingStrength*0.45f*strikeDirection);
+		//golfBall->Strike(clubIterator->second, swingStrength*0.45f*strikeDirection);
+		golfBall->Strike(clubIterator->second, 2.f*0.45f*strikeDirection);
 		
 	}
 	golfBall->Update(time, wind, playerObjects);
