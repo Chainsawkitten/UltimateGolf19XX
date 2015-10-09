@@ -48,6 +48,10 @@ namespace Geometry {
     Rectangle::~Rectangle() {
         delete[] vertexData;
         delete[] indexData;
+        
+        Resources().FreeShaderProgram(shaderProgram);
+        Resources().FreeShader(vertexShader);
+        Resources().FreeShader(fragmentShader);
     }
     
     Geometry2D::Vertex* Rectangle::Vertices() const {

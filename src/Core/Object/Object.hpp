@@ -102,7 +102,7 @@ class Object {
 		/**
 		 * @return Object's orientation matrix based on its rotation.
 		 */
-		glm::mat4 Orientation() const;
+		virtual glm::mat4 Orientation() const;
 
 		/// Get model matrix.
 		/**
