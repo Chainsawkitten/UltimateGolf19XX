@@ -4,6 +4,7 @@
 #include "ModelObject.hpp"
 #include "../Physics/Sphere.hpp"
 #include "TerrainObject.hpp"
+#include "PlayerObject.hpp"
 
 /** @ingroup Core
  * @{
@@ -36,8 +37,9 @@ class GolfBall : public ModelObject {
         /**
          * @param time Time since last frame (in seconds).
          * @param wind The wind velocity.
+		 * @param players Vector containing PlayerObjects.
          */
-        void Update(double time, const glm::vec3& wind);
+		void Update(double time, const glm::vec3& wind, std::vector<PlayerObject>& players);
         
         /// Render the object.
         /**
@@ -59,11 +61,15 @@ class GolfBall : public ModelObject {
 		/// Resets ball to original position.
 		void Reset();
 		
+		// Explodes golfball
+		void Explode(std::vector<PlayerObject>& players, int playerIndex);
+		
     private:
 		TerrainObject* terrain;
 		float groundLevel;
         glm::vec3 velocity;
 		glm::vec3 angularVelocity;
+		glm::vec3 origin;
         bool active;
         Geometry::OBJModel* modelGeometry;
         

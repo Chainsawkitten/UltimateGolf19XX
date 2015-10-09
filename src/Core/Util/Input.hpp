@@ -24,6 +24,7 @@ class InputHandler {
             STRIKE, ///< Button to strike the golf ball.
 			RESET, ///< Button to reset ball (DEBUG)
 			NEXTCLUB, ///< Button to change club.
+			EXPLODE,
             QUIT, ///< Quit game
             BUTTONS, ///< Total number of buttons
         };
