@@ -69,9 +69,17 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 eR = -eRoh;
 			float deltaU = glm::length(-(e + 1.f)*vRoh);
 			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
-				//slajding
-				velocity = tangentialVelocity - static_cast<float>(time)*(eFriction*mu)*glm::vec3(0.f,9.82f,0.f);
-				angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
+				if (glm::length(tangentialVelocity) > sphere.radius*glm::length(angularVelocity)){
+					Log() << "Slajding.\n";
+					//slajding
+					velocity = tangentialVelocity - static_cast<float>(time)*(eFriction*mu)*glm::vec3(0.f,9.82f,0.f);
+					angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
+				}
+				else{
+					Log() << "Not slajding (Rolling)\n.";
+					velocity = tangentialVelocity + static_cast<float>(time)*glm::length(sphere.radius*angularVelocity)*glm::normalize(tangentialVelocity) - static_cast<float>(time)*(eFriction*muRolling)*glm::vec3(0.f, 9.82f, 0.f);
+					angularVelocity = velocity / sphere.radius;
+				}
 			}
 			else {
 				glm::vec3 vRoh = velocity*eRoh;
