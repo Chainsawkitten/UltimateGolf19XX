@@ -145,7 +145,7 @@ TestScene::~TestScene() {
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-    glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
+    glm::vec3 wind = glm::vec3(0.f, 0.f, 0.f);
 	swingStrength += 40.f*time;
 	//Log() << (int)swingStrength << "\n";
 	

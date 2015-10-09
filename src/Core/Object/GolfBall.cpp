@@ -71,25 +71,29 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 vRoh = velocity*eRoh;
 			glm::vec3 eR = -eRoh;
 			float deltaU = glm::length(-(e + 1.f)*vRoh);
+			//Log() << glm::length(glm::dot(velocity, eRoh));
+			glm::vec3 angularDirection = glm::cross(glm::normalize(tangentialVelocity), eR);
 			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
-				if (true){
-					//Log() << "Slajding.\n";
+				if (glm::dot(angularDirection, angularVelocity) < 0.f)
+				{
+					Log() << "Slajding.\n";
 					//slajding
 					velocity = tangentialVelocity - static_cast<float>(time)*(eFriction*mu)*glm::vec3(0.f, 9.82f, 0.f);
-					angularVelocity += (5.f / 2.f)*(mu*9.82f / sphere.radius)*static_cast<float>(time)*glm::cross(glm::normalize(velocity),eRoh);
+					angularVelocity += (5.f / 2.f)*(mu*9.82f / sphere.radius)*static_cast<float>(time)*angularDirection;
 				}
 				else{
-					//@TODO: Proper rolling.
+					Log() << "Rolling.\n";
+					//rolling
+					velocity += angularVelocity*sphere.radius;
 				}
-			}
-			else {
-				//glm::vec3 vRoh = velocity*eRoh;
-				//float deltaU = glm::length(-(e + 1.f)*vRoh);
-				//velocity += (deltaU)*(eRoh + mu*eFriction);
-				//angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
+			} else {
+				glm::vec3 vRoh = velocity*eRoh;
+				float deltaU = glm::length(-(e + 1.f)*vRoh);
+				velocity += (deltaU)*(eRoh + mu*eFriction);
+				angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
 			}
 		}
-        //Log() << angularVelocity << "\n";
+        Log() << angularVelocity << "\n";
         //Log() << glm::dot(velocity, glm::vec3(0.f,1.f,0.f)) << "\n";
         
         // Calculate magnus force.
