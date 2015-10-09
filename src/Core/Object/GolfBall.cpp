@@ -54,7 +54,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 		if ((sphere.position.y - sphere.radius) < groundLevel){
 			float vCritical = 0.2f;
 			float e = 0.55f;
-			float mu = 0.51f;
+			float mu = 0.91f;
 			float muRolling = 0.011f;
 			SetPosition(Position().x, groundLevel + sphere.radius, Position().z);
 			sphere.position = Position();
@@ -72,23 +72,21 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 eR = -eRoh;
 			float deltaU = glm::length(-(e + 1.f)*vRoh);
 			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
-				if (glm::length(tangentialVelocity) > sphere.radius*glm::length(angularVelocity)){
-					Log() << "Slajding.\n";
+				if (true){
+					//Log() << "Slajding.\n";
 					//slajding
 					velocity = tangentialVelocity - static_cast<float>(time)*(eFriction*mu)*glm::vec3(0.f, 9.82f, 0.f);
-					angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
+					angularVelocity += (5.f / 2.f)*(mu*9.82f / sphere.radius)*static_cast<float>(time)*glm::cross(glm::normalize(velocity),eRoh);
 				}
 				else{
-					Log() << "Not slajding (Rolling)\n.";
-					velocity = tangentialVelocity + static_cast<float>(time)*glm::length(sphere.radius*angularVelocity)*glm::normalize(tangentialVelocity) - static_cast<float>(time)*(eFriction*muRolling)*glm::vec3(0.f, 9.82f, 0.f);
-					angularVelocity = velocity / sphere.radius;
+					//@TODO: Proper rolling.
 				}
 			}
 			else {
-				glm::vec3 vRoh = velocity*eRoh;
-				float deltaU = glm::length(-(e + 1.f)*vRoh);
-				velocity += (deltaU)*(eRoh + mu*eFriction);
-				angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
+				//glm::vec3 vRoh = velocity*eRoh;
+				//float deltaU = glm::length(-(e + 1.f)*vRoh);
+				//velocity += (deltaU)*(eRoh + mu*eFriction);
+				//angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
 			}
 		}
         //Log() << angularVelocity << "\n";
