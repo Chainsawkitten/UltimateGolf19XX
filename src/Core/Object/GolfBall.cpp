@@ -54,24 +54,26 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 surfaceNormal = glm::normalize(glm::vec3(0.f, 1.f, 0.f));
 			glm::vec3 eRoh = glm::normalize(surfaceNormal);
 			//@TODO: Find better approximative value for vCrit.
-			float vCritical = 0.1f;
+			float vCritical = 0.2f;
+			float e = 0.55f;
+			float mu = 0.51f;
 			//If the velocity projected along the surface normal isn't enough to lift the ball off the surface, then the ball is either rolling or sliding across the surface.
 			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
 			//glm::vec3 originAtTriangle
 			//glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
 			//modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
 			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
-				Log() << "Test!\n";
+				glm::vec3 Un = (1.f / 1.4f)*glm::vec3(velocity.x, 0.f, velocity.y);
+				angularVelocity = Un / sphere.radius;
 			}
-			float e = 0.55f;
-			float mu = 0.51f;
 			glm::vec3 vRoh = velocity*eRoh;
 			glm::vec3 deltaU = -(e + 1.f)*vRoh;
+			//Log() << deltaU << "\n";
 			glm::vec3 eNormal = glm::normalize((sphere.radius*glm::cross(eRoh, angularVelocity) + (velocity - (glm::dot(velocity, surfaceNormal))*surfaceNormal)));
-			Log() << eNormal << "\n";
-			velocity = velocity + (deltaU)*(eRoh + mu*eNormal);
+			//Log() << eNormal << "\n";
+			velocity = velocity + (glm::length(deltaU))*(eRoh + mu*eNormal);
 			glm::vec3 eR = -eRoh;
-			//angularVelocity += ((mass*sphere.radius*mu) / (0.4f*mass*sphere.radius*sphere.radius))*(glm::cross(eR, eNormal));
+			angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eNormal));
 			//Log() << angularVelocity << "\n";
 		}
 		//Log() << angularVelocity << "\n";
@@ -148,7 +150,6 @@ void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {
 	float horizontalAngle = atan(abs(clubVelocity.x / clubVelocity.z));
 	velocity = glm::vec3(signX*velocitybx*sin(horizontalAngle), velocityby, signZ*velocitybx*cos(horizontalAngle));
 	//angularVelocity = glm::vec3(tempAngular*sin(horizontalAngle), 0.f, tempAngular*cos(horizontalAngle));
-
 }
 
 void GolfBall::SetRadius(float radius) {
