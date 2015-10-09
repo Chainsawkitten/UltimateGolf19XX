@@ -54,24 +54,26 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 surfaceNormal = glm::normalize(glm::vec3(0.f, 1.f, 0.f));
 			glm::vec3 eRoh = glm::normalize(surfaceNormal);
 			//@TODO: Find better approximative value for vCrit.
-			float vCritical = 0.1f;
+			float vCritical = 0.2f;
+			float e = 0.55f;
+			float mu = 0.51f;
 			//If the velocity projected along the surface normal isn't enough to lift the ball off the surface, then the ball is either rolling or sliding across the surface.
 			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
 			//glm::vec3 originAtTriangle
 			//glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
 			//modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
 			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
-				Log() << "Test!\n";
+				glm::vec3 Un = (1.f / 1.4f)*glm::vec3(velocity.x, 0.f, velocity.y);
+				angularVelocity = Un / sphere.radius;
 			}
-			float e = 0.55f;
-			float mu = 0.51f;
 			glm::vec3 vRoh = velocity*eRoh;
 			glm::vec3 deltaU = -(e + 1.f)*vRoh;
+			//Log() << deltaU << "\n";
 			glm::vec3 eNormal = glm::normalize((sphere.radius*glm::cross(eRoh, angularVelocity) + (velocity - (glm::dot(velocity, surfaceNormal))*surfaceNormal)));
-			Log() << eNormal << "\n";
-			velocity = velocity + (deltaU)*(eRoh + mu*eNormal);
+			//Log() << eNormal << "\n";
+			velocity = velocity + (glm::length(deltaU))*(eRoh + mu*eNormal);
 			glm::vec3 eR = -eRoh;
-			//angularVelocity += ((mass*sphere.radius*mu) / (0.4f*mass*sphere.radius*sphere.radius))*(glm::cross(eR, eNormal));
+			angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eNormal));
 			//Log() << angularVelocity << "\n";
 		}
 		//Log() << angularVelocity << "\n";
@@ -137,6 +139,7 @@ void GolfBall::Strike(ClubType club, glm::vec3 clubVelocity) {
 	float translatedVelocity = sqrt(pow(clubVelocity.x, 2) + pow(clubVelocity.z, 2));
 
 	//angularVelocity = glm::vec3(0.f, 0.f, -360.f * (5.f / 7.f) * (sin(club.loft) * translatedVelocity));
+	//angularVelocity = glm::vec3(0.f,0.f,500.f);
 	float massCoefficient = club.mass / (club.mass + mass);
 	float velocitybx = translatedVelocity * massCoefficient * ((1 + restitution)*pow(cos(club.loft), 2) + (2.f / 7.f) * pow(sin(club.loft), 2));
 	float velocityby = translatedVelocity * massCoefficient * sin(club.loft)*cos(club.loft)*((5.f / 7.f) + restitution);
