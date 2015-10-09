@@ -83,7 +83,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 					angularVelocity += (5.f / 2.f)*(mu*9.82f / sphere.radius)*static_cast<float>(time)*angularDirection;
 				} else {
 					Log() << "Rolling.\n";
-					velocity = tangentialVelocity - static_cast<float>(time)*(glm::normalize(-tangentialVelocity)*muRolling*sphere.radius*9.82f);
+					velocity = tangentialVelocity - static_cast<float>(time)*(glm::normalize(tangentialVelocity)*muRolling*9.82f);
 				}
 			} else {
 				glm::vec3 vRoh = velocity*eRoh;
