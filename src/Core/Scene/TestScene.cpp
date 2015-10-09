@@ -11,25 +11,14 @@
 #include "../Player/ThirdPersonPlayer.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
-    skyboxTexture = new CubeMapTexture(
-        "Resources/TropicalSunnyDay/Right.png",
-        "Resources/TropicalSunnyDay/Left.png",
-        "Resources/TropicalSunnyDay/Up.png",
-        "Resources/TropicalSunnyDay/Down.png",
-        "Resources/TropicalSunnyDay/Back.png",
-        "Resources/TropicalSunnyDay/Front.png"
-    );
-
-	model = new Geometry::Model("Resources/Models/rock/Rock.bin");
-	std::string diffusePath = "Resources/Models/rock/Diffuse.png";
-	std::string normalPath = "Resources/Models/rock/Normal.png";
-	std::string specularPath = "Resources/Models/rock/Specular.png";
-	modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
-	modelObject->SetPosition(4.f,0.f,0.f);
-	modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
-
-
-
+    model = Resources().CreateOBJModel("Resources/Models/Maximo/GolferFemale.obj");
+    std::string diffusePath = "Resources/Models/Maximo/GolferFemaleDiffuse.png";
+    std::string normalPath = "Resources/Models/Maximo/GolferFemaleNormal.png";
+    std::string specularPath = "Resources/Models/Maximo/GolferFemaleSpecular.png";
+    modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
+    modelObject->SetPosition(2.f, 0.f, 0.f);
+    modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
+    
 	/// Map of all available clubtypes
 	clubs["Wood 1"] = ClubType{ 0.2f, glm::radians<float>(11.f) };
 	clubs["Wood 3"] = ClubType{ 0.208f, glm::radians<float>(15.f) };
@@ -58,8 +47,16 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
-	terrainObject->SetScale(50.f, 10.f, 50.f);
-
+    terrainObject->SetScale(50.f, 10.f, 50.f);
+    
+    skyboxTexture = new CubeMapTexture(
+                "Resources/TropicalSunnyDay/Right.png",
+                "Resources/TropicalSunnyDay/Left.png",
+                "Resources/TropicalSunnyDay/Up.png",
+                "Resources/TropicalSunnyDay/Down.png",
+                "Resources/TropicalSunnyDay/Back.png",
+                "Resources/TropicalSunnyDay/Front.png"
+                );
     skybox = new Skybox(skyboxTexture);
     
     deferredLighting = new DeferredLighting(screenSize);
@@ -115,7 +112,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 }
 
 TestScene::~TestScene() {
-	delete skybox;
+    delete skybox;
     delete skyboxTexture;
     
     delete particleSystem;
@@ -130,8 +127,12 @@ TestScene::~TestScene() {
     
     delete geometryObject;
     Resources().FreeCube();
+    delete modelObject;
+    Resources().FreeOBJModel(model);
     
     delete golfBall;
+    delete terrainObject;
+    delete terrain;
     
     delete water;
     
@@ -180,7 +181,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 			playerIndex = 0;
 		golfBall->Explode(playerObjects, playerIndex);
 	}
-
+    
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
@@ -255,11 +256,11 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     // End - render cube
     
-	modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
-
+    modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
-	terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     renderTarget->SetTarget();
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
