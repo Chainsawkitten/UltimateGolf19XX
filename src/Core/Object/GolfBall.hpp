@@ -5,6 +5,7 @@
 #include "../Physics/Sphere.hpp"
 #include "TerrainObject.hpp"
 #include "PlayerObject.hpp"
+#include <glm/gtc/quaternion.hpp>
 
 /** @ingroup Core
  * @{
@@ -61,13 +62,25 @@ class GolfBall : public ModelObject {
 		/// Resets ball to original position.
 		void Reset();
 		
-		// Explodes golfball
+		/// Explodes golfball
+        /**
+         * @param players Vector describing all players.
+         * @param playerIndex Index of the currently active player.
+         */
 		void Explode(std::vector<PlayerObject>& players, int playerIndex);
+        
+        /// Get orientation matrix.
+		/**
+		 * @return Object's orientation matrix based on its rotation.
+		 */
+		glm::mat4 Orientation() const;
 		
     private:
 		TerrainObject* terrain;
 		float groundLevel;
         glm::vec3 velocity;
+        
+        glm::quat orientation;
 		glm::vec3 angularVelocity;
 		glm::vec3 origin;
         bool active;

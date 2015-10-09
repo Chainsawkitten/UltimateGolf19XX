@@ -5,7 +5,8 @@
 #include "Default3D.frag.hpp"
 #include "glm/gtc/constants.hpp"
 #include "../Util/Log.hpp"
-
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : ModelObject(modelGeometry = Resources().CreateOBJModel("Resources/Models/GolfBall/GolfBall.obj"),
                                                                             "Resources/Models/GolfBall/Diffuse.png",
@@ -36,17 +37,18 @@ void GolfBall::Reset(){
     angularVelocity = glm::vec3(0.f, 0.f, 0.f);
     SetPosition(origin);
     sphere.position = Position();
+    orientation = glm::quat();
 }
 
 void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObject>& players) {
     if (active) {
-        Move(static_cast<float>(time)*velocity);
+        Move(static_cast<float>(time) * velocity);
         sphere.position = Position();
         
-        float horizontal = -static_cast<float>(time)*angularVelocity.x*(glm::pi<float>());
-        float vertical = -static_cast<float>(time)*angularVelocity.y*(glm::pi<float>());
-        float tilt = -static_cast<float>(time)*angularVelocity.z*(glm::pi<float>());
-        Rotate(horizontal, vertical, tilt);
+        if (glm::length(angularVelocity) > 0.0001f) {
+            glm::quat deltaQuat = glm::angleAxis(static_cast<float>(time) * glm::length(angularVelocity), glm::normalize(angularVelocity));
+            orientation = deltaQuat * orientation;
+        }
         
         // Check for collision.
         if ((sphere.position.y - sphere.radius) < groundLevel){
@@ -163,4 +165,8 @@ void GolfBall::SetRadius(float radius) {
     sphere.radius = radius;
     SetScale(glm::vec3(radius, radius, radius));
     area = glm::pi<float>() * radius * radius;
+}
+
+glm::mat4 GolfBall::Orientation() const {
+	return glm::toMat4(orientation);
 }
