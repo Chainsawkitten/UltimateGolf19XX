@@ -50,7 +50,7 @@ class GolfBall : public ModelObject {
 		void Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const;
         
         /// Hit the golf ball with a club.
-		void Strike(ClubType club, glm::vec3 clubVelocity);
+		void Strike(ClubType club, const glm::vec3& clubVelocity);
         
         /// Set the radius of the golf ball.
         /**
