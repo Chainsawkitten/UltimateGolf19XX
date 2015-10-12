@@ -70,7 +70,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			float vRoh = glm::dot(velocity, eRoh);
 			glm::vec3 eR = -eRoh;
 			float deltaU = -(e + 1.f) * vRoh;
-			glm::vec3 angularDirection = glm::cross(glm::normalize(tangentialVelocity), eR);
+			glm::vec3 angularDirection = glm::cross(eR, glm::normalize(tangentialVelocity));
 			float w = glm::dot(angularVelocity, angularDirection);
 			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
 				if (w*sphere.radius >= glm::length(tangentialVelocity))
@@ -79,6 +79,8 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 					angularVelocity += (5.f / 2.f)*(mu*9.82f / sphere.radius)*static_cast<float>(time)*angularDirection;
 				} else {
 					velocity = tangentialVelocity - static_cast<float>(time)*(glm::normalize(tangentialVelocity)*muRolling*9.82f);
+					float tangentialVelocityAfter = glm::length(velocity - (glm::dot(velocity, surfaceNormal))*surfaceNormal);
+					angularVelocity = (glm::length(tangentialVelocityAfter) / sphere.radius)*angularDirection;
 				}
 			} else {
 				float initialVelocity = (5.f/7.f)*glm::length(velocity);
@@ -117,7 +119,8 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
 			velocity += acceleration * static_cast<float>(time);
 		}
-		Log() << velocity << "\n";
+		//Log() << velocity << "\n";
+		Log() << angularVelocity << "\n";
     }
 }
 
