@@ -52,15 +52,14 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
         
 		//check for collision
 		if ((sphere.position.y - sphere.radius) < groundLevel){
-			float vCritical = 0.2f;
+			float vCritical = 0.3f;
 			float e = 0.55f;
-			float mu = 0.91f;
+			float mu = 0.51f;
 			float muRolling = 0.011f;
 			SetPosition(Position().x, groundLevel + sphere.radius, Position().z);
 			sphere.position = Position();
 			glm::vec3 surfaceNormal = glm::normalize(glm::vec3(0.f, 1.f, 0.f));
 			glm::vec3 eRoh = glm::normalize(surfaceNormal);
-			//@TODO: Find better approximative value for vCrit.
 			glm::vec3 tangentialVelocity = velocity - (glm::dot(velocity, surfaceNormal))*surfaceNormal;
 			//If the velocity projected along the surface normal isn't enough to lift the ball off the surface, then the ball is either rolling or sliding across the surface.
 			//@TODO: Move ball along surfacenormal instead of along y-axis. Need to know distance between balls current position and triangle.
@@ -68,60 +67,57 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			//glm::vec3 displacementAlongNormal = surfaceNormal*sphere.radius;
 			//modelObject->SetPosition(displacementAlongNormal + originAtTriangle);
 			glm::vec3 eFriction = glm::normalize((sphere.radius*glm::cross(eRoh, angularVelocity) + tangentialVelocity));
-			glm::vec3 vRoh = velocity*eRoh;
+			float vRoh = glm::dot(velocity, eRoh);
 			glm::vec3 eR = -eRoh;
-			float deltaU = glm::length(-(e + 1.f)*vRoh);
-			//Log() << glm::length(glm::dot(velocity, eRoh));
+			float deltaU = -(e + 1.f) * vRoh;
 			glm::vec3 angularDirection = glm::cross(glm::normalize(tangentialVelocity), eR);
 			float w = glm::dot(angularVelocity, angularDirection);
 			if (glm::length(glm::dot(velocity, eRoh)) < vCritical){
 				if (w*sphere.radius >= glm::length(tangentialVelocity))
 				{
-					Log() << "Slajding.\n";
-					//slajding
 					velocity = tangentialVelocity - static_cast<float>(time)*(eFriction*mu*9.82f);
 					angularVelocity += (5.f / 2.f)*(mu*9.82f / sphere.radius)*static_cast<float>(time)*angularDirection;
 				} else {
-					Log() << "Rolling.\n";
 					velocity = tangentialVelocity - static_cast<float>(time)*(glm::normalize(tangentialVelocity)*muRolling*9.82f);
 				}
 			} else {
-				glm::vec3 vRoh = velocity*eRoh;
-				float deltaU = glm::length(-(e + 1.f)*vRoh);
-				velocity += (deltaU)*(eRoh + mu*eFriction);
-				angularVelocity += ((mu*glm::length(deltaU)) / (sphere.radius))*(glm::cross(eR, eFriction));
+				float initialVelocity = (5.f/7.f)*glm::length(velocity);
+				velocity += deltaU*eRoh;
+				float tangentialVelocityAfterCollision = glm::length(velocity - (glm::dot(velocity, surfaceNormal))*surfaceNormal);
+				if (tangentialVelocityAfterCollision >= initialVelocity)
+					velocity += deltaU*mu*eFriction;
+				angularVelocity += ((mu*deltaU) / (sphere.radius))*(glm::cross(eR, eFriction));
 			}
+		} else {
+			// Calculate magnus force.
+			float v = glm::length(velocity);
+			float u = glm::length(velocity - wind);
+			float w = glm::length(angularVelocity);
+			glm::vec3 eU = (velocity - wind) / u;
+			glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
+			if (v > 0.f && w > 0.f) {
+				float Cm = (sqrt(1.f + 0.31f * (w / v)) - 1.f) / 20.f;
+				float Fm = 0.5f * Cm * 1.23f * area * u * u;
+				magnusForce = Fm * glm::cross(eU, glm::normalize(angularVelocity));
+			}
+        
+			// Calculate drag force.
+			float cD;
+			if (ballType == TWOPIECE)
+				cD = v < 65.f ? -0.0051f * v + 0.53f : 0.21f;
+			else
+				cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
+        
+			glm::vec3 dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
+        
+			// Calculate gravitational force.
+			glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
+        
+			// Get acceleration from total force.
+			glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
+			velocity += acceleration * static_cast<float>(time);
 		}
-        Log() << angularVelocity << "\n";
-        //Log() << glm::dot(velocity, glm::vec3(0.f,1.f,0.f)) << "\n";
-        
-        // Calculate magnus force.
-        float v = glm::length(velocity);
-        float u = glm::length(velocity - wind);
-        float w = glm::length(angularVelocity);
-        glm::vec3 eU = (velocity - wind) / u;
-        glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
-        if (v > 0.f && w > 0.f) {
-            float Cm = (sqrt(1.f + 0.31f * (w / v)) - 1.f) / 20.f;
-            float Fm = 0.5f * Cm * 1.23f * area * u * u;
-            magnusForce = Fm * glm::cross(eU, glm::normalize(angularVelocity));
-        }
-        
-        // Calculate drag force.
-        float cD;
-        if (ballType == TWOPIECE)
-            cD = v < 65.f ? -0.0051f * v + 0.53f : 0.21f;
-        else
-            cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
-        
-        glm::vec3 dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
-        
-        // Calculate gravitational force.
-        glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
-        
-        // Get acceleration from total force.
-        glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
-        velocity += acceleration * static_cast<float>(time);
+		Log() << velocity << "\n";
     }
 }
 
@@ -155,23 +151,29 @@ void GolfBall::Strike(ClubType club, const glm::vec3& clubVelocity) {
     
     // Club velocity in strike plane.
     float v = glm::length(clubVelocity);
-    float sinLoft = sin(club.loft);
-    float cosLoft = cos(club.loft);
+	if (v > 0.f)
+	{
+		float sinLoft = sin(club.loft);
+		float cosLoft = cos(club.loft);
     
-    // Ball velocity.
-    float massCoefficient = club.mass / (club.mass + mass);
-    float Up = (1.f + restitution) * massCoefficient * v * cosLoft;
-    float Un = (2.f / 7.f) * massCoefficient * v * sinLoft;
+		// Ball velocity.
+		float massCoefficient = club.mass / (club.mass + mass);
+		float Up = (1.f + restitution) * massCoefficient * v * cosLoft;
+		float Un = (2.f / 7.f) * massCoefficient * v * sinLoft;
     
-    // Go back from strike plane to 3D.
-    glm::vec3 forward = clubVelocity / v;
-    glm::vec3 up = glm::cross(forward, glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
-    glm::vec3 ep = glm::normalize(cosLoft * forward + sinLoft * up);
-    glm::vec3 en = glm::normalize(sinLoft * forward - cosLoft * up);
+		// Go back from strike plane to 3D.
+		glm::vec3 forward = clubVelocity / v;
+		glm::vec3 up = glm::cross(forward, glm::cross(glm::vec3(0.f, 1.f, 0.f), forward));
+		glm::vec3 ep = glm::normalize(cosLoft * forward + sinLoft * up);
+		glm::vec3 en = glm::normalize(sinLoft * forward - cosLoft * up);
     
-    // Total velocity.
-    velocity = Up * ep + Un * en;
-    angularVelocity = -Un / sphere.radius * glm::cross(ep, en);
+		// Total velocity.
+		velocity = Up * ep + Un * en;
+		angularVelocity = -Un / sphere.radius * glm::cross(ep, en);
+	} else {
+		velocity = glm::vec3(0.f, 0.f, 0.f);
+		angularVelocity = glm::vec3(0.f, 0.f, 0.f);
+	}
 }
 
 void GolfBall::SetRadius(float radius) {
