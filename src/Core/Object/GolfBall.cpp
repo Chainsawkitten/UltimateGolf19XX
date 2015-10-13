@@ -90,13 +90,17 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
                 // Friction and angular velocity.
                 if (glm::length(tangentialVelocity) > 0.0001f) {
                     if (w * sphere.radius < glm::length(tangentialVelocity)) {
-                        velocity -= eFriction * (deltaTime * muSliding * 9.82f);
+						velocity -= eFriction * muSliding * (deltaU + 9.82f * deltaTime);
 						angularVelocity += muSliding * (deltaU + 9.82f * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
                     } else {
-                        velocity -= eFriction * (deltaTime * muRolling * 9.82f);
+						velocity -= eFriction * muRolling * (deltaU + 9.82f * deltaTime);
 						angularVelocity += muRolling * (deltaU + 9.82f * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
                     }
                 }
+				glm::vec3 tangentialVelocityAfterCollision = velocity - glm::dot(velocity, eRoh) * eRoh;
+				if (glm::dot(tangentialVelocity, tangentialVelocityAfterCollision) < 0.f){
+					velocity -= tangentialVelocityAfterCollision;
+				}
             }
         }
         

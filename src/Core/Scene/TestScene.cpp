@@ -156,7 +156,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 		glm::vec3 tempBall = golfBall->Position();
 		glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
 		//golfBall->Strike(clubIterator->second, swingStrength*0.45f*strikeDirection);
-		golfBall->Strike(clubIterator->second, glm::vec3(3.0f, 0.0f, 0.0f));
+		golfBall->Strike(clubIterator->second, glm::vec3(0.1f, 0.0f, 0.0f));
 		
 	}
 	golfBall->Update(time, wind, playerObjects);
