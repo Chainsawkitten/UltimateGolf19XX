@@ -94,6 +94,38 @@ namespace Geometry {
                (1.f - dx) * dz * heightMap[xFloor][zFloor + 1] +
                dx * dz * heightMap[xFloor + 1][zFloor + 1];
     }
+
+	glm::vec3 Terrain::GetNormal(float x, float z) const {
+		float xInTerrain = x * width;
+		float zInTerrain = z * height;
+
+		if (xInTerrain < 0.f || xInTerrain >= width - 1 || zInTerrain < 0.f || zInTerrain >= height - 1) {
+			return glm::vec3(0.f,0.f,0.f);
+		}
+		int xFloor = static_cast<int>(xInTerrain);
+		int zFloor = static_cast<int>(zInTerrain);
+
+		std::vector<Vertex> vertices;
+		vertices.push_back(vertexData[xFloor + zFloor*width]);
+		vertices.push_back(vertexData[(xFloor + 1) + zFloor*width]);
+		vertices.push_back(vertexData[xFloor + (zFloor + 1)*width]);
+		vertices.push_back(vertexData[(xFloor + 1)*width + (zFloor + 1)*width]);
+		float largestDistance = 0.f;
+		int largestIndex = 0;
+		for (int i = 0; i < 4; i++){
+			float distance = glm::length(glm::vec2(vertices[i].position.x, vertices[i].position.z));
+			if (distance > largestDistance){
+				largestIndex = i;
+				largestDistance = distance;
+			}
+		}
+		vertices.erase(vertices.begin() + largestIndex);
+		glm::vec3 a, b, normal;
+		a = vertices[1].position - vertices[0].position;
+		b = vertices[2].position - vertices[0].position;
+		normal = glm::normalize(glm::cross(a, b));
+		return normal;
+	}
     
     glm::vec2 Terrain::TextureRepeat() const {
         return textureRepeat;

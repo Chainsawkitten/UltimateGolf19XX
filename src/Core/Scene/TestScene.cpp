@@ -43,7 +43,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
 	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
 
-	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
+	terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
@@ -156,7 +156,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 		glm::vec3 tempBall = golfBall->Position();
 		glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
 		golfBall->Strike(clubIterator->second, swingStrength*0.45f*strikeDirection);
-		//golfBall->Strike(clubIterator->second, glm::vec3(5.1f, 0.0f, 0.0f));
+		//golfBall->Strike(clubIterator->second, glm::vec3(0.0f, 1.0f, 0.0f));
 		
 	}
 	golfBall->Update(time, wind, playerObjects);

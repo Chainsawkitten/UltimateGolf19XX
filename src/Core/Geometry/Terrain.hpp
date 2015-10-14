@@ -54,6 +54,15 @@ namespace Geometry {
              */
             float GetY(float x, float z) const;
     
+			/// Gets the normal at given location
+			/**
+			* If the position is outside the terrain, 0.0, 0.0, 0.0 is returned.
+			* @param x X-position in the world.
+			* @param z Z-position in the world.
+			* @return Normal at that point.
+			*/
+			glm::vec3 Terrain::GetNormal(float x, float z) const;
+
             /// Get how many times the texture should repeat.
             /**
              * Default: (1.0, 1.0)

@@ -46,6 +46,12 @@ float TerrainObject::GetY(float x, float z) const {
 	return terrain->GetY(xInTerrain, zInTerrain) * Scale().y + Position().y;
 }
 
+glm::vec3 TerrainObject::GetNormal(float x, float z) const{
+	float xInTerrain = (x - Position().x) / Scale().x + 0.5f;
+	float zInTerrain = (z - Position().z) / Scale().z + 0.5f;
+	return terrain->GetNormal(xInTerrain, zInTerrain);
+}
+
 void TerrainObject::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const{
 	shaderProgram->Use();
 	// Set texture locations
