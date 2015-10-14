@@ -63,7 +63,6 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			sphere.position = Position();
 			//glm::vec3 eRoh = glm::normalize(glm::vec3(0.f, 1.f, 0.f));
 			glm::vec3 eRoh = terrain->GetNormal(Position().x, Position().z);
-			Log() << eRoh << "\n";
 			glm::vec3 tangentialVelocity = velocity - glm::dot(velocity, eRoh) * eRoh;
 			glm::vec3 eFriction = glm::vec3(0.f, 0.f, 0.f);
 			if (glm::length(glm::cross(eRoh, angularVelocity) + tangentialVelocity) > 0.0001f){
