@@ -88,8 +88,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 						angularVelocity = glm::vec3(0.f, 0.f, 0.f);
 					}
 				}
-			}
-			else {
+			} else {
 				float deltaTime = pow(mass * mass / (fabs(vRoh) * sphere.radius), 0.2f) * 0.00251744f;
 				float velocityRoh = glm::dot(velocity, eRoh);
 				float velocityNormal = glm::dot(velocity, eFriction);
@@ -110,37 +109,35 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 					angularVelocity += muSliding * (deltaU + 9.82f * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
 				}
 			}
-		} else {
-			// Calculate magnus force.
-			float v = glm::length(velocity);
-			float u = glm::length(velocity - wind);
-			float w = glm::length(angularVelocity);
-			glm::vec3 eU = (velocity - wind) / u;
-			glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
-			if (u > 0.f && v > 0.f && w > 0.f) {
-				float Cm = (sqrt(1.f + 0.31f * (w / v)) - 1.f) / 20.f;
-				float Fm = 0.5f * Cm * 1.23f * area * u * u;
-				magnusForce = Fm * glm::cross(eU, glm::normalize(angularVelocity));
-			}
-
-			// Calculate drag force.
-			float cD;
-			if (ballType == TWOPIECE)
-				cD = v < 65.f ? -0.0051f * v + 0.53f : 0.21f;
-			else
-				cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
-
-			glm::vec3 dragForce = glm::vec3(0.f, 0.f, 0.f);
-			if (u > 0.f)
-				dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
-
-			// Calculate gravitational force.
-			glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
-
-			// Get acceleration from total force.
-			glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
-			velocity += acceleration * static_cast<float>(time);
 		}
+		// Calculate magnus force.
+		float v = glm::length(velocity);
+		float u = glm::length(velocity - wind);
+		float w = glm::length(angularVelocity);
+		glm::vec3 eU = (velocity - wind) / u;
+		glm::vec3 magnusForce = glm::vec3(0.f, 0.f, 0.f);
+		if (u > 0.f && v > 0.f && w > 0.f) {
+			float Cm = (sqrt(1.f + 0.31f * (w / v)) - 1.f) / 20.f;
+			float Fm = 0.5f * Cm * 1.23f * area * u * u;
+			magnusForce = Fm * glm::cross(eU, glm::normalize(angularVelocity));
+		}
+
+		// Calculate drag force.
+		float cD;
+		if (ballType == TWOPIECE)
+			cD = v < 65.f ? -0.0051f * v + 0.53f : 0.21f;
+		else
+			cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
+		glm::vec3 dragForce = glm::vec3(0.f, 0.f, 0.f);
+		if (u > 0.f)
+			dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
+
+		// Calculate gravitational force.
+		glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
+		// Get acceleration from total force.
+		glm::vec3 acceleration = (dragForce + magnusForce + gravitationForce) / mass;
+		velocity += acceleration * static_cast<float>(time);
+
 	}
 }
 
