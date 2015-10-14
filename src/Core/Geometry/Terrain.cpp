@@ -104,12 +104,11 @@ namespace Geometry {
 		}
 		int xFloor = static_cast<int>(xInTerrain);
 		int zFloor = static_cast<int>(zInTerrain);
-
 		std::vector<Vertex> vertices;
 		vertices.push_back(vertexData[xFloor + zFloor*width]);
 		vertices.push_back(vertexData[(xFloor + 1) + zFloor*width]);
 		vertices.push_back(vertexData[xFloor + (zFloor + 1)*width]);
-		vertices.push_back(vertexData[(xFloor + 1)*width + (zFloor + 1)*width]);
+		vertices.push_back(vertexData[(xFloor + 1) + (zFloor + 1)*width]);
 		float largestDistance = 0.f;
 		int largestIndex = 0;
 		for (int i = 0; i < 4; i++){
@@ -121,8 +120,8 @@ namespace Geometry {
 		}
 		vertices.erase(vertices.begin() + largestIndex);
 		glm::vec3 a, b, normal;
-		a = vertices[1].position - vertices[0].position;
-		b = vertices[2].position - vertices[0].position;
+		a = vertices[0].position - vertices[2].position;
+		b = vertices[1].position - vertices[2].position;
 		normal = glm::normalize(glm::cross(a, b));
 		return normal;
 	}
