@@ -83,23 +83,23 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
                     }
                 }
             } else {
-                // Collision.
-                velocity += deltaU * eRoh;
                 float deltaTime = pow(mass * mass / (fabs(vRoh) * sphere.radius), 0.2f) * 0.00251744f;
-                
-                // Friction and angular velocity.
-                if (glm::length(tangentialVelocity) > 0.0001f) {
-                    if (w * sphere.radius < glm::length(tangentialVelocity)) {
-						velocity -= eFriction * muSliding * (deltaU + 9.82f * deltaTime);
-						angularVelocity += muSliding * (deltaU + 9.82f * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
-                    } else {
-						velocity -= eFriction * muRolling * (deltaU + 9.82f * deltaTime);
-						angularVelocity += muRolling * (deltaU + 9.82f * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
-                    }
-                }
-				glm::vec3 tangentialVelocityAfterCollision = velocity - glm::dot(velocity, eRoh) * eRoh;
-				if (glm::dot(tangentialVelocity, tangentialVelocityAfterCollision) < 0.f){
-					velocity -= tangentialVelocityAfterCollision;
+				float velocityRoh = glm::dot(velocity, eRoh);
+				float velocityNormal = glm::dot(velocity,eFriction);
+				float uRoh = -e*velocityRoh;
+				float deltauRoh = uRoh - (velocityRoh);
+				float deltaUn = muSliding*deltauRoh;
+				float rollUn = (5.f / 7.f)*velocityNormal;
+				float slideUn = velocityNormal - deltaUn;
+
+				if (velocityNormal > rollUn)
+				{
+					velocity = uRoh*eRoh + rollUn*eFriction;
+					angularVelocity += muRolling * (deltaU + 9.82f * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
+					
+				} else {
+					velocity = uRoh*eRoh + slideUn*eFriction;
+					angularVelocity += muSliding * (deltaU + 9.82f * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
 				}
             }
         }
