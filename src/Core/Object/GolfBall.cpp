@@ -56,7 +56,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 		groundLevel = terrain->GetY(Position().x, Position().z);
 		if (glm::length(velocity) > 0.0001f && (sphere.position.y - sphere.radius) < groundLevel){
 			float vCritical = 0.3f;
-			float e = 0.55f;
+			float e = 0.35f;
 			float muSliding = 0.51f;
 			float muRolling = 0.096f;
 			SetPosition(Position().x, groundLevel + sphere.radius, Position().z);
@@ -79,8 +79,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 					// Sliding.
 					velocity = tangentialVelocity - static_cast<float>(time)* (eFriction * muSliding * 9.82f*eRoh.y);
 					angularVelocity += (5.f / 2.f) * (muSliding * 9.82f / sphere.radius * static_cast<float>(time)) * angularDirection;
-				}
-				else {
+				} else {
 					// Rolling.
 					velocity = tangentialVelocity - static_cast<float>(time)* (glm::normalize(tangentialVelocity) * muRolling * 9.82f*eRoh.y);
 					float tangentialVelocityAfter = glm::length(velocity - glm::dot(velocity, eRoh) * eRoh);
