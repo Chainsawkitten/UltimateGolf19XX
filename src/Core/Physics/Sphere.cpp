@@ -7,6 +7,6 @@ namespace Physics {
     }
 
 	bool Sphere::SphereVsTriangle(Triangle triangle){
-
+		return true;
 	}
 }
