@@ -87,7 +87,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     water->SetPosition(0.f, -1.f, 0.f);
     water->SetTextureRepeat(glm::vec2(75.f, 75.f));
 
-	gui = new GUI(numberOfPlayers);
+	gui = new GUI(screenSize);
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
@@ -264,7 +264,6 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
 
-    
 	renderTarget->SetTarget();
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
