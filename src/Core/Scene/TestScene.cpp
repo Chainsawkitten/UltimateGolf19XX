@@ -157,7 +157,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
         swingStrength = glm::clamp(swingStrength, 0.f, 1.f);
     }
 	
-	if (Input()->Triggered(InputHandler::STRIKE)){
+	if (Input()->Triggered(InputHandler::STRIKE)) {
 		glm::vec3 tempCamera = player->GetCamera()->Position();
 		glm::vec3 tempBall = golfBall->Position();
 		glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
@@ -172,14 +172,15 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     
     player->Update(time);
 	
-	if (Input()->Triggered(InputHandler::NEXTCLUB)){
+	if (Input()->Triggered(InputHandler::NEXTCLUB)) {
 		clubIterator++;
 		if (clubIterator == clubs.end())
 			clubIterator = clubs.begin();
 		Log() << clubIterator->first;
 		Log() << "\n";
 	}
-	if (Input()->Triggered(InputHandler::EXPLODE)){
+    
+	if (Input()->Triggered(InputHandler::EXPLODE)) {
 		if (playerIndex < (numberOfPlayers-1))
 			playerIndex++;
 		else
@@ -191,7 +192,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
     particleSystem->Update(time, player->GetCamera());
-    //water->Update(time, wind);
+    water->Update(time, wind);
     
     return nullptr;
 }
@@ -212,7 +213,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    //water->Render(player->GetCamera(), deferredLighting->light, screenSize);
+    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);
@@ -222,6 +223,8 @@ void TestScene::Render(const glm::vec2& screenSize) {
     particleSystem->Render(player->GetCamera(), screenSize);
     
     postProcessing->Render();
+    
+    gui->Render(screenSize, playerObjects, swingStrength);
 }
 
 void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const glm::vec4& clippingPlane) {
@@ -271,6 +274,4 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
     skybox->Render(player->GetCamera(), renderTarget->Size());
-
-	gui->Render(renderTarget->Size(), playerObjects, swingStrength);
 }
