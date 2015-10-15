@@ -110,14 +110,14 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	// Particle type.
 	ParticleType explosionParticle;
 	explosionParticle.texture = explosionTexture;
-	explosionParticle.minLifetime = .6f;
-	explosionParticle.maxLifetime = 1.f;
+	explosionParticle.minLifetime = .1f;
+	explosionParticle.maxLifetime = .2f;
 	explosionParticle.minVelocity = glm::vec3(-1.f, 1.f, -1.f);
 	explosionParticle.maxVelocity = glm::vec3(1.f, -1.f, 1.f);
 	explosionParticle.minSize = glm::vec2(0.025f, 0.025f);
 	explosionParticle.maxSize = glm::vec2(0.05f, 0.05f);
 	explosionParticle.uniformScaling = true;
-	explosionParticle.color = glm::vec3(1.f, 1.f, 0.f);
+	explosionParticle.color = glm::vec3(1.f, 0.5f, 0.5f);
 
 	// Particle system.
 	explosionParticleSystem = new ParticleSystem(explosionParticle, 1000);

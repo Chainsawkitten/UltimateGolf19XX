@@ -5,10 +5,6 @@
 /** @ingroup Core
  * @{
  */
-enum Labels
-{
-	R0,R1,R2,R01,R12,R20,R012
-};
 
 namespace Physics {
     /// A triangle.
