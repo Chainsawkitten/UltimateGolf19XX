@@ -1,32 +1,34 @@
 #include "GUI.hpp"
-#include "Default3D.vert.hpp"
-#include "Default3D.geom.hpp"
-#include "Default3D.frag.hpp"
-#include <glm/glm.hpp>
+#include "../Resources.hpp"
 
-GUI::GUI(const glm::vec2& screenSize){
-	barHeight = screenSize.y*0.25f;
-	barWidth = screenSize.x*0.04f;
-	barPosX = screenSize.x*0.1f;
-	barPosY = screenSize.y*0.7f;
-	barXOffset = screenSize.x*0.05f;
+GUI::GUI(const glm::vec2& screenSize) {
+	barHeight = screenSize.y * 0.25f;
+	barWidth = screenSize.x * 0.04f;
+	barPosX = screenSize.x * 0.1f;
+	barPosY = screenSize.y * 0.7f;
+	barXOffset = screenSize.x * 0.05f;
+    
+    strikeBarTexture = Resources().CreateTexture2DFromFile("Resources/GUI/StrikeBar.png");
+    strikeIndicatorTexture = Resources().CreateTexture2DFromFile("Resources/GUI/StrikeIndicator.png");
 }
 
-GUI::~GUI(){
+GUI::~GUI() {
+    Resources().FreeTexture2DFromFile(strikeBarTexture);
+    Resources().FreeTexture2DFromFile(strikeIndicatorTexture);
 }
 
-void GUI::Render(const glm::vec2& screenSize, std::vector<PlayerObject>& players, float swingStrength){
+void GUI::Render(const glm::vec2& screenSize, std::vector<PlayerObject>& players, float swingStrength) {
 	int index = 0;
 
 	for (auto &player : players){
 		if (player.getHealth() > 0){
-			//Background
+			// Background
 			healthBar.Render(glm::vec2(barPosX + barXOffset*index, barPosY),
 				glm::vec2(barWidth, barHeight),
 				glm::vec3(0.1f, 0.1f, 0.1f),
 				screenSize);
 
-			//Actual healthbar
+			// Actual healthbar
 			healthBar.Render(glm::vec2(barPosX+barXOffset*index, barPosY + (barHeight - barHeight*(player.getHealth()/100.f))),
 				glm::vec2(barWidth, barHeight*(player.getHealth()/100.f)),
 				glm::vec3(10.f, 0.f, 0.f),
@@ -34,15 +36,11 @@ void GUI::Render(const glm::vec2& screenSize, std::vector<PlayerObject>& players
 			index++;
 		}
 	}
-	//Powerbar background
-	powerBar.Render(glm::vec2(barPosX + barXOffset*index, barPosY + barHeight - barWidth),
-		glm::vec2(barHeight, barWidth),
-		glm::vec3(0.1f, 0.1f, 0.1f),
-		screenSize);
-
-	//Powerbar
-	powerBar.Render(glm::vec2(barPosX + barXOffset*index, barPosY + barHeight - barWidth),
-		glm::vec2(barHeight*(swingStrength/100.f), barWidth),
-		glm::vec3(0.f, 10.f, 0.f),
-		screenSize);
+    
+	// Render power bar.
+    glm::vec2 strikeBarSize(strikeBarTexture->Width(), strikeBarTexture->Height());
+    strikeBarTexture->Render(glm::vec2((screenSize.x - strikeBarSize.x) * 0.5f, screenSize.y - strikeBarSize.y - 65.f), strikeBarSize, screenSize);
+    
+    glm::vec2 strikeIndicatorSize(strikeIndicatorTexture->Width(), strikeIndicatorTexture->Height());
+    strikeIndicatorTexture->Render(glm::vec2((screenSize.x - strikeBarSize.x) * 0.5f + (strikeBarSize.x - strikeIndicatorSize.x * 0.5f) * swingStrength - strikeIndicatorSize.x * 0.5f, screenSize.y - 65.f - (strikeBarSize.y + strikeIndicatorSize.y) * 0.5f), strikeIndicatorSize, screenSize);
 }

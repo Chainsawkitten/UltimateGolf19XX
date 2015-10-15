@@ -58,6 +58,7 @@ set(RESOURCES
     assets/Terrain
     assets/Models
     assets/DustParticle.png
+    assets/GUI
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
