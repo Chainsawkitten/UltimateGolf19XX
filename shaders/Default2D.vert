@@ -12,7 +12,7 @@ out VertexData {
 } vertexOut;
 
 void main () {
-    vertexOut.texCoords = vec2(vertexTexture.x, 1.0 - vertexTexture.y);
+    vertexOut.texCoords = vec2(vertexTexture.x, vertexTexture.y);
     
     vec2 pos = (vertexPosition + vec2(1.0, 1.0)) / 2.0;
 	pos = position + size * pos;
