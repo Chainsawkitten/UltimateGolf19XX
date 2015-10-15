@@ -5,6 +5,7 @@
 #include "../Physics/Sphere.hpp"
 #include "TerrainObject.hpp"
 #include "PlayerObject.hpp"
+#include "Water.hpp"
 #include <glm/gtc/quaternion.hpp>
 
 /** @ingroup Core
@@ -18,6 +19,14 @@ struct ClubType{
 /// A golf ball that can be struck.
 class GolfBall : public ModelObject {
     public:
+        /// Golf ball's state.
+        enum State {
+            INITIAL, ///< Not struck.
+            ACTIVE, ///< Struck, travelling.
+            EXPLODED, ///< Has exploded.
+            OUT ///< Ended up in water or outside level.
+        };
+        
         /// The type of ball.
         enum BallType {
             TWOPIECE, ///< Two-piece ball.
@@ -27,9 +36,10 @@ class GolfBall : public ModelObject {
         /// Create new golf ball.
         /**
          * @param ballType The type of ball to be created.
-		 * @param terrain Reference to the terrain with which the ball will interact
+		 * @param terrain Reference to the terrain with which the ball will interact.
+		 * @param water %Water.
          */
-        GolfBall(BallType ballType, TerrainObject* terrain);
+        GolfBall(BallType ballType, TerrainObject* terrain, Water* water);
         
         /// Destructor.
         ~GolfBall();
@@ -65,25 +75,31 @@ class GolfBall : public ModelObject {
 		/// Explodes golfball
         /**
          * @param players Vector describing all players.
-         * @param playerIndex Index of the currently active player.
          */
-		void Explode(std::vector<PlayerObject>& players, int playerIndex);
+		void Explode(std::vector<PlayerObject>& players);
         
         /// Get orientation matrix.
 		/**
 		 * @return Object's orientation matrix based on its rotation.
 		 */
 		glm::mat4 Orientation() const;
+        
+        /// Get the golf ball's current state.
+        /**
+         * @return The golf ball's current state.
+         */
+        State GetState() const;
 		
     private:
 		TerrainObject* terrain;
+        Water* water;
 		float groundLevel;
         glm::vec3 velocity;
         
         glm::quat orientation;
 		glm::vec3 angularVelocity;
 		glm::vec3 origin;
-        bool active;
+        State state;
         Geometry::OBJModel* modelGeometry;
         
 		Physics::Sphere sphere;

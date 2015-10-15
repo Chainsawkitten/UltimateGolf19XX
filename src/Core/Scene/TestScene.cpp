@@ -19,36 +19,37 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     modelObject->SetPosition(2.f, 0.f, 0.f);
     modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
     
-	/// Map of all available clubtypes
-	clubs["Wood 1"] = ClubType{ 0.2f, glm::radians<float>(11.f) };
-	clubs["Wood 3"] = ClubType{ 0.208f, glm::radians<float>(15.f) };
-	clubs["Wood 5"] = ClubType{ 0.218f, glm::radians<float>(18.f) };
-	clubs["Iron 2"] = ClubType{ 0.232f, glm::radians<float>(18.f) };
-	clubs["Iron 3"] = ClubType{ 0.239f, glm::radians<float>(21.f) };
-	clubs["Iron 4"] = ClubType{ 0.246f, glm::radians<float>(24.f) };
-	clubs["Iron 5"] = ClubType{ 0.253f, glm::radians<float>(27.f) };
-	clubs["Iron 6"] = ClubType{ 0.260f, glm::radians<float>(31.f) };
-	clubs["Iron 7"] = ClubType{ 0.267f, glm::radians<float>(35.f) };
-	clubs["Iron 8"] = ClubType{ 0.274f, glm::radians<float>(39.f) };
-	clubs["Iron 9"] = ClubType{ 0.281f, glm::radians<float>(43.f) };
-	clubs["Pitching Wedge"] = ClubType{ 0.285f, glm::radians<float>(48.f) };
-	clubs["Sand Wedge"] = ClubType{ 0.296f, glm::radians<float>(55.f) };
-	clubs["Putter"] = ClubType{ 0.33f, glm::radians<float>(4.f) };
-	clubIterator = clubs.begin();
-	swingStrength = 0.f;
+    // Map of all available clubtypes
+    clubs["Wood 1"] = ClubType{ 0.2f, glm::radians<float>(11.f) };
+    clubs["Wood 3"] = ClubType{ 0.208f, glm::radians<float>(15.f) };
+    clubs["Wood 5"] = ClubType{ 0.218f, glm::radians<float>(18.f) };
+    clubs["Iron 2"] = ClubType{ 0.232f, glm::radians<float>(18.f) };
+    clubs["Iron 3"] = ClubType{ 0.239f, glm::radians<float>(21.f) };
+    clubs["Iron 4"] = ClubType{ 0.246f, glm::radians<float>(24.f) };
+    clubs["Iron 5"] = ClubType{ 0.253f, glm::radians<float>(27.f) };
+    clubs["Iron 6"] = ClubType{ 0.260f, glm::radians<float>(31.f) };
+    clubs["Iron 7"] = ClubType{ 0.267f, glm::radians<float>(35.f) };
+    clubs["Iron 8"] = ClubType{ 0.274f, glm::radians<float>(39.f) };
+    clubs["Iron 9"] = ClubType{ 0.281f, glm::radians<float>(43.f) };
+    clubs["Pitching Wedge"] = ClubType{ 0.285f, glm::radians<float>(48.f) };
+    clubs["Sand Wedge"] = ClubType{ 0.296f, glm::radians<float>(55.f) };
+    clubs["Putter"] = ClubType{ 0.33f, glm::radians<float>(4.f) };
+    clubIterator = clubs.begin();
+    swingStrength = 0.f;
     maxSwingStrength = 40.f;
     swingTime = 1.f;
     swingDirection = 1.f;
-
-	///Initiate players
-	numberOfPlayers = 2;
-	playerIndex = 0;
-	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
-
-	terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
-	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
-	terrainObject = new TerrainObject(terrain);
+    
+    // Initiate players
+    numberOfPlayers = 2;
+    playerIndex = 0;
+    playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
+    playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
+    
+    // Terrain.
+    terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
+    terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
+    terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
     terrainObject->SetScale(200.f, 10.f, 200.f);
     
@@ -64,6 +65,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     deferredLighting = new DeferredLighting(screenSize);
     
+    // Post processing.
     postProcessing = new PostProcessing(screenSize);
     fxaaFilter = new FXAAFilter();
     
@@ -76,21 +78,24 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
     texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
-
-    golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject);
+    
+    // Water.
+    water =  new Water(screenSize);
+    water->SetScale(400.f, 400.f, 400.f);
+    water->SetPosition(0.f, -1.f, 0.f);
+    water->SetTextureRepeat(glm::vec2(75.f, 75.f));
+    
+    // Golf ball.
+    golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject, water);
     golfBall->SetPosition(2.f, 0.f, 0.f);
     
+    // Camera.
     player = new ThirdPersonPlayer(golfBall);
     player->SetMovementSpeed(2.f);
     
     wind = glm::vec3(0.f, 0.f, 4.f);
     
-    water =  new Water(screenSize);
-    water->SetScale(400.f, 400.f, 400.f);
-    water->SetPosition(0.f, -1.f, 0.f);
-    water->SetTextureRepeat(glm::vec2(75.f, 75.f));
-
-	gui = new GUI(screenSize);
+    gui = new GUI(screenSize);
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
@@ -151,42 +156,42 @@ TestScene::~TestScene() {
 
 TestScene::SceneEnd* TestScene::Update(double time) {
     glm::vec3 wind = glm::vec3(0.f, 0.f, 0.f);
-	swingStrength += time / swingTime * swingDirection;
+    swingStrength += time / swingTime * swingDirection;
     if (swingStrength > 1.f || swingStrength < 0.f) {
         swingDirection = -swingDirection;
         swingStrength = glm::clamp(swingStrength, 0.f, 1.f);
     }
-	
-	if (Input()->Triggered(InputHandler::STRIKE)) {
-		glm::vec3 tempCamera = player->GetCamera()->Position();
-		glm::vec3 tempBall = golfBall->Position();
-		glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
-		golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
-		
-	}
-	golfBall->Update(time, wind, playerObjects);
-
-
-	if (Input()->Triggered(InputHandler::RESET))
-		golfBall->Reset();
+    
+    if (Input()->Triggered(InputHandler::STRIKE)) {
+        glm::vec3 tempCamera = player->GetCamera()->Position();
+        glm::vec3 tempBall = golfBall->Position();
+        glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
+        golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
+        
+    }
+    golfBall->Update(time, wind, playerObjects);
+    
+    
+    if (Input()->Triggered(InputHandler::RESET))
+        golfBall->Reset();
     
     player->Update(time);
-	
-	if (Input()->Triggered(InputHandler::NEXTCLUB)) {
-		clubIterator++;
-		if (clubIterator == clubs.end())
-			clubIterator = clubs.begin();
-		Log() << clubIterator->first;
-		Log() << "\n";
-	}
     
-	if (Input()->Triggered(InputHandler::EXPLODE)) {
-		if (playerIndex < (numberOfPlayers-1))
-			playerIndex++;
-		else
-			playerIndex = 0;
-		golfBall->Explode(playerObjects, playerIndex);
-	}
+    if (Input()->Triggered(InputHandler::NEXTCLUB)) {
+        clubIterator++;
+        if (clubIterator == clubs.end())
+            clubIterator = clubs.begin();
+        Log() << clubIterator->first;
+        Log() << "\n";
+    }
+    
+    if (Input()->Triggered(InputHandler::EXPLODE) && golfBall->GetState() == GolfBall::ACTIVE) {
+        if (playerIndex < (numberOfPlayers-1))
+            playerIndex++;
+        else
+            playerIndex = 0;
+        golfBall->Explode(playerObjects);
+    }
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
@@ -269,8 +274,8 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
     terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
-
-	renderTarget->SetTarget();
+    
+    renderTarget->SetTarget();
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
     skybox->Render(player->GetCamera(), renderTarget->Size());
