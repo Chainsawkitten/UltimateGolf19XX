@@ -27,7 +27,6 @@ LilyPad::~LilyPad() {
 }
 
 void LilyPad::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const {
-    // Render models
     glm::mat4 projection = camera->Projection(screenSize);
     glm::mat4 view = camera->View();
     glm::mat4 model = ModelMatrix();
