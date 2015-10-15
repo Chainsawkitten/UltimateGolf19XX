@@ -45,7 +45,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     // Terrain.
     terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
-    terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
+    terrain->SetTextureRepeat(glm::vec2(20.f, 20.f));
     terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
     terrainObject->SetScale(200.f, 10.f, 200.f);
@@ -123,7 +123,14 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
     
     // Ducks
-    duck = new Duck();
+    for (int i=0; i<10; i++) {
+        ducks.push_back(new Duck());
+        glm::vec3 position;
+        do {
+            position = glm::vec3(rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f);
+        } while (terrainObject->GetY(position.x, position.z) > water->Position().y - 0.2f);
+        ducks[i]->SetPosition(position);
+    }
 }
 
 TestScene::~TestScene() {
@@ -158,7 +165,9 @@ TestScene::~TestScene() {
     Resources().FreeShader(geometryShader);
     Resources().FreeShader(fragmentShader);
     
-    delete duck;
+    for (Duck* duck : ducks) {
+        delete duck;
+    }
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
@@ -294,7 +303,9 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
-    duck->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    for (Duck* duck : ducks) {
+        duck->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    }
     
     renderTarget->SetTarget();
     

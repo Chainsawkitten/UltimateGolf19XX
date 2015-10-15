@@ -101,7 +101,7 @@ class TestScene : public Scene {
         Texture2D* particleTexture;
         
         // Ducks
-        Duck* duck;
+        std::vector<Duck*> ducks;
 };
 
 /** @} */
