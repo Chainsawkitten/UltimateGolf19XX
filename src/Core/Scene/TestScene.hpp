@@ -87,6 +87,7 @@ class TestScene : public Scene {
         FXAAFilter* fxaaFilter;
         std::map<std::string, ClubType> clubs;
         std::map<std::string, ClubType>::iterator clubIterator;
+		std::vector<PlayerObject>::iterator playerIterator;
         GolfBall* golfBall;
         std::vector<PlayerObject> playerObjects;
         int playerIndex;

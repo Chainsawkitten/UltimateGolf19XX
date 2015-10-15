@@ -45,7 +45,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     swingAngle = 0.f;
     
     // Terrain.
-    terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
+    terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
     terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
     terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
@@ -78,16 +78,6 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     water->SetPosition(0.f, -1.f, 0.f);
     water->SetTextureRepeat(glm::vec2(75.f, 75.f));
     
-    // Golf ball.
-    golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject, water);
-    golfBall->SetPosition(2.f, 0.f, 0.f);
-    
-    // Camera.
-    player = new ThirdPersonPlayer(golfBall);
-    player->SetMovementSpeed(2.f);
-	wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
-    
-	//GUI
     gui = new GUI(screenSize);
     
     swingArrowTexture = Resources().CreateTexture2DFromFile("Resources/GUI/Arrow.png");
@@ -113,11 +103,6 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     // Particle system.
     particleSystem = new ParticleSystem(dustParticle, 1000);
-    
-    // Emitters.
-    ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
-    particleSystem->AddParticleEmitter(emitter);
-    emitter->Update(5.0, particleSystem, player->GetCamera());
 
 
 	explosionTexture = Resources().CreateTexture2DFromFile("Resources/FireParticle.png");
@@ -143,6 +128,21 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	playerIndex = 0;
 	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
 	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
+	playerIterator = playerObjects.begin();
+
+	// Golf ball.
+	golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject, water);
+	golfBall->SetPosition(playerObjects[0].Position());
+
+	// Camera.
+	player = new ThirdPersonPlayer(golfBall);
+	player->SetMovementSpeed(2.f);
+	wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
+
+	// Emitters.
+	ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
+	particleSystem->AddParticleEmitter(emitter);
+	emitter->Update(5.0, particleSystem, player->GetCamera());
 }
 
 TestScene::~TestScene() {
@@ -196,7 +196,10 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     
     
     if (Input()->Triggered(InputHandler::RESET)) {
-        golfBall->Reset();
+		playerIterator++;
+		if (playerIterator == playerObjects.end())
+			playerIterator = playerObjects.begin();
+		golfBall->Reset(playerIterator->Position());
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
 		Log() << wind << "\n";
     }
