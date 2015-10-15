@@ -19,6 +19,8 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     modelObject->SetPosition(2.f, 0.f, 0.f);
     modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
     
+    srand(time(NULL));
+    
     // Map of all available clubtypes
     clubs["Wood 1"] = ClubType{ 0.2f, glm::radians<float>(11.f) };
     clubs["Wood 3"] = ClubType{ 0.208f, glm::radians<float>(15.f) };
@@ -40,12 +42,6 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     swingTime = 1.f;
     swingDirection = 1.f;
     swingAngle = 0.f;
-    
-    // Initiate players
-    numberOfPlayers = 2;
-    playerIndex = 0;
-    playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
-    playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
     
     // Terrain.
     terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
@@ -88,8 +84,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     // Camera.
     player = new ThirdPersonPlayer(golfBall);
     player->SetMovementSpeed(2.f);
-    
-    wind = glm::vec3(0.f, 0.f, 4.f);
+	wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
     
     gui = new GUI(screenSize);
     
@@ -120,6 +115,12 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
     emitter->Update(5.0, particleSystem, player->GetCamera());
+
+	// Initiate players
+	numberOfPlayers = 2;
+	playerIndex = 0;
+	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
 }
 
 TestScene::~TestScene() {
@@ -156,8 +157,7 @@ TestScene::~TestScene() {
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-    glm::vec3 wind = glm::vec3(0.f, 0.f, 0.f);
-    swingStrength += time / swingTime * swingDirection;
+	swingStrength += time / swingTime * swingDirection;
     if (swingStrength > 1.f || swingStrength < 0.f) {
         swingDirection = -swingDirection;
         swingStrength = glm::clamp(swingStrength, 0.f, 1.f);
@@ -173,8 +173,11 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     golfBall->Update(time, wind, playerObjects);
     
     
-    if (Input()->Triggered(InputHandler::RESET))
+    if (Input()->Triggered(InputHandler::RESET)) {
         golfBall->Reset();
+        wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
+		Log() << wind << "\n";
+    }
     
     player->Update(time);
     
@@ -277,7 +280,10 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+	for (auto &playerObject : playerObjects) {
+		modelObject->SetPosition(playerObject.Position());
+		modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+	}
     
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
