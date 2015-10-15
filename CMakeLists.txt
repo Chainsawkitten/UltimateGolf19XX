@@ -58,6 +58,7 @@ set(RESOURCES
     assets/Terrain
     assets/Models
     assets/DustParticle.png
+    assets/FireParticle.png
     assets/GUI
 )
 
