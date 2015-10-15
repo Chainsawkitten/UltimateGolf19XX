@@ -43,11 +43,11 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
 	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
 
-	terrain = new Geometry::Terrain("Resources/Terrain/FlatMapSmall.png");
+	terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
-    terrainObject->SetScale(50.f, 10.f, 50.f);
+    terrainObject->SetScale(100.f, 10.f, 100.f);
     
     skyboxTexture = new CubeMapTexture(
                 "Resources/TropicalSunnyDay/Right.png",
@@ -73,7 +73,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
     texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
-    
+
     golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject);
     golfBall->SetPosition(2.f, 0.f, 0.f);
     
@@ -86,6 +86,8 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     water->SetScale(400.f, 400.f, 400.f);
     water->SetPosition(0.f, -1.f, 0.f);
     water->SetTextureRepeat(glm::vec2(75.f, 75.f));
+
+	gui = new GUI(screenSize);
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
@@ -145,17 +147,18 @@ TestScene::~TestScene() {
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-    glm::vec3 wind = glm::vec3(5.f, 0.f, 0.f);
+    glm::vec3 wind = glm::vec3(0.f, 0.f, 0.f);
 	swingStrength += 40.f*time;
+	swingStrength = fmodf(swingStrength, 100.f);
 	//Log() << (int)swingStrength << "\n";
 	
 	if (Input()->Triggered(InputHandler::STRIKE)){
 		//average speed of a golf swing ~= 45 m/s
-		swingStrength = fmodf(swingStrength, 100.f);
 		glm::vec3 tempCamera = player->GetCamera()->Position();
 		glm::vec3 tempBall = golfBall->Position();
 		glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
 		golfBall->Strike(clubIterator->second, swingStrength*0.45f*strikeDirection);
+		//golfBall->Strike(clubIterator->second, glm::vec3(0.0f, 1.0f, 0.0f));
 		
 	}
 	golfBall->Update(time, wind, playerObjects);
@@ -260,8 +263,11 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
     terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
-    renderTarget->SetTarget();
+
+	renderTarget->SetTarget();
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
     skybox->Render(player->GetCamera(), renderTarget->Size());
+
+	gui->Render(renderTarget->Size(), playerObjects, swingStrength);
 }

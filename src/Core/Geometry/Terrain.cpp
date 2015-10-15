@@ -94,6 +94,32 @@ namespace Geometry {
                (1.f - dx) * dz * heightMap[xFloor][zFloor + 1] +
                dx * dz * heightMap[xFloor + 1][zFloor + 1];
     }
+
+	glm::vec3 Terrain::GetNormal(float x, float z) const {
+		float xInTerrain = x * width;
+		float zInTerrain = z * height;
+
+		if (xInTerrain < 0.f || xInTerrain >= width - 1 || zInTerrain < 0.f || zInTerrain >= height - 1) {
+			return glm::vec3(0.f,1.f,0.f);
+		}
+		int xFloor = static_cast<int>(xInTerrain);
+		int zFloor = static_cast<int>(zInTerrain);
+		std::vector<Vertex> vertices;
+		vertices.push_back(vertexData[xFloor + zFloor*width]);
+		vertices.push_back(vertexData[(xFloor + 1) + zFloor*width]);
+		vertices.push_back(vertexData[xFloor + (zFloor + 1)*width]);
+		vertices.push_back(vertexData[(xFloor + 1) + (zFloor + 1)*width]);
+		glm::vec3 a, b, normal;
+		if (z > x){
+			a = vertices[3].position - vertices[0].position;
+			b = vertices[1].position - vertices[0].position;
+		} else {
+			a = vertices[2].position - vertices[0].position;
+			b = vertices[3].position - vertices[0].position;
+		}
+		normal = glm::normalize(glm::cross(a, b));
+		return normal;
+	}
     
     glm::vec2 Terrain::TextureRepeat() const {
         return textureRepeat;

@@ -5,4 +5,8 @@ namespace Physics {
         this->position = origin;
         this->radius = radius;
     }
+
+	bool Sphere::SphereVsTriangle(Triangle triangle){
+		return true;
+	}
 }
