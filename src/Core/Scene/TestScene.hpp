@@ -19,6 +19,7 @@
 #include "../Object/Water.hpp"
 #include "../Object/PlayerObject.hpp"
 #include "../Object/GUI.hpp"
+#include "../Object/Duck.hpp"
 
 /** @ingroup Core
  * @{
@@ -98,6 +99,9 @@ class TestScene : public Scene {
         // Particles
         ParticleSystem* particleSystem;
         Texture2D* particleTexture;
+        
+        // Ducks
+        Duck* duck;
 };
 
 /** @} */

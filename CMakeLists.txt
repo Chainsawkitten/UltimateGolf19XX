@@ -163,6 +163,7 @@ set(CORE_SRCS
         src/Core/Object/GolfBall.cpp
         src/Core/Object/Water.cpp
         src/Core/Object/GUI.cpp
+        src/Core/Object/Duck.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
         src/Core/Player/ThirdPersonPlayer.cpp
@@ -227,6 +228,7 @@ set(CORE_HEADERS
         src/Core/Object/GolfBall.hpp
         src/Core/Object/Water.hpp
         src/Core/Object/GUI.hpp
+        src/Core/Object/Duck.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
         src/Core/Player/ThirdPersonPlayer.hpp

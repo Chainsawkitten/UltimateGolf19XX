@@ -84,7 +84,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     // Camera.
     player = new ThirdPersonPlayer(golfBall);
     player->SetMovementSpeed(2.f);
-	wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
+    wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
     
     gui = new GUI(screenSize);
     
@@ -115,12 +115,15 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
     emitter->Update(5.0, particleSystem, player->GetCamera());
-
-	// Initiate players
-	numberOfPlayers = 2;
-	playerIndex = 0;
-	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
+    
+    // Initiate players
+    numberOfPlayers = 2;
+    playerIndex = 0;
+    playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
+    playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
+    
+    // Ducks
+    duck = new Duck();
 }
 
 TestScene::~TestScene() {
@@ -154,10 +157,12 @@ TestScene::~TestScene() {
     Resources().FreeShader(vertexShader);
     Resources().FreeShader(geometryShader);
     Resources().FreeShader(fragmentShader);
+    
+    delete duck;
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-	swingStrength += time / swingTime * swingDirection;
+    swingStrength += time / swingTime * swingDirection;
     if (swingStrength > 1.f || swingStrength < 0.f) {
         swingDirection = -swingDirection;
         swingStrength = glm::clamp(swingStrength, 0.f, 1.f);
@@ -176,7 +181,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     if (Input()->Triggered(InputHandler::RESET)) {
         golfBall->Reset();
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
-		Log() << wind << "\n";
+        Log() << wind << "\n";
     }
     
     player->Update(time);
@@ -280,17 +285,20 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-	for (auto &playerObject : playerObjects) {
-		modelObject->SetPosition(playerObject.Position());
-		modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
-	}
+    for (auto &playerObject : playerObjects) {
+        modelObject->SetPosition(playerObject.Position());
+        modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    }
     
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
     terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    
+    duck->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
     renderTarget->SetTarget();
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
     skybox->Render(player->GetCamera(), renderTarget->Size());
 }
+
