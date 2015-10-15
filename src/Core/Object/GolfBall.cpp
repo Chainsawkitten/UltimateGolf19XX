@@ -88,11 +88,13 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 				glm::vec3 tangentialDelta = tangentialVelocity + (tangentialGravityAcceleration - tangentialSlidingFrictionDeceleration)*static_cast<float>(time);
 				if (w * sphere.radius + 0.0001f < glm::length(tangentialVelocity)) {
 					//Rolling
-					velocity = tangentialVelocity + (tangentialGravityAcceleration - tangentialRollingFrictionDeceleration)*static_cast<float>(time);
+					if (glm::length(tangentialGravityAcceleration) < glm::length(tangentialRollingFrictionDeceleration))
+						tangentialRollingFrictionDeceleration = glm::length(tangentialGravityAcceleration)*eFriction;
+					velocity = tangentialVelocity - (tangentialGravityAcceleration + tangentialRollingFrictionDeceleration)*static_cast<float>(time);
 					angularVelocity = (glm::length(velocity) / sphere.radius) * cross(eRoh,eFriction);
 				} else {
 					//Sliding
-					velocity = tangentialVelocity + (tangentialGravityAcceleration - tangentialSlidingFrictionDeceleration)*static_cast<float>(time);
+					velocity = tangentialVelocity - (tangentialGravityAcceleration - tangentialSlidingFrictionDeceleration)*static_cast<float>(time);
 					angularVelocity += (5.f / 2.f) * (muSliding * 9.82f / sphere.radius * static_cast<float>(time)) * cross(eRoh, eFriction);
 				}
 			} else {
