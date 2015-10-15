@@ -238,6 +238,10 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     glm::vec3 swingPosition = golfBall->Position() + strikeDirection * 0.5f * swingArrow->Scale().y - glm::vec3(0.f, golfBall->Radius(), 0.f);
     swingArrow->SetPosition(swingPosition);
     
+    for (Duck* duck : ducks) {
+        duck->Update(time, terrainObject, water);
+    }
+    
     return nullptr;
 }
 

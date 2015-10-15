@@ -5,6 +5,8 @@
 #include "../Texture/Texture2D.hpp"
 #include "../Geometry/OBJModel.hpp"
 #include "../Camera/Camera.hpp"
+#include "TerrainObject.hpp"
+#include "Water.hpp"
 
 /** @ingroup Core
  * @{
@@ -18,6 +20,14 @@ class Duck : public Object {
         
         /// Destructor.
         ~Duck();
+        
+        /// Update the duck.
+        /**
+         * @param time Time since last frame (in seconds).
+         * @param terrain %Terrain to check collision against.
+         * @param water %Water to try to stay on.
+         */
+        void Update(double time, TerrainObject* terrain, Water* water);
         
         /// Render the object.
         /**
@@ -36,6 +46,12 @@ class Duck : public Object {
         
         Geometry::OBJModel* geometry;
         Texture2D* texture;
+        
+        float velocity;
+        float targetVelocity;
+        float angularVelocity;
+        float targetAngularVelocity;
+        float lastChanged;
 };
 
 /** @} */

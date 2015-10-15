@@ -12,6 +12,12 @@ Duck::Duck() {
     
     geometry = Resources().CreateOBJModel("Resources/Models/Duck/Duck.obj");
     texture = Resources().CreateTexture2DFromFile("Resources/Models/Duck/Diffuse.png");
+    
+    velocity = 0.1f;
+    targetVelocity = 0.1f;
+    angularVelocity = 0.f;
+    targetAngularVelocity = 0.f;
+    lastChanged = 0.f;
 }
 
 Duck::~Duck() {
@@ -22,6 +28,27 @@ Duck::~Duck() {
     
     Resources().FreeOBJModel(geometry);
     Resources().FreeTexture2DFromFile(texture);
+}
+
+void Duck::Update(double time, TerrainObject* terrain, Water* water) {
+    lastChanged += time;
+    if (lastChanged > 5.f) {
+        lastChanged -= 5.f;
+        targetAngularVelocity = (rand() / static_cast<float>(RAND_MAX)) * 2.f - 1.f;
+        targetVelocity = (rand() / static_cast<float>(RAND_MAX)) * 0.5f + 0.1f;
+    }
+    
+    velocity += (targetVelocity - velocity) * time;
+    angularVelocity += (targetAngularVelocity - angularVelocity) * time;
+    
+    Rotate(angularVelocity, 0.f, 0.f);
+    
+    // Move if not moving onto terrain.
+    glm::vec3 pos = Position();
+    pos.x += sin(glm::radians(HorizontalAngle()));
+    pos.z += cos(glm::radians(HorizontalAngle()));
+    if (terrain->GetY(pos.x, pos.z) < water->Position().y - 0.2f)
+        Move(glm::vec3(time * velocity * sin(glm::radians(HorizontalAngle())), 0.f, time * velocity * cos(glm::radians(HorizontalAngle()))));
 }
 
 void Duck::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const {
