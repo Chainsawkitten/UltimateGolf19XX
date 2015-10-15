@@ -29,6 +29,12 @@ class ParticleEmitter {
         
         /// Emit particle.
         virtual void EmitParticle() = 0;
+
+		///Get lifetime
+		double getLifetime();
+
+		///Reset lifetime
+		void resetLifetime();
         
     protected:
         void EmitParticleAt(glm::vec3 position);
@@ -39,6 +45,8 @@ class ParticleEmitter {
         double timeToNext;
         
         bool relative;
+
+		double lifeTime;
         
         ParticleSystem* particleSystem;
         const Camera* camera;
