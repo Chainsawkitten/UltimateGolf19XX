@@ -130,6 +130,19 @@ TestScene::TestScene(const glm::vec2& screenSize) {
             position = glm::vec3(rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f);
         } while (terrainObject->GetY(position.x, position.z) > water->Position().y - 0.2f);
         ducks[i]->SetPosition(position);
+        ducks[i]->SetRotation(rand() / static_cast<float>(RAND_MAX) * 360.f, 0.f, 0.f);
+    }
+    
+    // Lily pads
+    for (int i=0; i<50; i++) {
+        lilypads.push_back(new LilyPad());
+        glm::vec3 position;
+        do {
+            position = glm::vec3(rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f, water->Position().y + 0.05f, rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f);
+        } while (terrainObject->GetY(position.x, position.z) > water->Position().y - 0.2f);
+        lilypads[i]->SetPosition(position);
+        lilypads[i]->SetRotation(rand() / static_cast<float>(RAND_MAX) * 360.f, 270.f, 0.f);
+        lilypads[i]->SetScale(2.f, 2.f, 1.f);
     }
 }
 
@@ -167,6 +180,10 @@ TestScene::~TestScene() {
     
     for (Duck* duck : ducks) {
         delete duck;
+    }
+    
+    for (LilyPad* lilypad : lilypads) {
+        delete lilypad;
     }
 }
 
@@ -305,6 +322,10 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     for (Duck* duck : ducks) {
         duck->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    }
+    
+    for (LilyPad* lilypad : lilypads) {
+        lilypad->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     }
     
     renderTarget->SetTarget();

@@ -20,6 +20,7 @@
 #include "../Object/PlayerObject.hpp"
 #include "../Object/GUI.hpp"
 #include "../Object/Duck.hpp"
+#include "../Object/LilyPad.hpp"
 
 /** @ingroup Core
  * @{
@@ -102,6 +103,9 @@ class TestScene : public Scene {
         
         // Ducks
         std::vector<Duck*> ducks;
+        
+        // Lily pads
+        std::vector<LilyPad*> lilypads;
 };
 
 /** @} */

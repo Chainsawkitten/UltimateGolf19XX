@@ -3,21 +3,21 @@
 #include "Object.hpp"
 #include "../Shader/ShaderProgram.hpp"
 #include "../Texture/Texture2D.hpp"
-#include "../Geometry/OBJModel.hpp"
+#include "../Geometry/Square.hpp"
 #include "../Camera/Camera.hpp"
 
 /** @ingroup Core
  * @{
  */
 
-/// A quacking duck.
-class Duck : public Object {
+/// A bundle of lilypad leaves.
+class LilyPad : public Object {
     public:
         /// Create new duck.
-        Duck();
+        LilyPad();
         
         /// Destructor.
-        ~Duck();
+        ~LilyPad();
         
         /// Render the object.
         /**
@@ -34,7 +34,7 @@ class Duck : public Object {
         Shader* fragmentShader;
         ShaderProgram* shaderProgram;
         
-        Geometry::OBJModel* geometry;
+        Geometry::Square* geometry;
         Texture2D* texture;
 };
 
