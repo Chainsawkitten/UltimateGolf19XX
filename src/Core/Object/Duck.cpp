@@ -59,9 +59,9 @@ void Duck::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& 
     glm::mat4 model = ModelMatrix();
     
     // Frustum local to objects
-    Physics::Frustum* frustum = new Physics::Frustum(projection * view * model);
+    Physics::Frustum frustum(projection * view * model);
     
-    if (frustum->Collide(geometry->aabb)) {
+    if (frustum.Collide(geometry->aabb)) {
         shaderProgram->Use();
         
         //Set texture locations
