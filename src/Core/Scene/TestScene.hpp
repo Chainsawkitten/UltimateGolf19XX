@@ -18,6 +18,7 @@
 #include "../Object/GolfBall.hpp"
 #include "../Object/Water.hpp"
 #include "../Object/PlayerObject.hpp"
+#include "../Object/GUI.hpp"
 
 /** @ingroup Core
  * @{
@@ -57,9 +58,12 @@ class TestScene : public Scene {
         DeferredLighting* deferredLighting;
         Geometry::Geometry3D* geometry;
         GeometryObject* geometryObject;
+        Texture2D* texture;
+
+		//GUI
+		GUI* gui;
 		float swingStrength;
 
-        Texture2D* texture;
 		//Terrain
 		TerrainObject* terrainObject;
 		Geometry::Terrain* terrain;
