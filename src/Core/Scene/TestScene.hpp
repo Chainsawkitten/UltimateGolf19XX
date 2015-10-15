@@ -97,6 +97,10 @@ class TestScene : public Scene {
         Water* water;
         
         // Particles
+		ParticleSystem* explosionParticleSystem;
+		ParticleEmitter* explosionEmitter;
+		bool emitterAttached;
+		Texture2D* explosionTexture;
         ParticleSystem* particleSystem;
         Texture2D* particleTexture;
 };

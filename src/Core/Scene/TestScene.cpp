@@ -4,6 +4,7 @@
 #include "Default3D.geom.hpp"
 #include "ForwardAlpha.frag.hpp"
 #include "../Particles/CuboidParticleEmitter.hpp"
+#include "../Particles/PointParticleEmitter.hpp"
 #include "../Audio/SoundSystem.hpp"
 #include "../Util/GameSettings.hpp"
 #include "../Util/Input.hpp"
@@ -86,6 +87,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
+
     
     // Particle type.
     ParticleType dustParticle;
@@ -101,6 +103,25 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     // Particle system.
     particleSystem = new ParticleSystem(dustParticle, 1000);
+
+
+	explosionTexture = Resources().CreateTexture2DFromFile("Resources/FireParticle.png");
+
+	// Particle type.
+	ParticleType explosionParticle;
+	explosionParticle.texture = explosionTexture;
+	explosionParticle.minLifetime = .1f;
+	explosionParticle.maxLifetime = .2f;
+	explosionParticle.minVelocity = glm::vec3(-1.f, 1.f, -1.f);
+	explosionParticle.maxVelocity = glm::vec3(1.f, -1.f, 1.f);
+	explosionParticle.minSize = glm::vec2(0.025f, 0.025f);
+	explosionParticle.maxSize = glm::vec2(0.05f, 0.05f);
+	explosionParticle.uniformScaling = true;
+	explosionParticle.color = glm::vec3(1.f, 0.5f, 0.5f);
+
+	// Particle system.
+	explosionParticleSystem = new ParticleSystem(explosionParticle, 1000);
+	emitterAttached = false;
 
 	// Initiate players
 	numberOfPlayers = 2;
@@ -198,13 +219,27 @@ TestScene::SceneEnd* TestScene::Update(double time) {
             playerIndex++;
         else
             playerIndex = 0;
+		
+		// Emitters.
+		explosionEmitter = new PointParticleEmitter(golfBall->Position(), 0.1, 0.2, false);
+		explosionParticleSystem->AddParticleEmitter(explosionEmitter);
+		explosionEmitter->Update(15, explosionParticleSystem, player->GetCamera());
+		emitterAttached = true;
+		explosionEmitter->resetLifetime();
+
         golfBall->Explode(playerObjects);
     }
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
-    particleSystem->Update(time, player->GetCamera());
+	if (emitterAttached && explosionEmitter->getLifetime() > 0.5 ){
+		explosionParticleSystem->RemoveParticleEmitter();
+		emitterAttached = false;
+	}
+
+	particleSystem->Update(time, player->GetCamera());
+	explosionParticleSystem->Update(time, player->GetCamera());
     water->Update(time, wind);
     
     swingArrow->SetRotation(-glm::degrees(swingAngle) - 90.f, 270.f, 0.f);
@@ -238,6 +273,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     }
     
     particleSystem->Render(player->GetCamera(), screenSize);
+	explosionParticleSystem->Render(player->GetCamera(), screenSize);
     
     postProcessing->Render();
     
