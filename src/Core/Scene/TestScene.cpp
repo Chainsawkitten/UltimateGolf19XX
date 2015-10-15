@@ -163,7 +163,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
         swingStrength = glm::clamp(swingStrength, 0.f, 1.f);
     }
     
-    swingAngle += time;
+    swingAngle += time * (Input()->Pressed(InputHandler::RIGHT) - Input()->Pressed(InputHandler::LEFT));
     glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
     
     if (Input()->Triggered(InputHandler::STRIKE)) {
