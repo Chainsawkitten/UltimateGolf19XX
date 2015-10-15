@@ -40,12 +40,6 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     swingTime = 1.f;
     swingDirection = 1.f;
 
-	///Initiate players
-	numberOfPlayers = 2;
-	playerIndex = 0;
-	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, 0.f, 5.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, 0.f, -5.f) });
-
 	terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
@@ -114,6 +108,12 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
     emitter->Update(5.0, particleSystem, player->GetCamera());
+
+	///Initiate players
+	numberOfPlayers = 2;
+	playerIndex = 0;
+	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
 }
 
 TestScene::~TestScene() {
@@ -176,8 +176,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 		clubIterator++;
 		if (clubIterator == clubs.end())
 			clubIterator = clubs.begin();
-		Log() << clubIterator->first;
-		Log() << "\n";
+		Log() << clubIterator->first << "\n";
 	}
     
 	if (Input()->Triggered(InputHandler::EXPLODE)) {
@@ -233,38 +232,10 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    // Start - render cube
-    
-    shaderProgram->Use();
-    glBindVertexArray(geometryObject->Geometry()->VertexArray());
-    
-    // Texture unit 0 is for base images.
-    glUniform1i(shaderProgram->UniformLocation("baseImage"), 0);
-    
-    // Base image texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->TextureID());
-    
-    // Model matrix, unique for each model.
-    glm::mat4 model = geometryObject->ModelMatrix();
-    
-    // Send the matrices to the shader.
-    glm::mat4 view = player->GetCamera()->View();
-    glm::mat4 normal = glm::transpose(glm::inverse(view * model));
-    
-    glUniformMatrix4fv(shaderProgram->UniformLocation("modelMatrix"), 1, GL_FALSE, &model[0][0]);
-    glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &view[0][0]);
-    glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(normal)[0][0]);
-    glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &player->GetCamera()->Projection(renderTarget->Size())[0][0]);
-    
-    glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &clippingPlane[0]);
-    
-    // Draw the triangles
-    glDrawElements(GL_TRIANGLES, geometryObject->Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
-    
-    // End - render cube
-    
-    modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+	for (auto &playerObject : playerObjects){
+		modelObject->SetPosition(playerObject.Position());
+		modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+	}
     
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
