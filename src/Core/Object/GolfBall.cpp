@@ -89,7 +89,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 				//		angularVelocity = glm::vec3(0.f, 0.f, 0.f);
 				//	}
 				//}
-				glm::vec3 mg = 9.82f*mass*glm::vec3(0.f, -1.f, 0.f);
+				glm::vec3 mg = (9.82f)*glm::vec3(0.f, -1.f, 0.f);
 				glm::vec3 tangentialGravityAcceleration = glm::dot(mg, eRoh)*eRoh;
 				glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction;
 				glm::vec3 tangentialRolling = (5.f/7.f)*tangentialVelocity;
