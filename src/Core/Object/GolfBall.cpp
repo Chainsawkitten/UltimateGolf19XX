@@ -19,7 +19,6 @@ GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : ModelObject(mode
     groundLevel = this->terrain->Position().y;
     origin = glm::vec3(1.f, 0.f, 1.f);
     
-    /// @todo Mass based on explosive material.
     mass = 0.0459f;
     this->ballType = ballType;
     
@@ -95,13 +94,15 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 				glm::vec3 tangentialRolling = (5.f/7.f)*tangentialVelocity;
 				glm::vec3 tangentialDelta = tangentialVelocity + (tangentialGravityAcceleration - tangentialSlidingFrictionDeceleration)*static_cast<float>(time);
 				if (w * sphere.radius + 0.0001f < glm::length(tangentialVelocity)) {
-					//sliding
+					//Rolling
 					Log() << "Rolling";
 					velocity = tangentialVelocity - tangentialRolling*static_cast<float>(time);
+					angularVelocity = (glm::length(velocity) / sphere.radius) * cross(eRoh,eFriction);
 				} else {
-					//rolling
+					//Sliding
 					Log() << "Sliding";
 					velocity = tangentialVelocity - (tangentialGravityAcceleration - tangentialSlidingFrictionDeceleration)*static_cast<float>(time);
+					angularVelocity += (5.f / 2.f) * (muSliding * 9.82f / sphere.radius * static_cast<float>(time)) * cross(eRoh, eFriction);
 				}
 			} else {
 				float deltaTime = pow(mass * mass / (fabs(vRoh) * sphere.radius), 0.2f) * 0.00251744f;
