@@ -85,7 +85,6 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 				glm::vec3 tangentialGravityAcceleration = mg - glm::dot(mg, eRoh)*eRoh;
 				glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction;
 				glm::vec3 tangentialRollingFrictionDeceleration = muRolling*eFriction;
-				glm::vec3 tangentialDelta = tangentialVelocity + (tangentialGravityAcceleration - tangentialSlidingFrictionDeceleration)*static_cast<float>(time);
 				if (w * sphere.radius + 0.0001f < glm::length(tangentialVelocity)) {
 					//Rolling
 					if (glm::length(tangentialGravityAcceleration)*muRolling < glm::length(tangentialRollingFrictionDeceleration))
