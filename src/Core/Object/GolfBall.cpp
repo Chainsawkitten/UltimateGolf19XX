@@ -30,11 +30,11 @@ GolfBall::~GolfBall() {
     Resources().FreeOBJModel(modelGeometry);
 }
 
-void GolfBall::Reset(){
+void GolfBall::Reset(glm::vec3 newOrigin){
     state = GolfBall::INITIAL;
     velocity = glm::vec3(0.f, 0.f, 0.f);
     angularVelocity = glm::vec3(0.f, 0.f, 0.f);
-    SetPosition(origin);
+    SetPosition(newOrigin);
     sphere.position = Position();
     orientation = glm::quat();
 }
