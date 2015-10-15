@@ -63,6 +63,9 @@ class TestScene : public Scene {
 		//GUI
 		GUI* gui;
 		float swingStrength;
+        float maxSwingStrength;
+        float swingTime;
+        float swingDirection;
 
 		//Terrain
 		TerrainObject* terrainObject;
