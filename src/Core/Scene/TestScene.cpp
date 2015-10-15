@@ -44,7 +44,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     swingAngle = 0.f;
     
     // Terrain.
-    terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.tga");
+    terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
     terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
     terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
