@@ -93,7 +93,6 @@ class GolfBall : public ModelObject {
     private:
 		TerrainObject* terrain;
         Water* water;
-		float groundLevel;
         glm::vec3 velocity;
         
         glm::quat orientation;
