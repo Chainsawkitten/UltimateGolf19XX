@@ -73,21 +73,6 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			float w = glm::dot(angularVelocity, angularDirection);
 
 			if (fabs(vRoh) < vCritical && glm::length(tangentialVelocity) > 0.0001f) {
-				//if (w * sphere.radius + 0.0001f < glm::length(tangentialVelocity)) {
-				//	// Sliding.
-				//	velocity = tangentialVelocity - static_cast<float>(time)* (eFriction * muSliding * 9.82f*eRoh.y);
-				//	angularVelocity += (5.f / 2.f) * (muSliding * 9.82f / sphere.radius * static_cast<float>(time)) * angularDirection;
-				//} else {
-				//	// Rolling.
-				//	velocity = tangentialVelocity - static_cast<float>(time)* (glm::normalize(tangentialVelocity) * muRolling * 9.82f*eRoh.y);
-				//	float tangentialVelocityAfter = glm::length(velocity - glm::dot(velocity, eRoh) * eRoh);
-				//	angularVelocity = (glm::length(tangentialVelocityAfter) / sphere.radius) * angularDirection;
-				//	// Stopped.
-				//	if (glm::length(velocity) < 0.2f) {
-				//		velocity = glm::vec3(0.f, 0.f, 0.f);
-				//		angularVelocity = glm::vec3(0.f, 0.f, 0.f);
-				//	}
-				//}
 				glm::vec3 mg = (9.82f)*glm::vec3(0.f, -1.f, 0.f);
 				glm::vec3 tangentialGravityAcceleration = glm::dot(mg, eRoh)*eRoh;
 				glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction;
