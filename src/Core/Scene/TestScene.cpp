@@ -172,6 +172,10 @@ TestScene::~TestScene() {
     
     delete particleSystem;
     Resources().FreeTexture2DFromFile(particleTexture);
+
+	delete explosionParticleSystem;
+	delete explosionEmitter;
+	Resources().FreeTexture2DFromFile(explosionTexture);
     
     delete player;
     
