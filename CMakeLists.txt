@@ -58,6 +58,7 @@ set(RESOURCES
     assets/Terrain
     assets/Models
     assets/DustParticle.png
+    assets/GUI
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
@@ -154,12 +155,13 @@ set(CORE_SRCS
         src/Core/Lighting/DeferredLighting.cpp
         src/Core/Lighting/Light.cpp
         src/Core/Object/Object.cpp
-		src/Core/Object/PlayerObject.cpp
+        src/Core/Object/PlayerObject.cpp
         src/Core/Object/ModelObject.cpp
 	src/Core/Object/TerrainObject.cpp
         src/Core/Object/GeometryObject.cpp
         src/Core/Object/GolfBall.cpp
         src/Core/Object/Water.cpp
+        src/Core/Object/GUI.cpp
         src/Core/Player/Player.cpp
         src/Core/Player/FirstPersonPlayer.cpp
         src/Core/Player/ThirdPersonPlayer.cpp
@@ -217,12 +219,13 @@ set(CORE_HEADERS
         src/Core/Lighting/DeferredLighting.hpp
         src/Core/Lighting/Light.hpp
         src/Core/Object/Object.hpp
-		src/Core/Object/PlayerObject.hpp
+        src/Core/Object/PlayerObject.hpp
         src/Core/Object/ModelObject.hpp
 	src/Core/Object/TerrainObject.hpp
         src/Core/Object/GeometryObject.hpp
         src/Core/Object/GolfBall.hpp
         src/Core/Object/Water.hpp
+        src/Core/Object/GUI.hpp
         src/Core/Player/Player.hpp
         src/Core/Player/FirstPersonPlayer.hpp
         src/Core/Player/ThirdPersonPlayer.hpp

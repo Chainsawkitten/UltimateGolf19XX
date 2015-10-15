@@ -95,30 +95,41 @@ namespace Geometry {
                dx * dz * heightMap[xFloor + 1][zFloor + 1];
     }
 
-	glm::vec3 Terrain::GetNormal(float x, float z) const {
+    glm::vec3 Terrain::GetNormal(float x, float z) const {
 		float xInTerrain = x * width;
 		float zInTerrain = z * height;
 
 		if (xInTerrain < 0.f || xInTerrain >= width - 1 || zInTerrain < 0.f || zInTerrain >= height - 1) {
-			return glm::vec3(0.f,1.f,0.f);
+			return glm::vec3(0.f,0.f,0.f);
 		}
 		int xFloor = static_cast<int>(xInTerrain);
 		int zFloor = static_cast<int>(zInTerrain);
-		std::vector<Vertex> vertices;
-		vertices.push_back(vertexData[xFloor + zFloor*width]);
-		vertices.push_back(vertexData[(xFloor + 1) + zFloor*width]);
-		vertices.push_back(vertexData[xFloor + (zFloor + 1)*width]);
-		vertices.push_back(vertexData[(xFloor + 1) + (zFloor + 1)*width]);
-		glm::vec3 a, b, normal;
-		if (z > x){
-			a = vertices[3].position - vertices[0].position;
-			b = vertices[1].position - vertices[0].position;
+        
+        // Get triangle.
+		Vertex a, b, c;
+		if (zInTerrain - zFloor > xInTerrain - xFloor){
+            a = vertexData[xFloor + zFloor*width];
+            b = vertexData[(xFloor + 1) + (zFloor + 1)*width];
+            c = vertexData[(xFloor + 1) + zFloor*width];
 		} else {
-			a = vertices[2].position - vertices[0].position;
-			b = vertices[3].position - vertices[0].position;
+            a = vertexData[xFloor + zFloor*width];
+            b = vertexData[xFloor + (zFloor + 1)*width];
+            c = vertexData[(xFloor + 1) + (zFloor + 1)*width];
 		}
-		normal = glm::normalize(glm::cross(a, b));
-		return normal;
+        
+        // Interpolate triangle normal.
+        glm::vec3 pos(x, GetY(x, z), z);
+        glm::vec3 edge1 = a.position - pos;
+        glm::vec3 edge2 = b.position - pos;
+        glm::vec3 edge3 = c.position - pos;
+        
+        // Calculate the areas and factors (order of parameters doesn't matter).
+        float area = glm::length(glm::cross(a.position-b.position, a.position-c.position));
+        float a1 = glm::length(glm::cross(edge2, edge3)) / area;
+        float a2 = glm::length(glm::cross(edge3, edge1)) / area; 
+        float a3 = glm::length(glm::cross(edge1, edge2)) / area;
+        
+		return glm::normalize(a1 * a.normal + a2 * b.normal + a3 * c.normal);
 	}
     
     glm::vec2 Terrain::TextureRepeat() const {
