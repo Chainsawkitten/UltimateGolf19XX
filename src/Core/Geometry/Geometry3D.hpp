@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "AABB.h"
+#include "../Physics/AABB.hpp"
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -40,7 +40,7 @@ namespace Geometry {
             /**
              * Create a local space AABB for geometry object
              */
-            //void CreateAabb();
+            void CreateAabb();
     
             /// Get the number of vertices.
             /**
@@ -61,7 +61,7 @@ namespace Geometry {
             virtual unsigned int IndexCount() const = 0;
     
             /// Localspace AABB for the geometry
-            //AABB aabb;
+            Physics::AABB aabb;
     
             /// Get the vertex array.
             /**
