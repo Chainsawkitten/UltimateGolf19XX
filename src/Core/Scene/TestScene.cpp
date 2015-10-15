@@ -50,7 +50,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
 	terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
-    terrainObject->SetScale(100.f, 10.f, 100.f);
+    terrainObject->SetScale(200.f, 10.f, 200.f);
     
     skyboxTexture = new CubeMapTexture(
                 "Resources/TropicalSunnyDay/Right.png",
