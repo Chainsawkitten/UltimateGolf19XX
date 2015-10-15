@@ -89,6 +89,7 @@ class TestScene : public Scene {
         FXAAFilter* fxaaFilter;
         std::map<std::string, ClubType> clubs;
         std::map<std::string, ClubType>::iterator clubIterator;
+		std::vector<PlayerObject>::iterator playerIterator;
         GolfBall* golfBall;
         std::vector<PlayerObject> playerObjects;
         int playerIndex;
@@ -98,6 +99,10 @@ class TestScene : public Scene {
         Water* water;
         
         // Particles
+		ParticleSystem* explosionParticleSystem;
+		ParticleEmitter* explosionEmitter;
+		bool emitterAttached;
+		Texture2D* explosionTexture;
         ParticleSystem* particleSystem;
         Texture2D* particleTexture;
         

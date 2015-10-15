@@ -77,7 +77,7 @@ class GolfBall : public ModelObject {
         void SetRadius(float radius);
 
 		/// Resets ball to original position.
-		void Reset();
+		void Reset(glm::vec3 newOrigin);
 		
 		/// Explodes golfball
         /**
