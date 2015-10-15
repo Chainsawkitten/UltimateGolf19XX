@@ -18,7 +18,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
     modelObject->SetPosition(2.f, 0.f, 0.f);
     modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
-    
+	srand(time(NULL));
 	/// Map of all available clubtypes
 	clubs["Wood 1"] = ClubType{ 0.2f, glm::radians<float>(11.f) };
 	clubs["Wood 3"] = ClubType{ 0.208f, glm::radians<float>(15.f) };
@@ -76,8 +76,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     player = new ThirdPersonPlayer(golfBall);
     player->SetMovementSpeed(2.f);
-    
-    wind = glm::vec3(0.f, 0.f, 4.f);
+	wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
     
     water =  new Water(screenSize);
     water->SetScale(400.f, 400.f, 400.f);
@@ -150,7 +149,6 @@ TestScene::~TestScene() {
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-    glm::vec3 wind = glm::vec3(0.f, 0.f, 0.f);
 	swingStrength += time / swingTime * swingDirection;
     if (swingStrength > 1.f || swingStrength < 0.f) {
         swingDirection = -swingDirection;
@@ -167,9 +165,11 @@ TestScene::SceneEnd* TestScene::Update(double time) {
 	golfBall->Update(time, wind, playerObjects);
 
 
-	if (Input()->Triggered(InputHandler::RESET))
+	if (Input()->Triggered(InputHandler::RESET)){
 		golfBall->Reset();
-    
+		wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
+		Log() << wind << "\n";
+	}
     player->Update(time);
 	
 	if (Input()->Triggered(InputHandler::NEXTCLUB)) {
