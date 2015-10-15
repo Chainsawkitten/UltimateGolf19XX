@@ -15,7 +15,11 @@ layout(location = 1) out vec3 normalsOut;
 layout(location = 2) out vec3 specularOut;
 
 void main() {
-	diffuseOut = texture(baseImage, vertexIn.texCoords).rgb;
+    vec4 sampledDiffuse = texture(baseImage, vertexIn.texCoords);
+	diffuseOut = sampledDiffuse.rgb;
 	normalsOut = vertexIn.normal;
 	specularOut = vec3(1.0, 1.0, 1.0);
+    
+    if (sampledDiffuse.a < 0.75)
+        discard;
 }

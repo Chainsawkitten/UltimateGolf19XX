@@ -8,11 +8,11 @@ namespace Geometry {
         glDeleteBuffers(1, &indexBuffer);
     }
     
-    /*void Geometry3D::CreateAabb() {
+    void Geometry3D::CreateAabb() {
         glm::vec3 minValues, maxValues, origin, dim;
-        Vertex* currVert = vertices();
+        Vertex* currVert = Vertices();
         minValues = maxValues = origin = glm::vec3(0.f, 0.f, 0.f);
-        unsigned int numVerts = vertexCount();
+        unsigned int numVerts = VertexCount();
     
         // Find minimum/maximum bounding points
         for (unsigned int i = 0; i < numVerts; i++) {
@@ -41,8 +41,8 @@ namespace Geometry {
         dim.x = maxValues.x - minValues.x;
         dim.y = maxValues.y - minValues.y;
         dim.z = maxValues.z - minValues.z;
-        aabb = AABB(dim, origin, minValues, maxValues);
-    }*/
+        aabb = Physics::AABB(dim, origin, minValues, maxValues);
+    }
     
     GLuint Geometry3D::VertexArray() const {
         return vertexArray;
