@@ -202,6 +202,10 @@ void GolfBall::Strike(ClubType club, const glm::vec3& clubVelocity) {
     }
 }
 
+float GolfBall::Radius() const {
+    return sphere.radius;
+}
+
 void GolfBall::SetRadius(float radius) {
     sphere.radius = radius;
     SetScale(glm::vec3(radius, radius, radius));

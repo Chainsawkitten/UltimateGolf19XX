@@ -87,6 +87,7 @@ set(EMBEDDED_INPUT
     shaders/NormalSpecularMap.frag
     shaders/Water.geom
     shaders/Water.frag
+    shaders/ForwardAlpha.frag
     assets/ABeeZee.ttf
     assets/File.png
     assets/Options.png

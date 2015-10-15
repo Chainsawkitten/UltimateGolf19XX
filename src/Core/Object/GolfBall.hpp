@@ -63,6 +63,12 @@ class GolfBall : public ModelObject {
         /// Hit the golf ball with a club.
 		void Strike(ClubType club, const glm::vec3& clubVelocity);
         
+        /// Get the radius of the golf ball.
+        /**
+         * @return Radius in meters.
+         */
+        float Radius() const;
+        
         /// Set the radius of the golf ball.
         /**
          * @param radius Radius in meters.

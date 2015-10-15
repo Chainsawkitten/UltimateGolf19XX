@@ -1,5 +1,6 @@
 #include "Object.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 Object::Object() {
     position = glm::vec3(0.f, 0.f, 0.f);
@@ -76,9 +77,9 @@ void Object::Rotate(float horizontalAngle, float verticalAngle, float tiltAngle)
 
 glm::mat4 Object::Orientation() const {
 	glm::mat4 orientation;
-	orientation = glm::rotate(orientation, glm::radians(tiltAngle), glm::vec3(0, 0, 1));
-	orientation = glm::rotate(orientation, glm::radians(verticalAngle), glm::vec3(1, 0, 0));
 	orientation = glm::rotate(orientation, glm::radians(horizontalAngle), glm::vec3(0, 1, 0));
+	orientation = glm::rotate(orientation, glm::radians(verticalAngle), glm::vec3(1, 0, 0));
+    orientation = glm::rotate(orientation, glm::radians(tiltAngle), glm::vec3(0, 0, 1));
 	return orientation;
 }
 

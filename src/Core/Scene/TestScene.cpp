@@ -2,7 +2,7 @@
 #include "../Resources.hpp"
 #include "Default3D.vert.hpp"
 #include "Default3D.geom.hpp"
-#include "Default3D.frag.hpp"
+#include "ForwardAlpha.frag.hpp"
 #include "../Particles/CuboidParticleEmitter.hpp"
 #include "../Audio/SoundSystem.hpp"
 #include "../Util/GameSettings.hpp"
@@ -39,6 +39,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     maxSwingStrength = 40.f;
     swingTime = 1.f;
     swingDirection = 1.f;
+    swingAngle = 0.f;
     
     // Initiate players
     numberOfPlayers = 2;
@@ -69,15 +70,10 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     postProcessing = new PostProcessing(screenSize);
     fxaaFilter = new FXAAFilter();
     
-    geometry = Resources().CreateCube();
-    geometryObject = new GeometryObject(geometry);
-    
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
     geometryShader = Resources().CreateShader(DEFAULT3D_GEOM, DEFAULT3D_GEOM_LENGTH, GL_GEOMETRY_SHADER);
-    fragmentShader = Resources().CreateShader(DEFAULT3D_FRAG, DEFAULT3D_FRAG_LENGTH, GL_FRAGMENT_SHADER);
+    fragmentShader = Resources().CreateShader(FORWARDALPHA_FRAG, FORWARDALPHA_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
-    
-    texture = Resources().CreateTexture2DFromFile("Resources/CGTextures/cliff.png");
     
     // Water.
     water =  new Water(screenSize);
@@ -96,6 +92,11 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     wind = glm::vec3(0.f, 0.f, 4.f);
     
     gui = new GUI(screenSize);
+    
+    swingArrowTexture = Resources().CreateTexture2DFromFile("Resources/GUI/Arrow.png");
+    swingArrowGeometry = Resources().CreateSquare();
+    swingArrow = new GeometryObject(swingArrowGeometry);
+    swingArrow->SetScale(0.25f, 1.f, 1.f);
     
     // Particle texture.
     particleTexture = Resources().CreateTexture2DFromFile("Resources/DustParticle.png");
@@ -135,8 +136,8 @@ TestScene::~TestScene() {
     delete fxaaFilter;
     delete postProcessing;
     
-    delete geometryObject;
-    Resources().FreeCube();
+    delete swingArrow;
+    Resources().FreeSquare();
     delete modelObject;
     Resources().FreeOBJModel(model);
     
@@ -146,7 +147,7 @@ TestScene::~TestScene() {
     
     delete water;
     
-    Resources().FreeTexture2DFromFile(texture);
+    Resources().FreeTexture2DFromFile(swingArrowTexture);
     
     Resources().FreeShaderProgram(shaderProgram);
     Resources().FreeShader(vertexShader);
@@ -162,10 +163,10 @@ TestScene::SceneEnd* TestScene::Update(double time) {
         swingStrength = glm::clamp(swingStrength, 0.f, 1.f);
     }
     
+    swingAngle += time;
+    glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
+    
     if (Input()->Triggered(InputHandler::STRIKE)) {
-        glm::vec3 tempCamera = player->GetCamera()->Position();
-        glm::vec3 tempBall = golfBall->Position();
-        glm::vec3 strikeDirection = glm::normalize(glm::vec3(tempBall.x - tempCamera.x, 0.f, tempBall.z - tempCamera.z));
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
         
     }
@@ -199,6 +200,10 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     particleSystem->Update(time, player->GetCamera());
     water->Update(time, wind);
     
+    swingArrow->SetRotation(-glm::degrees(swingAngle) - 90.f, 270.f, 0.f);
+    glm::vec3 swingPosition = golfBall->Position() + strikeDirection * 0.5f * swingArrow->Scale().y - glm::vec3(0.f, golfBall->Radius(), 0.f);
+    swingArrow->SetPosition(swingPosition);
+    
     return nullptr;
 }
 
@@ -229,6 +234,40 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     postProcessing->Render();
     
+    // Start - swing arrow
+    if (golfBall->GetState() == GolfBall::INITIAL) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        shaderProgram->Use();
+        glBindVertexArray(swingArrow->Geometry()->VertexArray());
+        
+        // Texture unit 0 is for base images.
+        glUniform1i(shaderProgram->UniformLocation("baseImage"), 0);
+        
+        // Base image texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, swingArrowTexture->TextureID());
+        
+        // Model matrix, unique for each model.
+        glm::mat4 model = swingArrow->ModelMatrix();
+        
+        // Send the matrices to the shader.
+        glm::mat4 view = player->GetCamera()->View();
+        glm::mat4 normal = glm::transpose(glm::inverse(view * model));
+        
+        glUniformMatrix4fv(shaderProgram->UniformLocation("modelMatrix"), 1, GL_FALSE, &model[0][0]);
+        glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &view[0][0]);
+        glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(normal)[0][0]);
+        glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &player->GetCamera()->Projection(screenSize)[0][0]);
+        
+        glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &glm::vec4(0.f, 0.f, 0.f, 0.f)[0]);
+        
+        // Draw the triangles
+        glDrawElements(GL_TRIANGLES, swingArrow->Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
+        glDisable(GL_BLEND);
+        // End - swing arrow
+    }
+    
     gui->Render(screenSize, playerObjects, swingStrength);
 }
 
@@ -237,37 +276,6 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    // Start - render cube
-    
-    shaderProgram->Use();
-    glBindVertexArray(geometryObject->Geometry()->VertexArray());
-    
-    // Texture unit 0 is for base images.
-    glUniform1i(shaderProgram->UniformLocation("baseImage"), 0);
-    
-    // Base image texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture->TextureID());
-    
-    // Model matrix, unique for each model.
-    glm::mat4 model = geometryObject->ModelMatrix();
-    
-    // Send the matrices to the shader.
-    glm::mat4 view = player->GetCamera()->View();
-    glm::mat4 normal = glm::transpose(glm::inverse(view * model));
-    
-    glUniformMatrix4fv(shaderProgram->UniformLocation("modelMatrix"), 1, GL_FALSE, &model[0][0]);
-    glUniformMatrix4fv(shaderProgram->UniformLocation("viewMatrix"), 1, GL_FALSE, &view[0][0]);
-    glUniformMatrix3fv(shaderProgram->UniformLocation("normalMatrix"), 1, GL_FALSE, &glm::mat3(normal)[0][0]);
-    glUniformMatrix4fv(shaderProgram->UniformLocation("projectionMatrix"), 1, GL_FALSE, &player->GetCamera()->Projection(renderTarget->Size())[0][0]);
-    
-    glUniform4fv(shaderProgram->UniformLocation("clippingPlane"), 1, &clippingPlane[0]);
-    
-    // Draw the triangles
-    glDrawElements(GL_TRIANGLES, geometryObject->Geometry()->IndexCount(), GL_UNSIGNED_INT, (void*)0);
-    
-    // End - render cube
     
     modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
