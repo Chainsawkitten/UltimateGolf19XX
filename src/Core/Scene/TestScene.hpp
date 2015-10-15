@@ -32,22 +32,22 @@ class TestScene : public Scene {
          * @param screenSize Size of the screen in pixels.
          */
         TestScene(const glm::vec2& screenSize);
-
+        
         /// Destructor.
         ~TestScene();
         
         /// Update the scene.
-		/**
-		 * @param time Time since last frame (in seconds).
-		 * @return SceneEnd-struct defining what to do next. nullptr if nothing should be done
-		 */
-		SceneEnd* Update(double time);
+        /**
+         * @param time Time since last frame (in seconds).
+         * @return SceneEnd-struct defining what to do next. nullptr if nothing should be done
+         */
+        SceneEnd* Update(double time);
         
-		/// Render the scene.
-		/**
-		 * @param screenSize Size of the screen in pixels.
-		 */
-		void Render(const glm::vec2& screenSize);
+        /// Render the scene.
+        /**
+         * @param screenSize Size of the screen in pixels.
+         */
+        void Render(const glm::vec2& screenSize);
         
     private:
         void RenderToTarget(RenderTarget* renderTarget, float scale, const glm::vec4& clippingPlane);
@@ -56,24 +56,28 @@ class TestScene : public Scene {
         Skybox* skybox;
         Player* player;
         DeferredLighting* deferredLighting;
-        Geometry::Geometry3D* geometry;
-        GeometryObject* geometryObject;
-        Texture2D* texture;
-
-		//GUI
-		GUI* gui;
-		float swingStrength;
+        
+        // GUI
+        GUI* gui;
+        float swingStrength;
         float maxSwingStrength;
         float swingTime;
         float swingDirection;
-
-		//Terrain
-		TerrainObject* terrainObject;
-		Geometry::Terrain* terrain;
-        //Model
-		ModelObject* modelObject;
-		Geometry::OBJModel* model;
-
+        float swingAngle;
+        
+        // Swing arrow
+        Geometry::Square* swingArrowGeometry;
+        GeometryObject* swingArrow;
+        Texture2D* swingArrowTexture;
+        
+        // Terrain
+        TerrainObject* terrainObject;
+        Geometry::Terrain* terrain;
+        
+        // Model
+        ModelObject* modelObject;
+        Geometry::OBJModel* model;
+        
         Shader* vertexShader;
         Shader* geometryShader;
         Shader* fragmentShader;
@@ -81,12 +85,12 @@ class TestScene : public Scene {
         
         PostProcessing* postProcessing;
         FXAAFilter* fxaaFilter;
-		std::map<std::string, ClubType> clubs;
-		std::map<std::string, ClubType>::iterator clubIterator;
+        std::map<std::string, ClubType> clubs;
+        std::map<std::string, ClubType>::iterator clubIterator;
         GolfBall* golfBall;
-		std::vector<PlayerObject> playerObjects;
-		int playerIndex;
-		int numberOfPlayers;
+        std::vector<PlayerObject> playerObjects;
+        int playerIndex;
+        int numberOfPlayers;
         glm::vec3 wind;
         
         Water* water;
