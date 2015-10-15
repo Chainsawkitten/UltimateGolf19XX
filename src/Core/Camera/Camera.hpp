@@ -80,6 +80,12 @@ class Camera : public Object {
 		 * @return Projection matrix
 		 */
 		glm::mat4 Projection(const glm::vec2& screenSize) const;
+        
+        /// Get orientation matrix.
+		/**
+		 * @return Object's orientation matrix based on its rotation.
+		 */
+		glm::mat4 Orientation() const;
 
 	private:
 		float fieldOfView;

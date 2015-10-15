@@ -8,15 +8,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-GolfBall::GolfBall(BallType ballType, TerrainObject* terrain) : ModelObject(modelGeometry = Resources().CreateOBJModel("Resources/Models/GolfBall/GolfBall.obj"),
+GolfBall::GolfBall(BallType ballType, TerrainObject* terrain, Water* water) : ModelObject(modelGeometry = Resources().CreateOBJModel("Resources/Models/GolfBall/GolfBall.obj"),
                                                                             "Resources/Models/GolfBall/Diffuse.png",
                                                                             "Resources/Models/GolfBall/Normal.png",
                                                                             "Resources/Models/GolfBall/Specular.png") {
-    active = false;
+    state = GolfBall::INITIAL;
     
     restitution = ballType == TWOPIECE ? 0.78f : 0.68f;
     this->terrain = terrain;
-    groundLevel = this->terrain->Position().y;
+    this->water = water;
     origin = glm::vec3(1.f, 0.f, 1.f);
     
     mass = 0.0459f;
@@ -31,7 +31,7 @@ GolfBall::~GolfBall() {
 }
 
 void GolfBall::Reset(){
-    active = false;
+    state = GolfBall::INITIAL;
     velocity = glm::vec3(0.f, 0.f, 0.f);
     angularVelocity = glm::vec3(0.f, 0.f, 0.f);
     SetPosition(origin);
@@ -40,7 +40,7 @@ void GolfBall::Reset(){
 }
 
 void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObject>& players) {
-	if (active) {
+	if (state == GolfBall::ACTIVE) {
 		Move(static_cast<float>(time)* velocity);
 		sphere.position = Position();
 
@@ -51,8 +51,16 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 
 		glm::vec3 dragForce, magnusForce = glm::vec3(0.f, 0.f, 0.f);
 
-		// Check for collision
-		groundLevel = terrain->GetY(Position().x, Position().z);
+		float groundLevel = terrain->GetY(Position().x, Position().z);
+        float waterLevel = water->Position().y;
+        
+        // Check if in water.
+        if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
+            state = GolfBall::OUT;
+            return;
+        }
+        
+        // Check for collision
 		if (glm::length(velocity) > 0.0001f && (sphere.position.y - sphere.radius) < groundLevel){
 			float vCritical = 0.3f;
 			float e = 0.35f;
@@ -138,10 +146,11 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 }
 
 void GolfBall::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const{
-    ModelObject::Render(camera, screenSize, clippingPlane);
+    if (state != GolfBall::EXPLODED && state != GolfBall::OUT)
+        ModelObject::Render(camera, screenSize, clippingPlane);
 }
 
-void GolfBall::Explode(std::vector<PlayerObject>& players, int playerIndex){
+void GolfBall::Explode(std::vector<PlayerObject>& players){
     //@TODO: Set mass equivalent depending on material used.
     float equivalenceFactor = 1.0f;
     float massEquivalent = mass*equivalenceFactor;
@@ -158,12 +167,11 @@ void GolfBall::Explode(std::vector<PlayerObject>& players, int playerIndex){
 		float Pf = ((8.08e7)*alpha) / sqrt(beta*gamma*delta);
         player.TakeDamage(Pf);
     }
-    origin = players[playerIndex].Position();
-    Reset();
+    state = GolfBall::EXPLODED;
 }
 
 void GolfBall::Strike(ClubType club, const glm::vec3& clubVelocity) {
-    active = true;
+    state = GolfBall::ACTIVE;
     
     // Club velocity in strike plane.
     float v = glm::length(clubVelocity);
@@ -192,6 +200,10 @@ void GolfBall::Strike(ClubType club, const glm::vec3& clubVelocity) {
     }
 }
 
+float GolfBall::Radius() const {
+    return sphere.radius;
+}
+
 void GolfBall::SetRadius(float radius) {
     sphere.radius = radius;
     SetScale(glm::vec3(radius, radius, radius));
@@ -200,4 +212,8 @@ void GolfBall::SetRadius(float radius) {
 
 glm::mat4 GolfBall::Orientation() const {
     return glm::toMat4(orientation);
+}
+
+GolfBall::State GolfBall::GetState() const {
+    return state;
 }

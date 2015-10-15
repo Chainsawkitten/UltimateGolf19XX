@@ -49,3 +49,11 @@ void Camera::SetNearAndFarPlanes(float near, float far) {
 glm::mat4 Camera::Projection(const glm::vec2& screenSize) const {
 	return glm::perspective(glm::radians(fieldOfView), screenSize.x / screenSize.y, zNear, zFar);
 }
+
+glm::mat4 Camera::Orientation() const {
+	glm::mat4 orientation;
+    orientation = glm::rotate(orientation, glm::radians(TiltAngle()), glm::vec3(0, 0, 1));
+	orientation = glm::rotate(orientation, glm::radians(VerticalAngle()), glm::vec3(1, 0, 0));
+    orientation = glm::rotate(orientation, glm::radians(HorizontalAngle()), glm::vec3(0, 1, 0));
+	return orientation;
+}
