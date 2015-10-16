@@ -52,14 +52,14 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 		glm::vec3 dragForce, magnusForce, acceleration = glm::vec3(0.f, 0.f, 0.f);
 
 		float groundLevel = terrain->GetY(Position().x, Position().z);
-        //float waterLevel = water->Position().y;
-        //
-        //// Check if in water.
-        //if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
-        //    state = GolfBall::OUT;
-        //    return;
-        //}
-        //
+        float waterLevel = water->Position().y;
+        
+        // Check if in water.
+        if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
+            state = GolfBall::OUT;
+            return;
+        }
+        
         // Check for collision
 		if (glm::length(velocity) > 0.0001f && (sphere.position.y - sphere.radius) < groundLevel){
 			float vCritical = 0.3f;
