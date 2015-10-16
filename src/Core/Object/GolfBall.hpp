@@ -11,6 +11,7 @@
 /** @ingroup Core
  * @{
  */
+
 struct ClubType{
 	float mass;
 	float loft;

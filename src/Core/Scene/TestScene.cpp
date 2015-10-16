@@ -4,6 +4,7 @@
 #include "Default3D.geom.hpp"
 #include "ForwardAlpha.frag.hpp"
 #include "../Particles/CuboidParticleEmitter.hpp"
+#include "../Particles/PointParticleEmitter.hpp"
 #include "../Audio/SoundSystem.hpp"
 #include "../Util/GameSettings.hpp"
 #include "../Util/Input.hpp"
@@ -45,7 +46,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     // Terrain.
     terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
-    terrain->SetTextureRepeat(glm::vec2(10.f, 10.f));
+    terrain->SetTextureRepeat(glm::vec2(20.f, 20.f));
     terrainObject = new TerrainObject(terrain);
     terrainObject->SetPosition(0.f, -5.f, 0.f);
     terrainObject->SetScale(200.f, 10.f, 200.f);
@@ -101,27 +102,68 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     // Particle system.
     particleSystem = new ParticleSystem(dustParticle, 1000);
-
-	// Initiate players
-	numberOfPlayers = 2;
-	playerIndex = 0;
-	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
-	playerIterator = playerObjects.begin();
-
-	// Golf ball.
-	golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject, water);
-	golfBall->SetPosition(playerObjects[0].Position());
-
-	// Camera.
-	player = new ThirdPersonPlayer(golfBall);
-	player->SetMovementSpeed(2.f);
-	wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
-
-	// Emitters.
-	ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
-	particleSystem->AddParticleEmitter(emitter);
-	emitter->Update(5.0, particleSystem, player->GetCamera());
+    
+    // Ducks
+    for (int i=0; i<10; i++) {
+        ducks.push_back(new Duck());
+        glm::vec3 position;
+        do {
+            position = glm::vec3(rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f);
+        } while (terrainObject->GetY(position.x, position.z) > water->Position().y - 0.2f);
+        ducks[i]->SetPosition(position);
+        ducks[i]->SetRotation(rand() / static_cast<float>(RAND_MAX) * 360.f, 0.f, 0.f);
+    }
+    
+    // Lily pads
+    for (int i=0; i<50; i++) {
+        lilypads.push_back(new LilyPad());
+        glm::vec3 position;
+        do {
+            position = glm::vec3(rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f, water->Position().y + 0.05f, rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f);
+        } while (terrainObject->GetY(position.x, position.z) > water->Position().y - 0.2f);
+        lilypads[i]->SetPosition(position);
+        lilypads[i]->SetRotation(rand() / static_cast<float>(RAND_MAX) * 360.f, 270.f, 0.f);
+        lilypads[i]->SetScale(2.f, 2.f, 1.f);
+    }
+    
+    explosionTexture = Resources().CreateTexture2DFromFile("Resources/FireParticle.png");
+    
+    // Particle type.
+    ParticleType explosionParticle;
+    explosionParticle.texture = explosionTexture;
+    explosionParticle.minLifetime = .1f;
+    explosionParticle.maxLifetime = .2f;
+    explosionParticle.minVelocity = glm::vec3(-1.f, 1.f, -1.f);
+    explosionParticle.maxVelocity = glm::vec3(1.f, -1.f, 1.f);
+    explosionParticle.minSize = glm::vec2(0.025f, 0.025f);
+    explosionParticle.maxSize = glm::vec2(0.05f, 0.05f);
+    explosionParticle.uniformScaling = true;
+    explosionParticle.color = glm::vec3(1.f, 0.5f, 0.5f);
+    
+    // Particle system.
+    explosionParticleSystem = new ParticleSystem(explosionParticle, 1000);
+    emitterAttached = false;
+    
+    // Initiate players
+    numberOfPlayers = 2;
+    playerIndex = 0;
+    playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
+    playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
+    playerIterator = playerObjects.begin();
+    
+    // Golf ball.
+    golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject, water);
+    golfBall->SetPosition(playerObjects[0].Position());
+    
+    // Camera.
+    player = new ThirdPersonPlayer(golfBall);
+    player->SetMovementSpeed(2.f);
+    wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
+    
+    // Emitters.
+    ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
+    particleSystem->AddParticleEmitter(emitter);
+    emitter->Update(5.0, particleSystem, player->GetCamera());
 }
 
 TestScene::~TestScene() {
@@ -130,6 +172,10 @@ TestScene::~TestScene() {
     
     delete particleSystem;
     Resources().FreeTexture2DFromFile(particleTexture);
+
+	delete explosionParticleSystem;
+	delete explosionEmitter;
+	Resources().FreeTexture2DFromFile(explosionTexture);
     
     delete player;
     
@@ -155,10 +201,18 @@ TestScene::~TestScene() {
     Resources().FreeShader(vertexShader);
     Resources().FreeShader(geometryShader);
     Resources().FreeShader(fragmentShader);
+    
+    for (Duck* duck : ducks) {
+        delete duck;
+    }
+    
+    for (LilyPad* lilypad : lilypads) {
+        delete lilypad;
+    }
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
-	swingStrength += time / swingTime * swingDirection;
+    swingStrength += time / swingTime * swingDirection;
     if (swingStrength > 1.f || swingStrength < 0.f) {
         swingDirection = -swingDirection;
         swingStrength = glm::clamp(swingStrength, 0.f, 1.f);
@@ -175,12 +229,12 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     
     
     if (Input()->Triggered(InputHandler::RESET)) {
-		playerIterator++;
-		if (playerIterator == playerObjects.end())
-			playerIterator = playerObjects.begin();
-		golfBall->Reset(playerIterator->Position());
+        playerIterator++;
+        if (playerIterator == playerObjects.end())
+            playerIterator = playerObjects.begin();
+        golfBall->Reset(playerIterator->Position());
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
-		Log() << wind << "\n";
+        Log() << wind << "\n";
     }
     
     player->Update(time);
@@ -198,18 +252,36 @@ TestScene::SceneEnd* TestScene::Update(double time) {
             playerIndex++;
         else
             playerIndex = 0;
+        
+        // Emitters.
+        explosionEmitter = new PointParticleEmitter(golfBall->Position(), 0.1, 0.2, false);
+        explosionParticleSystem->AddParticleEmitter(explosionEmitter);
+        explosionEmitter->Update(15, explosionParticleSystem, player->GetCamera());
+        emitterAttached = true;
+        explosionEmitter->resetLifetime();
+        
         golfBall->Explode(playerObjects);
     }
     
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
+    if (emitterAttached && explosionEmitter->getLifetime() > 0.5 ){
+        explosionParticleSystem->RemoveParticleEmitter();
+        emitterAttached = false;
+    }
+    
     particleSystem->Update(time, player->GetCamera());
+    explosionParticleSystem->Update(time, player->GetCamera());
     water->Update(time, wind);
     
     swingArrow->SetRotation(-glm::degrees(swingAngle) - 90.f, 270.f, 0.f);
     glm::vec3 swingPosition = golfBall->Position() + strikeDirection * 0.5f * swingArrow->Scale().y - glm::vec3(0.f, golfBall->Radius(), 0.f);
     swingArrow->SetPosition(swingPosition);
+    
+    for (Duck* duck : ducks) {
+        duck->Update(time, terrainObject, water);
+    }
     
     return nullptr;
 }
@@ -238,6 +310,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     }
     
     particleSystem->Render(player->GetCamera(), screenSize);
+    explosionParticleSystem->Render(player->GetCamera(), screenSize);
     
     postProcessing->Render();
     
@@ -284,17 +357,26 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-	for (auto &playerObject : playerObjects) {
-		modelObject->SetPosition(playerObject.Position());
-		modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
-	}
+    for (auto &playerObject : playerObjects) {
+        modelObject->SetPosition(playerObject.Position());
+        modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    }
     
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
     
     terrainObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    
+    for (Duck* duck : ducks) {
+        duck->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    }
+    
+    for (LilyPad* lilypad : lilypads) {
+        lilypad->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+    }
     
     renderTarget->SetTarget();
     
     deferredLighting->Render(player->GetCamera(), renderTarget->Size(), scale);
     skybox->Render(player->GetCamera(), renderTarget->Size());
 }
+

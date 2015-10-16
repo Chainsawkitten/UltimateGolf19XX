@@ -46,6 +46,10 @@ void ParticleSystem::AddParticleEmitter(ParticleEmitter* emitter) {
     emitters.push_back(emitter);
 }
 
+void ParticleSystem::RemoveParticleEmitter() {
+	emitters.pop_back();
+}
+
 void ParticleSystem::EmitParticle(glm::vec3 position) {
     if (particleCount < maxParticleCount) {
         Particle particle;

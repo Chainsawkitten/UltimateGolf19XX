@@ -6,6 +6,7 @@ ParticleEmitter::ParticleEmitter(double minEmitTime, double maxEmitTime, bool re
     this->maxEmitTime = maxEmitTime;
     this->relative = relative;
     timeToNext = minEmitTime + ((double)rand() / RAND_MAX) * (maxEmitTime - minEmitTime);
+	lifeTime = 0.0;
 }
 
 void ParticleEmitter::Update(double time, ParticleSystem* particleSystem, const Camera* camera) {
@@ -17,6 +18,7 @@ void ParticleEmitter::Update(double time, ParticleSystem* particleSystem, const 
         timeToNext += minEmitTime + ((double)rand() / RAND_MAX) * (maxEmitTime - minEmitTime);
         EmitParticle();
     }
+	lifeTime += time;
 }
 
 void ParticleEmitter::EmitParticleAt(glm::vec3 position) {
@@ -24,4 +26,11 @@ void ParticleEmitter::EmitParticleAt(glm::vec3 position) {
         position += camera->Position();
     
     particleSystem->EmitParticle(position);
+}
+double ParticleEmitter::getLifetime(){
+	return lifeTime;
+};
+
+void ParticleEmitter::resetLifetime(){
+	lifeTime = 0.0;
 }
