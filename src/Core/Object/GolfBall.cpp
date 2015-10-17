@@ -45,7 +45,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 		sphere.position = Position();
 
 		if (glm::length(angularVelocity) > 0.0001f) {
-			glm::quat deltaQuat = glm::angleAxis(static_cast<float>(time)* glm::length(0.1f*angularVelocity), glm::normalize(angularVelocity));
+			glm::quat deltaQuat = glm::angleAxis(static_cast<float>(time)* glm::length(angularVelocity), glm::normalize(angularVelocity));
 			orientation = deltaQuat * orientation;
 		}
 
