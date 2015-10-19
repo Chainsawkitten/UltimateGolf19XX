@@ -158,17 +158,17 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitterAttached = false;
     
     // Initiate players
-	numberOfPlayers = GameSettings::GetInstance().GetLong("Players");
-
-	playerIndex = 0;
-	glm::vec3 randPos;
-
-	for (int i = 0; i < numberOfPlayers; i++){
-		do {
-			randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
-		} while (terrainObject->GetY(randPos.x, randPos.z) < water->Position().y + 0.2f);
-		playerObjects.push_back(PlayerObject{ glm::vec3(randPos.x, terrainObject->GetY(randPos.x, randPos.z) + 0.01f, randPos.z) });
-	}
+    numberOfPlayers = GameSettings::GetInstance().GetLong("Players");
+    
+    playerIndex = 0;
+    glm::vec3 randPos;
+    
+    for (int i = 0; i < numberOfPlayers; i++){
+        do {
+            randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+        } while (terrainObject->GetY(randPos.x, randPos.z) < water->Position().y + 0.2f);
+        playerObjects.push_back(PlayerObject{ glm::vec3(randPos.x, terrainObject->GetY(randPos.x, randPos.z) + 0.01f, randPos.z) });
+    }
     
     playerIterator = playerObjects.begin();
     
@@ -276,10 +276,13 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     if (Input()->Triggered(InputHandler::RESET)) {
         iteratePlayers = 0;
         do{
+            playerIndex++;
             iteratePlayers++;
             playerIterator++;
-            if (playerIterator == playerObjects.end())
+            if (playerIterator == playerObjects.end()){
+                playerIndex = 0;
                 playerIterator = playerObjects.begin();
+            }
         } while (playerIterator->getHealth() <= 0.f || iteratePlayers == numberOfPlayers);
         if (playerIterator->getHealth() > 0.f)
             golfBall->Reset(playerIterator->Position() + glm::vec3(0.f, golfBall->Radius(), 0.f));
@@ -298,12 +301,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
         Log() << "\n";
     }
     
-    if (Input()->Triggered(InputHandler::EXPLODE) && golfBall->GetState() == GolfBall::ACTIVE) {
-        if (playerIndex < (numberOfPlayers-1))
-            playerIndex++;
-        else
-            playerIndex = 0;
-        
+    if (Input()->Triggered(InputHandler::EXPLODE) && golfBall->GetState() == GolfBall::ACTIVE) {    
         // Emitters.
         explosionEmitter = new PointParticleEmitter(golfBall->Position(), 0.1, 0.2, false);
         explosionParticleSystem->AddParticleEmitter(explosionEmitter);
@@ -409,7 +407,8 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     // Player info.
     font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
-    std::string playerText = "Player " + std::to_string(iteratePlayers+1);
+    
+    std::string playerText = "Player " + std::to_string(playerIndex+1);
     font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize);
     
     float barPosX = screenSize.x * 0.1f;
