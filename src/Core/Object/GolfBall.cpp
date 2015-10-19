@@ -73,35 +73,32 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 tangentialVelocity = velocity - glm::dot(velocity, eRoh) * eRoh;
 			glm::vec3 eFriction = glm::vec3(0.f, 0.f, 0.f);
 			if (glm::length(glm::cross(eRoh, angularVelocity) + tangentialVelocity) > 0.0001f){
-				eFriction = glm::normalize(sphere.radius * glm::cross(eRoh, angularVelocity));
+				eFriction = glm::normalize(sphere.radius * glm::cross(eRoh, angularVelocity) + tangentialVelocity);
 			}
 			float vRoh = glm::dot(velocity, eRoh);
 			float deltaU = -(e + 1.f) * vRoh;
 
-			if (fabs(vRoh) < vCritical && glm::length(tangentialVelocity) > 0.0001f) {
+			if (vRoh < vCritical && glm::length(tangentialVelocity) > 0.0001f) {
 				//Rolling and sliding calculation
 				glm::vec3 mg = (9.82f*glm::vec3(0.f, -1.f, 0.f));
 				glm::vec3 tangentialGravityAcceleration = mg - glm::dot(mg, eRoh)*eRoh;
-				glm::vec3 compareVectorPositive = eFriction - glm::normalize(tangentialVelocity);
-				glm::vec3 compareVectorNegative = eFriction - glm::normalize(-tangentialVelocity);
 				//Log() << "TangentialVelocity " << tangentialVelocity << "\n" << "Efrcitin " << eFriction << "\n";
 
 				if ((glm::length(velocity) < (sphere.radius*glm::length(angularVelocity) + 1.f)) && (glm::length(velocity) > (sphere.radius*glm::length(angularVelocity) - 1.f))) {
 					//rolling
 					Log() << "Rolling\n";
 					//Log() << "Rolling\n";
-					glm::vec3 tangentialRollingFrictionDeceleration = muRolling*eFriction*9.82f*eRoh.y;
+					glm::vec3 tangentialRollingFrictionDeceleration = muRolling*eFriction*9.82f*eRoh.y*mass;
 					velocity = velocity + (tangentialRollingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
 					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
 					angularVelocity = (glm::length(velocity) / sphere.radius)*(glm::cross(eFriction, -eRoh));
 				} else {
 					//sliding
-					//Log() << "Sliding\n";
-					glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction*9.82f*eRoh.y;
+					Log() << "Sliding\n";
+					glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction*9.82f*eRoh.y *mass;
 					float alpha = (glm::length(tangentialSlidingFrictionDeceleration)*sphere.radius) / (mass*sphere.radius*sphere.radius*0.4f);
 					velocity = velocity + (tangentialSlidingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
 					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
-					Log() << "Sliding\n";
 					angularVelocity = angularVelocity + (alpha*static_cast<float>(time))*(glm::cross(sphere.radius*tangentialVelocityDirection, -eRoh));
 					
 				}
