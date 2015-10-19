@@ -60,6 +60,7 @@ set(RESOURCES
     assets/DustParticle.png
     assets/FireParticle.png
     assets/GUI
+    assets/Audio
 )
 
 file(COPY ${RESOURCES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
