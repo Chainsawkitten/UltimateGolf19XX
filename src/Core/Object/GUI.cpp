@@ -21,20 +21,20 @@ void GUI::Render(const glm::vec2& screenSize, std::vector<PlayerObject>& players
 	int index = 0;
 
 	for (auto &player : players){
-		if (player.getHealth() > 0){
 			// Background
 			healthBar.Render(glm::vec2(barPosX + barXOffset*index, barPosY),
 				glm::vec2(barWidth, barHeight),
 				glm::vec3(0.1f, 0.1f, 0.1f),
 				screenSize);
 
-			// Actual healthbar
-			healthBar.Render(glm::vec2(barPosX+barXOffset*index, barPosY + (barHeight - barHeight*(player.getHealth()/100.f))),
-				glm::vec2(barWidth, barHeight*(player.getHealth()/100.f)),
-				glm::vec3(10.f, 0.f, 0.f),
-				screenSize);
+			if (player.getHealth() > 0){
+				// Actual healthbar
+				healthBar.Render(glm::vec2(barPosX + barXOffset*index, barPosY + (barHeight - barHeight*(player.getHealth() / 100.f))),
+					glm::vec2(barWidth, barHeight*(player.getHealth() / 100.f)),
+					glm::vec3(10.f, 0.f, 0.f),
+					screenSize);
+			}
 			index++;
-		}
 	}
     
 	// Render power bar.

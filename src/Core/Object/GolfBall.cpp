@@ -54,11 +54,11 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 		float groundLevel = terrain->GetY(Position().x, Position().z);
 		float waterLevel = water->Position().y;
 
-		//// Check if in water.
-		//if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
-		//	state = GolfBall::OUT;
-		//	return;
-		//}
+		// Check if in water.
+		if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
+			state = GolfBall::OUT;
+			return;
+		}
 
 		// Check for collision
 		if ((sphere.position.y - sphere.radius) < groundLevel){
