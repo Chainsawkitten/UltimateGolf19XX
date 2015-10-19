@@ -23,6 +23,8 @@
 #include "../Font/Font.hpp"
 #include "../Object/LilyPad.hpp"
 #include "ABeeZee.ttf.hpp"
+#include "../Audio/VorbisFile.hpp"
+#include "../Audio/Sound.hpp"
 
 /** @ingroup Core
  * @{
@@ -116,6 +118,11 @@ class TestScene : public Scene {
         
         // Lily pads
         std::vector<LilyPad*> lilypads;
+        
+        // Audio
+        VorbisFile* golfHitFile;
+        SoundBuffer* golfHitBuffer;
+        Sound* golfHitSound;
 };
 
 /** @} */

@@ -176,6 +176,11 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(40.f, 15.f, 40.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
     emitter->Update(5.0, particleSystem, golfBall);
+    
+    // Sound
+    golfHitFile = new VorbisFile("Resources/Audio/GolfBallHit.ogg");
+    golfHitBuffer = new SoundBuffer(golfHitFile);
+    golfHitSound = new Sound(golfHitBuffer);
 }
 
 TestScene::~TestScene() {
@@ -223,6 +228,10 @@ TestScene::~TestScene() {
         delete lilypad;
     }
 	Resources().FreeFont(font);
+    
+    delete golfHitSound;
+    delete golfHitBuffer;
+    delete golfHitFile;
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
@@ -237,6 +246,8 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     
 	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE) {
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
+        golfHitSound->SetPosition(golfBall->Position());
+        golfHitSound->Play();
         
     }
     golfBall->Update(time, wind, playerObjects);
