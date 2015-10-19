@@ -246,12 +246,15 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     golfBall->Update(time, wind, playerObjects);
     
     
-    if (Input()->Triggered(InputHandler::RESET)) {
+	if (Input()->Triggered(InputHandler::RESET) && winner != true) {
 		playerIterator++;
 		if (playerIterator == playerObjects.end())
-            playerIterator = playerObjects.begin();
-		while (playerIterator->getHealth() < 0.f)
+			playerIterator = playerObjects.begin();
+		while (playerIterator->getHealth() < 0.f){
 			playerIterator++;
+			if (playerIterator == playerObjects.end())
+				playerIterator = playerObjects.begin();
+		}
         golfBall->Reset(playerIterator->Position());
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
         Log() << wind << "\n";
