@@ -28,7 +28,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
 	maleModelObject->SetPosition(2.f, 0.f, 0.f);
 	maleModelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 
-
+	iteratePlayers = 0;
     srand(time(NULL));
     
     // Map of all available clubtypes
@@ -157,14 +157,16 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitterAttached = false;
     
     // Initiate players
-    numberOfPlayers = 6;
-    playerIndex = 0;
-	playerObjects.push_back(PlayerObject{ glm::vec3(50.f, terrainObject->GetY(50.f, 5.f) + 0.01f, 5.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(16.f, terrainObject->GetY(16.f, 30.f) + 0.01f, 30.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(-4.f, terrainObject->GetY(-4.f, 19.f) + 0.01f, 19.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(10.f, terrainObject->GetY(10.f, 5.f) + 0.01f, 5.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f) + 0.01f, 5.f) });
-	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
+	numberOfPlayers = 6;
+	playerIndex = 0;
+	glm::vec3 randPos;
+
+	for (int i = 0; i < numberOfPlayers; i++){
+		do {
+			randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+		} while (terrainObject->GetY(randPos.x, randPos.z) < water->Position().y + 0.2f);
+		playerObjects.push_back(PlayerObject{ glm::vec3(randPos.x, terrainObject->GetY(randPos.x, randPos.z) + 0.01f, randPos.z) });
+	}
     playerIterator = playerObjects.begin();
     
     // Golf ball.
@@ -246,16 +248,17 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     golfBall->Update(time, wind, playerObjects);
     
     
-	if (Input()->Triggered(InputHandler::RESET) && winner != true) {
-		playerIterator++;
-		if (playerIterator == playerObjects.end())
-			playerIterator = playerObjects.begin();
-		while (playerIterator->getHealth() < 0.f){
+    if (Input()->Triggered(InputHandler::RESET)) {
+		iteratePlayers = 0;
+		do{
+			iteratePlayers++;
 			playerIterator++;
 			if (playerIterator == playerObjects.end())
 				playerIterator = playerObjects.begin();
-		}
-        golfBall->Reset(playerIterator->Position());
+		} while (playerIterator->getHealth() <= 0.f || iteratePlayers == numberOfPlayers);
+		if (playerIterator->getHealth() > 0.f)
+			golfBall->Reset(playerIterator->Position());
+
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
         Log() << wind << "\n";
     }
@@ -341,9 +344,22 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     particleSystem->Render(player->GetCamera(), screenSize);
     explosionParticleSystem->Render(player->GetCamera(), screenSize);
+
 	font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
-	std::string playerText = "Player " + std::to_string((playerIndex % numberOfPlayers) + 1);
-	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize); time;
+
+	std::string playerText = "Player " + std::to_string(iteratePlayers+1);
+	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize);
+
+	float barHeight = screenSize.y * 0.25f;
+	float barWidth = screenSize.x * 0.04f;
+	float barPosX = screenSize.x * 0.1f;
+	float barPosY = screenSize.y * 0.7f;
+	float barXOffset = screenSize.x * 0.05f;
+
+	for (int i = 0; i < numberOfPlayers; i++){
+		std::string healthBarNum = std::to_string(i + 1);
+		font->RenderText(healthBarNum.c_str(), glm::vec2(barPosX+10.f + barXOffset*i, barPosY-30.f), 256.f, screenSize);
+	}
 	if (winner)
 		font->RenderText("A WINNER IS YOU!", glm::vec2((screenSize.x) / 3.f, (screenSize.y) / 3.f), 256.f, screenSize);
     postProcessing->Render();
