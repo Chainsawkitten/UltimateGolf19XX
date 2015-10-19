@@ -76,8 +76,6 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			}
 			float vRoh = glm::dot(velocity, eRoh);
 			float deltaU = -(e + 1.f) * vRoh;
-			glm::vec3 angularDirection = glm::cross(eRoh, glm::normalize(tangentialVelocity));
-			float w = glm::dot(angularVelocity, angularDirection);
 
 			if (fabs(vRoh) < vCritical && glm::length(tangentialVelocity) > 0.0001f) {
 				glm::vec3 mg = (9.82f*glm::vec3(0.f, -1.f, 0.f));
