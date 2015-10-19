@@ -316,7 +316,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
+    //water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);
