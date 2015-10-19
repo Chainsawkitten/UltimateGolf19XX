@@ -43,7 +43,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 	if (state == GolfBall::ACTIVE) {
 		Move(static_cast<float>(time)* velocity);
 		sphere.position = Position();
-		Log() << velocity << "\n";
+		
 
 		if (glm::length(angularVelocity) > 0.0001f) {
 			glm::quat deltaQuat = glm::angleAxis(static_cast<float>(time)* glm::length(angularVelocity), glm::normalize(angularVelocity));
@@ -63,7 +63,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
         //
         // Check for collision
 		if (glm::length(velocity) > 0.0001f && (sphere.position.y - sphere.radius) < groundLevel){
-			float vCritical = 0.3f;
+			float vCritical = 1.8f;
 			float e = 0.35f;
 			float muSliding = 0.51f;
 			float muRolling = 0.096f;
@@ -73,7 +73,7 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 			glm::vec3 tangentialVelocity = velocity - glm::dot(velocity, eRoh) * eRoh;
 			glm::vec3 eFriction = glm::vec3(0.f, 0.f, 0.f);
 			if (glm::length(glm::cross(eRoh, angularVelocity) + tangentialVelocity) > 0.0001f){
-				eFriction = glm::normalize(sphere.radius * glm::cross(eRoh, angularVelocity) + tangentialVelocity);
+				eFriction = glm::normalize(sphere.radius * glm::cross(eRoh, angularVelocity));
 			}
 			float vRoh = glm::dot(velocity, eRoh);
 			float deltaU = -(e + 1.f) * vRoh;
@@ -82,28 +82,32 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 				//Rolling and sliding calculation
 				glm::vec3 mg = (9.82f*glm::vec3(0.f, -1.f, 0.f));
 				glm::vec3 tangentialGravityAcceleration = mg - glm::dot(mg, eRoh)*eRoh;
-				glm::vec3 compareVectorPositive = eFriction - normalize(tangentialVelocity);
-				glm::vec3 compareVectorNegative = eFriction - normalize(-tangentialVelocity);
-				if (fabs(velocity.x) < 0.1f && fabs(velocity.z) < 0.1f) {
-					//Ball stopped
-					velocity = glm::vec3(0.f, 0.f, 0.f);
-					angularVelocity = glm::vec3(0.f, 0.f, 0.f);
-				} else if ((glm::length(compareVectorNegative) < 0.03f) || (glm::length(compareVectorPositive) < 0.03f)) {
-					//sliding
-					glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction*9.82f*mass*eRoh.y;
-					float alpha = (glm::length(tangentialSlidingFrictionDeceleration)*sphere.radius) / (mass*sphere.radius*sphere.radius*0.4f);
-					velocity = velocity + (tangentialSlidingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
-					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
-					angularVelocity = angularVelocity + (alpha*static_cast<float>(time))*(glm::cross(sphere.radius*tangentialVelocityDirection, -eRoh));
-				} else {
+				glm::vec3 compareVectorPositive = eFriction - glm::normalize(tangentialVelocity);
+				glm::vec3 compareVectorNegative = eFriction - glm::normalize(-tangentialVelocity);
+				//Log() << "TangentialVelocity " << tangentialVelocity << "\n" << "Efrcitin " << eFriction << "\n";
+
+				if ((glm::length(velocity) < (sphere.radius*glm::length(angularVelocity) + 1.f)) && (glm::length(velocity) > (sphere.radius*glm::length(angularVelocity) - 1.f))) {
 					//rolling
-					glm::vec3 tangentialRollingFrictionDeceleration = muRolling*eFriction*9.82f*mass*eRoh.y;
+					Log() << "Rolling\n";
+					//Log() << "Rolling\n";
+					glm::vec3 tangentialRollingFrictionDeceleration = muRolling*eFriction*9.82f*eRoh.y;
 					velocity = velocity + (tangentialRollingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
 					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
 					angularVelocity = (glm::length(velocity) / sphere.radius)*(glm::cross(eFriction, -eRoh));
+				} else {
+					//sliding
+					//Log() << "Sliding\n";
+					glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction*9.82f*eRoh.y;
+					float alpha = (glm::length(tangentialSlidingFrictionDeceleration)*sphere.radius) / (mass*sphere.radius*sphere.radius*0.4f);
+					velocity = velocity + (tangentialSlidingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
+					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
+					Log() << "Sliding\n";
+					angularVelocity = angularVelocity + (alpha*static_cast<float>(time))*(glm::cross(sphere.radius*tangentialVelocityDirection, -eRoh));
+					
 				}
 			} else {
 				//Impact calculation
+				//This calculates how long the ball was in contact with the ground during last frame.
 				float deltaTime = pow(mass * mass / (fabs(vRoh) * sphere.radius), 0.2f) * 0.00251744f;
 				float velocityRoh = glm::dot(velocity, eRoh);
 				float velocityNormal = glm::dot(velocity, eFriction);
@@ -121,7 +125,9 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 					angularVelocity += muSliding * (deltaU + 9.82f *eRoh.y* deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
 				}
 			}
-		} else {
+		}
+		else {
+			Log() << "Trajectory\n";
 			// Trajectory through air.
 			// Calculate magnus force.
 			float v = glm::length(velocity);
