@@ -38,9 +38,9 @@ void GUI::Render(const glm::vec2& screenSize, std::vector<PlayerObject>& players
 	}
     
 	// Render power bar.
-    glm::vec2 strikeBarSize(strikeBarTexture->Width(), strikeBarTexture->Height());
-    strikeBarTexture->Render(glm::vec2((screenSize.x - strikeBarSize.x) * 0.5f, screenSize.y - strikeBarSize.y - 65.f), strikeBarSize, screenSize);
+	glm::vec2 strikeBarSize(strikeBarTexture->Width() - (barPosX + barXOffset*index), strikeBarTexture->Height());
+	strikeBarTexture->Render(glm::vec2((screenSize.x - strikeBarSize.x) * 0.5f, barPosY - strikeBarSize.y + barHeight), strikeBarSize, screenSize);
     
     glm::vec2 strikeIndicatorSize(strikeIndicatorTexture->Width(), strikeIndicatorTexture->Height());
-    strikeIndicatorTexture->Render(glm::vec2((screenSize.x - strikeBarSize.x) * 0.5f + (strikeBarSize.x - strikeIndicatorSize.x * 0.5f) * swingStrength - strikeIndicatorSize.x * 0.5f, screenSize.y - 65.f - (strikeBarSize.y + strikeIndicatorSize.y) * 0.5f), strikeIndicatorSize, screenSize);
+	strikeIndicatorTexture->Render(glm::vec2((screenSize.x - strikeBarSize.x) * 0.5f + (strikeBarSize.x - strikeIndicatorSize.x * 0.5f) * swingStrength - strikeIndicatorSize.x * 0.5f, barPosY + barHeight - (strikeBarSize.y + strikeIndicatorSize.y) * 0.5f), strikeIndicatorSize, screenSize);
 }
