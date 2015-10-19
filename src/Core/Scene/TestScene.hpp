@@ -77,6 +77,7 @@ class TestScene : public Scene {
         // Terrain
         TerrainObject* terrainObject;
         Geometry::Terrain* terrain;
+		int iteratePlayers;
         
         // Model
         ModelObject* femaleModelObject;
