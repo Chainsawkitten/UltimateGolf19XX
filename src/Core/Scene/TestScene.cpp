@@ -326,6 +326,8 @@ void TestScene::Render(const glm::vec2& screenSize) {
     particleSystem->Render(player->GetCamera(), screenSize);
     explosionParticleSystem->Render(player->GetCamera(), screenSize);
 	font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
+	std::string playerText = "Player " + std::to_string((playerIndex % numberOfPlayers) + 1);
+	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize);
     postProcessing->Render();
     
     // Start - swing arrow
