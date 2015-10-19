@@ -360,9 +360,6 @@ void TestScene::Render(const glm::vec2& screenSize) {
 		std::string healthBarNum = std::to_string(i + 1);
 		font->RenderText(healthBarNum.c_str(), glm::vec2(barPosX+10.f + barXOffset*i, barPosY-30.f), 256.f, screenSize);
 	}
-
-	std::string playerText = "Player " + std::to_string((playerIndex % numberOfPlayers) + 1);
-	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize); time;
 	if (winner)
 		font->RenderText("A WINNER IS YOU!", glm::vec2((screenSize.x) / 3.f, (screenSize.y) / 3.f), 256.f, screenSize);
     postProcessing->Render();
