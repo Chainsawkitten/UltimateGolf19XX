@@ -173,9 +173,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
     
     // Emitters.
-    ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
+    ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(40.f, 15.f, 40.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
-    emitter->Update(5.0, particleSystem, player->GetCamera());
+    emitter->Update(5.0, particleSystem, golfBall);
 }
 
 TestScene::~TestScene() {
@@ -272,7 +272,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
         explosionParticleSystem->AddParticleEmitter(explosionEmitter);
         explosionEmitter->Update(15, explosionParticleSystem, player->GetCamera());
         emitterAttached = true;
-        explosionEmitter->resetLifetime();
+        explosionEmitter->ResetLifetime();
         
         golfBall->Explode(playerObjects);
     }
@@ -280,13 +280,13 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
-    if (emitterAttached && explosionEmitter->getLifetime() > 0.5 ){
+    if (emitterAttached && explosionEmitter->Lifetime() > 0.5 ){
         explosionParticleSystem->RemoveParticleEmitter();
         emitterAttached = false;
     }
     
-    particleSystem->Update(time, player->GetCamera());
-    explosionParticleSystem->Update(time, player->GetCamera());
+    particleSystem->Update(time, golfBall);
+    explosionParticleSystem->Update(time);
     water->Update(time, wind);
     
     swingArrow->SetRotation(-glm::degrees(swingAngle) - 90.f, 270.f, 0.f);

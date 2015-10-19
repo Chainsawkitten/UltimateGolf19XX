@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Camera/Camera.hpp"
+#include "../Object/Object.hpp"
 
 /** @ingroup Core
  * @{
@@ -23,18 +23,18 @@ class ParticleEmitter {
         /**
          * @param time Time since last frame (in seconds).
          * @param particleSystem Particle system to add particles to.
-         * @param camera Camera (for camera-relative emitting).
+         * @param follow %Object to follow (for relative emitting).
          */
-        void Update(double time, ParticleSystem* particleSystem, const Camera* camera);
+        void Update(double time, ParticleSystem* particleSystem, const Object* follow);
         
         /// Emit particle.
         virtual void EmitParticle() = 0;
 
-		///Get lifetime
-		double getLifetime();
+		/// Get lifetime
+		double Lifetime();
 
-		///Reset lifetime
-		void resetLifetime();
+		/// Reset lifetime
+		void ResetLifetime();
         
     protected:
         void EmitParticleAt(glm::vec3 position);
@@ -46,10 +46,10 @@ class ParticleEmitter {
         
         bool relative;
 
-		double lifeTime;
+		double lifetime;
         
         ParticleSystem* particleSystem;
-        const Camera* camera;
+        const Object* follow;
 };
 
 /** @} */

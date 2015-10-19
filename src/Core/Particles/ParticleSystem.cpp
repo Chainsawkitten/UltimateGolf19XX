@@ -75,7 +75,7 @@ void ParticleSystem::EmitParticle(glm::vec3 position) {
     }
 }
 
-void ParticleSystem::Update(double time, const Camera* camera) {
+void ParticleSystem::Update(double time, const Object* follow) {
     if (!this->particles.empty()) {
         for (std::vector<int>::size_type i = 0; i != particles.size(); i++) {
             particles[i].life += static_cast<float>(time);
@@ -89,7 +89,7 @@ void ParticleSystem::Update(double time, const Camera* camera) {
     }
     
     for (ParticleEmitter* emitter : emitters) {
-        emitter->Update(time, this, camera);
+        emitter->Update(time, this, follow);
     }
     
     if (particleCount > 0) {
