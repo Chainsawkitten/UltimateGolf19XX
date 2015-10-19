@@ -39,6 +39,116 @@ void GolfBall::Reset(glm::vec3 newOrigin){
     orientation = glm::quat();
 }
 
+void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObject>& players) {
+	if (state == GolfBall::ACTIVE) {
+		Move(static_cast<float>(time)* velocity);
+		sphere.position = Position();
+
+		if (glm::length(angularVelocity) > 0.0001f) {
+			glm::quat deltaQuat = glm::angleAxis(static_cast<float>(time)* glm::length(angularVelocity), glm::normalize(angularVelocity));
+			orientation = deltaQuat * orientation;
+		}
+
+		glm::vec3 dragForce, magnusForce, acceleration = glm::vec3(0.f, 0.f, 0.f);
+
+		float groundLevel = terrain->GetY(Position().x, Position().z);
+		float waterLevel = water->Position().y;
+
+		// Check if in water.
+		if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
+			state = GolfBall::OUT;
+			return;
+		}
+
+		// Check for collision
+		if ((sphere.position.y - sphere.radius) < groundLevel){
+			float vCritical = 1.8f;
+			float e = 0.35f;
+			float muSliding = 0.51f;
+			float muRolling = 0.096f;
+			SetPosition(Position().x, groundLevel + sphere.radius, Position().z);
+			sphere.position = Position();
+			glm::vec3 eRoh = glm::normalize(terrain->GetNormal(Position().x, Position().z));
+			glm::vec3 tangentialVelocity = velocity - glm::dot(velocity, eRoh) * eRoh;
+			glm::vec3 eFriction = glm::vec3(0.f, 0.f, 0.f);
+			if (glm::length(glm::cross(eRoh, angularVelocity) + tangentialVelocity) > 0.0001f){
+				eFriction = glm::normalize(sphere.radius * glm::cross(eRoh, angularVelocity) + tangentialVelocity);
+			}
+			float vRoh = glm::dot(velocity, eRoh);
+			float deltaU = -(e + 1.f) * vRoh;
+
+			if (vRoh < vCritical && glm::length(tangentialVelocity) > 0.0001f) {
+				glm::vec3 mg = (9.82f*glm::vec3(0.f, -1.f, 0.f));
+				glm::vec3 tangentialGravityAcceleration = mg - glm::dot(mg, eRoh)*eRoh;
+				glm::vec3 compareVectorPositive = eFriction - normalize(tangentialVelocity);
+				glm::vec3 compareVectorNegative = eFriction - normalize(-tangentialVelocity);
+				if ((glm::length(compareVectorNegative) < 0.03f) || (glm::length(compareVectorPositive) < 0.03f)) {
+					//sliding
+					glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction*9.82f*mass*eRoh.y;
+					float alpha = (glm::length(tangentialSlidingFrictionDeceleration)*sphere.radius) / (mass*sphere.radius*sphere.radius*0.4f);
+					velocity = velocity + (tangentialSlidingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
+					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
+					angularVelocity = angularVelocity + (alpha*static_cast<float>(time))*(glm::cross(sphere.radius*tangentialVelocityDirection, -eRoh));
+				}
+				else {
+					//rolling
+					glm::vec3 tangentialRollingFrictionDeceleration = muRolling*eFriction*9.82f*mass*eRoh.y;
+					velocity = velocity + (tangentialRollingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
+					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
+					angularVelocity = (glm::length(velocity) / sphere.radius)*(glm::cross(eFriction, -eRoh));
+				}
+			}
+			else {
+				float deltaTime = pow(mass * mass / (fabs(vRoh) * sphere.radius), 0.2f) * 0.00251744f;
+				float velocityRoh = glm::dot(velocity, eRoh);
+				float velocityNormal = glm::dot(velocity, eFriction);
+				float uRoh = -e*velocityRoh;
+				float deltauRoh = uRoh - (velocityRoh);
+				float deltaUn = muSliding*deltauRoh;
+				float rollUn = (5.f / 7.f)*velocityNormal;
+				float slideUn = velocityNormal - deltaUn;
+
+				if (velocityNormal > rollUn){
+					velocity = uRoh*eRoh + rollUn*eFriction;
+					angularVelocity += muRolling * (deltaU + 9.82f*eRoh.y * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
+				}
+				else {
+					velocity = uRoh*eRoh + slideUn*eFriction;
+					angularVelocity += muSliding * (deltaU + 9.82f *eRoh.y* deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
+				}
+			}
+		}
+		else {
+			// Calculate magnus force.
+			float v = glm::length(velocity);
+			float u = glm::length(velocity - wind);
+			float w = glm::length(angularVelocity);
+			glm::vec3 eU = (velocity - wind) / u;
+			magnusForce = glm::vec3(0.f, 0.f, 0.f);
+			if (u > 0.f && v > 0.f && w > 0.f) {
+				float Cm = (sqrt(1.f + 0.31f * (w / v)) - 1.f) / 20.f;
+				float Fm = 0.5f * Cm * 1.23f * area * u * u;
+				magnusForce = Fm * glm::cross(eU, glm::normalize(angularVelocity));
+			}
+
+			// Calculate drag force.
+			float cD;
+			if (ballType == TWOPIECE)
+				cD = v < 65.f ? -0.0051f * v + 0.53f : 0.21f;
+			else
+				cD = v < 60.f ? -0.0084f * v + 0.73f : 0.22f;
+			dragForce = glm::vec3(0.f, 0.f, 0.f);
+			if (u > 0.f)
+				dragForce = -0.5f * 1.23f * area * cD * u * u * eU;
+
+			// Calculate gravitational force.
+			glm::vec3 gravitationForce = glm::vec3(0.f, mass * -9.82f, 0.f);
+			// Get acceleration from total force.
+			acceleration = (dragForce + magnusForce + gravitationForce) / mass;
+			velocity += acceleration * static_cast<float>(time);
+		}
+	}
+}
 
 void GolfBall::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const{
     if (state != GolfBall::EXPLODED && state != GolfBall::OUT)
