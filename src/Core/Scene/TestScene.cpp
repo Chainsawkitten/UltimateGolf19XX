@@ -158,10 +158,14 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitterAttached = false;
     
     // Initiate players
-    numberOfPlayers = 2;
+    numberOfPlayers = 6;
     playerIndex = 0;
-    playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
-    playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(50.f, terrainObject->GetY(50.f, 5.f) + 0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(16.f, terrainObject->GetY(16.f, 30.f) + 0.01f, 30.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-4.f, terrainObject->GetY(-4.f, 19.f) + 0.01f, 19.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(10.f, terrainObject->GetY(10.f, 5.f) + 0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f) + 0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
     playerIterator = playerObjects.begin();
     
     // Golf ball.
@@ -182,6 +186,12 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     golfHitFile = new VorbisFile("Resources/Audio/GolfBallHit.ogg");
     golfHitBuffer = new SoundBuffer(golfHitFile);
     golfHitSound = new Sound(golfHitBuffer);
+    waterFile = new VorbisFile("Resources/Audio/Water.ogg");
+    waterBuffer = new SoundBuffer(waterFile);
+    waterSound = new Sound(waterBuffer);
+    waterSound->SetGain(0.15f);
+    waterSound->SetLooping(AL_TRUE);
+    waterSound->Play();
 }
 
 TestScene::~TestScene() {
@@ -234,6 +244,10 @@ TestScene::~TestScene() {
     delete golfHitSound;
     delete golfHitBuffer;
     delete golfHitFile;
+    
+    delete waterSound;
+    delete waterBuffer;
+    delete waterFile;
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
@@ -246,7 +260,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     swingAngle += time * (Input()->Pressed(InputHandler::RIGHT) - Input()->Pressed(InputHandler::LEFT));
     glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
     
-	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE) {
+	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE && golfBall->GetState() != GolfBall::EXPLODED) {
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
         golfHitSound->SetPosition(golfBall->Position());
         golfHitSound->Play();
@@ -255,10 +269,15 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     golfBall->Update(time, wind, playerObjects);
     
     
-    if (Input()->Triggered(InputHandler::RESET)) {
-        playerIterator++;
-        if (playerIterator == playerObjects.end())
-            playerIterator = playerObjects.begin();
+	if (Input()->Triggered(InputHandler::RESET) && winner != true) {
+		playerIterator++;
+		if (playerIterator == playerObjects.end())
+			playerIterator = playerObjects.begin();
+		while (playerIterator->getHealth() < 0.f){
+			playerIterator++;
+			if (playerIterator == playerObjects.end())
+				playerIterator = playerObjects.begin();
+		}
         golfBall->Reset(playerIterator->Position());
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
         Log() << wind << "\n";
@@ -309,7 +328,14 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     for (Duck* duck : ducks) {
         duck->Update(time, terrainObject, water);
     }
-    
+	int deadPlayers = 0;
+	for (auto &playerObject : playerObjects) {
+		if (playerObject.getHealth() < 0.f)
+			deadPlayers++;
+		if (deadPlayers == (numberOfPlayers-1))
+			winner = true;
+	}
+
     return nullptr;
 }
 
@@ -329,7 +355,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
+    //water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);
@@ -376,10 +402,14 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     gui->Render(screenSize, playerObjects, swingStrength);
     
-    // Club
+    // Player info.
     font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
+	std::string playerText = "Player " + std::to_string((playerIndex % numberOfPlayers) + 1);
+	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize); time;
+	if (winner)
+		font->RenderText("A WINNER IS YOU!", glm::vec2((screenSize.x) / 3.f, (screenSize.y) / 3.f), 256.f, screenSize);
     
-    // Wind
+    // Wind info.
     std::string windText = "Wind: (" + std::to_string(wind.x) + ", " + std::to_string(wind.y) + ", " + std::to_string(wind.z) + ") m/s";
     font->RenderText(windText.c_str(), glm::vec2(screenSize.x - 300.f, 0.f), 256.f, screenSize);
 }

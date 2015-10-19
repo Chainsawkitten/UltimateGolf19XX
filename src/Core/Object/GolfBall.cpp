@@ -52,15 +52,15 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 		glm::vec3 dragForce, magnusForce, acceleration = glm::vec3(0.f, 0.f, 0.f);
 
 		float groundLevel = terrain->GetY(Position().x, Position().z);
-        float waterLevel = water->Position().y;
-        
-        // Check if in water.
-        if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
-            state = GolfBall::OUT;
-            return;
-        }
-        
-        // Check for collision
+		float waterLevel = water->Position().y;
+
+		//// Check if in water.
+		//if ((sphere.position.y - sphere.radius < groundLevel && groundLevel + sphere.radius < waterLevel) || sphere.position.y + sphere.radius < waterLevel) {
+		//	state = GolfBall::OUT;
+		//	return;
+		//}
+
+		// Check for collision
 		if ((sphere.position.y - sphere.radius) < groundLevel){
 			float vCritical = 1.8f;
 			float e = 0.35f;
@@ -84,19 +84,21 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 				glm::vec3 compareVectorNegative = eFriction - normalize(-tangentialVelocity);
 				if ((glm::length(compareVectorNegative) < 0.03f) || (glm::length(compareVectorPositive) < 0.03f)) {
 					//sliding
-					glm::vec3 tangentialSlidingFrictionDeceleration = muSliding*eFriction*9.82f*mass*eRoh.y;
-					float alpha = (glm::length(tangentialSlidingFrictionDeceleration)*sphere.radius)/(mass*sphere.radius*sphere.radius*0.4f);
+					glm::vec3 tangentialSlidingFrictionDeceleration = -muSliding*eFriction*9.82f*length(tangentialGravityAcceleration);
+					float alpha = (glm::length(tangentialSlidingFrictionDeceleration)*sphere.radius) / (mass*sphere.radius*sphere.radius*0.4f);
 					velocity = velocity + (tangentialSlidingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
 					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
 					angularVelocity = angularVelocity + (alpha*static_cast<float>(time))*(glm::cross(sphere.radius*tangentialVelocityDirection, -eRoh));
-				} else {
+				}
+				else {
 					//rolling
-					glm::vec3 tangentialRollingFrictionDeceleration = muRolling*eFriction*9.82f*mass*eRoh.y;
+					glm::vec3 tangentialRollingFrictionDeceleration = -muRolling*eFriction*9.82f*length(tangentialGravityAcceleration);
 					velocity = velocity + (tangentialRollingFrictionDeceleration + tangentialGravityAcceleration)*static_cast<float>(time);
 					glm::vec3 tangentialVelocityDirection = glm::normalize(velocity);
 					angularVelocity = (glm::length(velocity) / sphere.radius)*(glm::cross(eFriction, -eRoh));
 				}
-			} else {
+			}
+			else {
 				float deltaTime = pow(mass * mass / (fabs(vRoh) * sphere.radius), 0.2f) * 0.00251744f;
 				float velocityRoh = glm::dot(velocity, eRoh);
 				float velocityNormal = glm::dot(velocity, eFriction);
@@ -109,12 +111,14 @@ void GolfBall::Update(double time, const glm::vec3& wind, std::vector<PlayerObje
 				if (velocityNormal > rollUn){
 					velocity = uRoh*eRoh + rollUn*eFriction;
 					angularVelocity += muRolling * (deltaU + 9.82f*eRoh.y * deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
-				} else {
+				}
+				else {
 					velocity = uRoh*eRoh + slideUn*eFriction;
 					angularVelocity += muSliding * (deltaU + 9.82f *eRoh.y* deltaTime) / sphere.radius * glm::cross(eRoh, eFriction);
 				}
 			}
-		} else {
+		}
+		else {
 			// Calculate magnus force.
 			float v = glm::length(velocity);
 			float u = glm::length(velocity - wind);
@@ -156,7 +160,8 @@ void GolfBall::Explode(std::vector<PlayerObject>& players){
     float equivalenceFactor = 1.0f;
     float massEquivalent = mass*equivalenceFactor;
     for (auto &player : players){
-        glm::vec3 distanceV = (Position() - player.Position());
+		//Damage for groinal region
+        glm::vec3 distanceV = (Position() - player.Position() + glm::vec3(0.f,2.f,0.f));
         float distance = glm::length(distanceV); 
         //pow(meq, 1.f/3.f) => cube root of meq
         float z = distance / (pow(massEquivalent, 1.f / 3.f));
@@ -166,7 +171,31 @@ void GolfBall::Explode(std::vector<PlayerObject>& players){
         float delta = 1 + pow((z / 0.32f), 2.f);
         //float Pf = 8.08f*pow(10.f, 7.f)*alpha;
 		float Pf = ((8.08e7)*alpha) / sqrt(beta*gamma*delta);
-        player.TakeDamage(Pf);
+		player.TakeDamage(Pf);
+
+		distanceV = (Position() - player.Position() + glm::vec3(0.f, 1.f, 0.f));
+		distance = glm::length(distanceV);
+		//pow(meq, 1.f/3.f) => cube root of meq
+		z = distance / (pow(massEquivalent, 1.f / 3.f));
+		alpha = 1 + pow((z / 4.5f), 2.f);
+		beta = 1 + pow((z / 0.048f), 2.f);
+		gamma = 1 + pow((z / 1.35f), 2.f);
+		delta = 1 + pow((z / 0.32f), 2.f);
+		//float Pf = 8.08f*pow(10.f, 7.f)*alpha;
+		Pf = ((8.08e7)*alpha) / sqrt(beta*gamma*delta);
+		player.TakeDamage(Pf/5.f);
+
+		distanceV = (Position() - player.Position() + glm::vec3(0.f, 0.f, 0.f));
+		distance = glm::length(distanceV);
+		//pow(meq, 1.f/3.f) => cube root of meq
+		z = distance / (pow(massEquivalent, 1.f / 3.f));
+		alpha = 1 + pow((z / 4.5f), 2.f);
+		beta = 1 + pow((z / 0.048f), 2.f);
+		gamma = 1 + pow((z / 1.35f), 2.f);
+		delta = 1 + pow((z / 0.32f), 2.f);
+		//float Pf = 8.08f*pow(10.f, 7.f)*alpha;
+		Pf = ((8.08e7)*alpha) / sqrt(beta*gamma*delta);
+		player.TakeDamage(Pf / 10.f);
     }
     state = GolfBall::EXPLODED;
 }
