@@ -157,7 +157,7 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitterAttached = false;
     
     // Initiate players
-    numberOfPlayers = 6;
+	numberOfPlayers = GameSettings::GetInstance().GetLong("Players");
     playerIndex = 0;
 	playerObjects.push_back(PlayerObject{ glm::vec3(50.f, terrainObject->GetY(50.f, 5.f) + 0.01f, 5.f) });
 	playerObjects.push_back(PlayerObject{ glm::vec3(16.f, terrainObject->GetY(16.f, 30.f) + 0.01f, 30.f) });
