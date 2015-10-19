@@ -52,6 +52,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     swingTime = 1.f;
     swingDirection = 1.f;
     swingAngle = 0.f;
+
+	// Font.
+	font = Resources().CreateFontEmbedded(ABEEZEE_TTF, ABEEZEE_TTF_LENGTH, 24.f);
     
     // Terrain.
     terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
@@ -219,6 +222,7 @@ TestScene::~TestScene() {
     for (LilyPad* lilypad : lilypads) {
         delete lilypad;
     }
+	Resources().FreeFont(font);
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
@@ -231,7 +235,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     swingAngle += time * (Input()->Pressed(InputHandler::RIGHT) - Input()->Pressed(InputHandler::LEFT));
     glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
     
-    if (Input()->Triggered(InputHandler::STRIKE)) {
+	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE) {
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
         
     }
@@ -312,7 +316,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
+    //water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);
@@ -321,7 +325,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     particleSystem->Render(player->GetCamera(), screenSize);
     explosionParticleSystem->Render(player->GetCamera(), screenSize);
-    
+	font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
     postProcessing->Render();
     
     // Start - swing arrow

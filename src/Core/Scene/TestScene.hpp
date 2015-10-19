@@ -20,7 +20,9 @@
 #include "../Object/PlayerObject.hpp"
 #include "../Object/GUI.hpp"
 #include "../Object/Duck.hpp"
+#include "../Font/Font.hpp"
 #include "../Object/LilyPad.hpp"
+#include "ABeeZee.ttf.hpp"
 
 /** @ingroup Core
  * @{
@@ -107,6 +109,7 @@ class TestScene : public Scene {
 		Texture2D* explosionTexture;
         ParticleSystem* particleSystem;
         Texture2D* particleTexture;
+		Font* font;
         
         // Ducks
         std::vector<Duck*> ducks;
