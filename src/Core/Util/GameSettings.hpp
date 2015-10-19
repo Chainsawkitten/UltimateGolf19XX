@@ -15,6 +15,7 @@
  * Show Mouse Cursor   | Whether to show or hide the cursor. | bool   | false
  * Screen Width        | Width of the game window.           | long   | 800
  * Screen Height       | Height of the game window.          | long   | 600
+ * Players		       | Number of players in the game       | long   | 2
  * Fullscreen          | Play in fullscreen mode.            | bool   | false
  * Borderless          | Use a borderless window.            | bool   | false
  * Target FPS          | FPS to aim for when rendering.      | long   | 60
