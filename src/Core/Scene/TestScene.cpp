@@ -157,10 +157,14 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitterAttached = false;
     
     // Initiate players
-    numberOfPlayers = 2;
+    numberOfPlayers = 6;
     playerIndex = 0;
-    playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f)+0.01f, 5.f) });
-    playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(50.f, terrainObject->GetY(50.f, 5.f) + 0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(16.f, terrainObject->GetY(16.f, 30.f) + 0.01f, 30.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-4.f, terrainObject->GetY(-4.f, 19.f) + 0.01f, 19.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(10.f, terrainObject->GetY(10.f, 5.f) + 0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(5.f, terrainObject->GetY(5.f, 5.f) + 0.01f, 5.f) });
+	playerObjects.push_back(PlayerObject{ glm::vec3(-5.f, terrainObject->GetY(-5.f, -5.f) + 0.01f, -5.f) });
     playerIterator = playerObjects.begin();
     
     // Golf ball.
