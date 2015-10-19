@@ -12,14 +12,23 @@
 #include "../Player/ThirdPersonPlayer.hpp"
 
 TestScene::TestScene(const glm::vec2& screenSize) {
-    model = Resources().CreateOBJModel("Resources/Models/Maximo/GolferFemale.obj");
-    std::string diffusePath = "Resources/Models/Maximo/GolferFemaleDiffuse.png";
-    std::string normalPath = "Resources/Models/Maximo/GolferFemaleNormal.png";
-    std::string specularPath = "Resources/Models/Maximo/GolferFemaleSpecular.png";
-    modelObject = new ModelObject(model, diffusePath, normalPath , specularPath);
-    modelObject->SetPosition(2.f, 0.f, 0.f);
-    modelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
+    femaleModel = Resources().CreateOBJModel("Resources/Models/Maximo/GolferFemale.obj");
+	std::string femaleDiffusePath = "Resources/Models/Maximo/GolferFemaleDiffuse.png";
+	std::string femaleNormalPath = "Resources/Models/Maximo/GolferFemaleNormal.png";
+	std::string femaleSpecularPath = "Resources/Models/Maximo/GolferFemaleSpecular.png";
+	femaleModelObject = new ModelObject(femaleModel, femaleDiffusePath, femaleNormalPath, femaleSpecularPath);
+	femaleModelObject->SetPosition(2.f, 0.f, 0.f);
+	femaleModelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
     
+	maleModel = Resources().CreateOBJModel("Resources/Models/Maximo/GolferMale.obj");
+	std::string maleDiffusePath = "Resources/Models/Maximo/GolferMaleDiffuse.png";
+	std::string maleNormalPath = "Resources/Models/Maximo/GolferMaleNormal.png";
+	std::string maleSpecularPath = "Resources/Models/Maximo/GolferMaleSpecular.png";
+	maleModelObject = new ModelObject(maleModel, maleDiffusePath, maleNormalPath, maleSpecularPath);
+	maleModelObject->SetPosition(2.f, 0.f, 0.f);
+	maleModelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
+
+
     srand(time(NULL));
     
     // Map of all available clubtypes
@@ -43,6 +52,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     swingTime = 1.f;
     swingDirection = 1.f;
     swingAngle = 0.f;
+
+	// Font.
+	font = Resources().CreateFontEmbedded(ABEEZEE_TTF, ABEEZEE_TTF_LENGTH, 24.f);
     
     // Terrain.
     terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
@@ -174,7 +186,6 @@ TestScene::~TestScene() {
     Resources().FreeTexture2DFromFile(particleTexture);
 
 	delete explosionParticleSystem;
-	delete explosionEmitter;
 	Resources().FreeTexture2DFromFile(explosionTexture);
     
     delete player;
@@ -186,8 +197,10 @@ TestScene::~TestScene() {
     
     delete swingArrow;
     Resources().FreeSquare();
-    delete modelObject;
-    Resources().FreeOBJModel(model);
+    delete femaleModelObject;
+    Resources().FreeOBJModel(femaleModel);
+	delete maleModelObject;
+	Resources().FreeOBJModel(maleModel);
     
     delete golfBall;
     delete terrainObject;
@@ -209,6 +222,7 @@ TestScene::~TestScene() {
     for (LilyPad* lilypad : lilypads) {
         delete lilypad;
     }
+	Resources().FreeFont(font);
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
@@ -221,7 +235,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     swingAngle += time * (Input()->Pressed(InputHandler::RIGHT) - Input()->Pressed(InputHandler::LEFT));
     glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
     
-    if (Input()->Triggered(InputHandler::STRIKE)) {
+	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE) {
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
         
     }
@@ -311,7 +325,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     particleSystem->Render(player->GetCamera(), screenSize);
     explosionParticleSystem->Render(player->GetCamera(), screenSize);
-    
+	font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
     postProcessing->Render();
     
     // Start - swing arrow
@@ -356,10 +370,17 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+	bool male = true;
     for (auto &playerObject : playerObjects) {
-        modelObject->SetPosition(playerObject.Position());
-        modelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+		if (male == false){
+			femaleModelObject->SetPosition(playerObject.Position());
+			femaleModelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+			male = true;
+		} else {
+			maleModelObject->SetPosition(playerObject.Position());
+			maleModelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+			male = false;
+		}
     }
     
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
