@@ -110,6 +110,7 @@ class TestScene : public Scene {
         ParticleSystem* particleSystem;
         Texture2D* particleTexture;
 		Font* font;
+		bool winner = false;
         
         // Ducks
         std::vector<Duck*> ducks;
