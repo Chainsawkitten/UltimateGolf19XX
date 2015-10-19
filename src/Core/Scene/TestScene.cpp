@@ -325,7 +325,6 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     particleSystem->Render(player->GetCamera(), screenSize);
     explosionParticleSystem->Render(player->GetCamera(), screenSize);
-	font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
     postProcessing->Render();
     
     // Start - swing arrow
@@ -363,6 +362,13 @@ void TestScene::Render(const glm::vec2& screenSize) {
     }
     
     gui->Render(screenSize, playerObjects, swingStrength);
+    
+    // Club
+    font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
+    
+    // Wind
+    std::string windText = "Wind: (" + std::to_string(wind.x) + ", " + std::to_string(wind.y) + ", " + std::to_string(wind.z) + ") m/s";
+    font->RenderText(windText.c_str(), glm::vec2(screenSize.x - 300.f, 0.f), 256.f, screenSize);
 }
 
 void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const glm::vec4& clippingPlane) {
