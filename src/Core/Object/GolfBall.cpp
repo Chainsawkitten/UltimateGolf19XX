@@ -160,7 +160,8 @@ void GolfBall::Explode(std::vector<PlayerObject>& players){
     float equivalenceFactor = 1.0f;
     float massEquivalent = mass*equivalenceFactor;
     for (auto &player : players){
-        glm::vec3 distanceV = (Position() - player.Position());
+		//Damage for groinal region
+        glm::vec3 distanceV = (Position() - player.Position() + glm::vec3(0.f,2.f,0.f));
         float distance = glm::length(distanceV); 
         //pow(meq, 1.f/3.f) => cube root of meq
         float z = distance / (pow(massEquivalent, 1.f / 3.f));
@@ -170,7 +171,31 @@ void GolfBall::Explode(std::vector<PlayerObject>& players){
         float delta = 1 + pow((z / 0.32f), 2.f);
         //float Pf = 8.08f*pow(10.f, 7.f)*alpha;
 		float Pf = ((8.08e7)*alpha) / sqrt(beta*gamma*delta);
-        player.TakeDamage(Pf);
+		player.TakeDamage(Pf);
+
+		distanceV = (Position() - player.Position() + glm::vec3(0.f, 1.f, 0.f));
+		distance = glm::length(distanceV);
+		//pow(meq, 1.f/3.f) => cube root of meq
+		z = distance / (pow(massEquivalent, 1.f / 3.f));
+		alpha = 1 + pow((z / 4.5f), 2.f);
+		beta = 1 + pow((z / 0.048f), 2.f);
+		gamma = 1 + pow((z / 1.35f), 2.f);
+		delta = 1 + pow((z / 0.32f), 2.f);
+		//float Pf = 8.08f*pow(10.f, 7.f)*alpha;
+		Pf = ((8.08e7)*alpha) / sqrt(beta*gamma*delta);
+		player.TakeDamage(Pf/5.f);
+
+		distanceV = (Position() - player.Position() + glm::vec3(0.f, 0.f, 0.f));
+		distance = glm::length(distanceV);
+		//pow(meq, 1.f/3.f) => cube root of meq
+		z = distance / (pow(massEquivalent, 1.f / 3.f));
+		alpha = 1 + pow((z / 4.5f), 2.f);
+		beta = 1 + pow((z / 0.048f), 2.f);
+		gamma = 1 + pow((z / 1.35f), 2.f);
+		delta = 1 + pow((z / 0.32f), 2.f);
+		//float Pf = 8.08f*pow(10.f, 7.f)*alpha;
+		Pf = ((8.08e7)*alpha) / sqrt(beta*gamma*delta);
+		player.TakeDamage(Pf / 10.f);
     }
     state = GolfBall::EXPLODED;
 }

@@ -235,7 +235,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     swingAngle += time * (Input()->Pressed(InputHandler::RIGHT) - Input()->Pressed(InputHandler::LEFT));
     glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
     
-	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE) {
+	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE && golfBall->GetState() != GolfBall::EXPLODED) {
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
         
     }
@@ -243,9 +243,11 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     
     
     if (Input()->Triggered(InputHandler::RESET)) {
-        playerIterator++;
-        if (playerIterator == playerObjects.end())
+		playerIterator++;
+		if (playerIterator == playerObjects.end())
             playerIterator = playerObjects.begin();
+		while (playerIterator->getHealth() < 0.f)
+			playerIterator++;
         golfBall->Reset(playerIterator->Position());
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
         Log() << wind << "\n";
@@ -296,7 +298,14 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     for (Duck* duck : ducks) {
         duck->Update(time, terrainObject, water);
     }
-    
+	int deadPlayers = 0;
+	for (auto &playerObject : playerObjects) {
+		if (playerObject.getHealth() < 0.f)
+			deadPlayers++;
+		if (deadPlayers == (numberOfPlayers-1))
+			winner = true;
+	}
+
     return nullptr;
 }
 
@@ -327,7 +336,9 @@ void TestScene::Render(const glm::vec2& screenSize) {
     explosionParticleSystem->Render(player->GetCamera(), screenSize);
 	font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
 	std::string playerText = "Player " + std::to_string((playerIndex % numberOfPlayers) + 1);
-	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize);
+	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize); time;
+	if (winner)
+		font->RenderText("A WINNER IS YOU!", glm::vec2((screenSize.x) / 3.f, (screenSize.y) / 3.f), 256.f, screenSize);
     postProcessing->Render();
     
     // Start - swing arrow
