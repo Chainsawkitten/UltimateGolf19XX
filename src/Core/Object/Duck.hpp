@@ -7,6 +7,7 @@
 #include "../Camera/Camera.hpp"
 #include "TerrainObject.hpp"
 #include "Water.hpp"
+#include "../Audio/Sound.hpp"
 
 /** @ingroup Core
  * @{
@@ -16,7 +17,10 @@
 class Duck : public Object {
     public:
         /// Create new duck.
-        Duck();
+        /**
+         * @param quack %Sound file for the quack sound.
+         */
+        Duck(SoundFile* quack);
         
         /// Destructor.
         ~Duck();
@@ -52,6 +56,10 @@ class Duck : public Object {
         float angularVelocity;
         float targetAngularVelocity;
         float lastChanged;
+        
+        float quackTimer;
+        SoundBuffer* quackSoundBuffer;
+        Sound* quackSound;
 };
 
 /** @} */

@@ -115,6 +115,7 @@ class TestScene : public Scene {
         
         // Ducks
         std::vector<Duck*> ducks;
+        VorbisFile* duckFile;
         
         // Lily pads
         std::vector<LilyPad*> lilypads;

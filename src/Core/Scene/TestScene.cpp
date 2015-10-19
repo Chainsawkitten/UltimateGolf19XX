@@ -116,8 +116,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     particleSystem = new ParticleSystem(dustParticle, 1000);
     
     // Ducks
+    duckFile = new VorbisFile("Resources/Audio/Duck.ogg");
     for (int i=0; i<10; i++) {
-        ducks.push_back(new Duck());
+        ducks.push_back(new Duck(duckFile));
         glm::vec3 position;
         do {
             position = glm::vec3(rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f);
@@ -223,6 +224,7 @@ TestScene::~TestScene() {
     for (Duck* duck : ducks) {
         delete duck;
     }
+    delete duckFile;
     
     for (LilyPad* lilypad : lilypads) {
         delete lilypad;
