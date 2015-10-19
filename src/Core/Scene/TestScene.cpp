@@ -157,7 +157,8 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitterAttached = false;
     
     // Initiate players
-	numberOfPlayers = 6;
+	numberOfPlayers = GameSettings::GetInstance().GetLong("Players");
+
 	playerIndex = 0;
 	glm::vec3 randPos;
 
