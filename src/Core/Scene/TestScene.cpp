@@ -165,7 +165,13 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     
     for (int i = 0; i < numberOfPlayers; i++){
         do {
-            randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+			if (i > 0){
+				randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+				while (glm::length(playerObjects[i-1].Position() - randPos) > 25.f)
+					randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+			} else {
+				randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+			}
         } while (terrainObject->GetY(randPos.x, randPos.z) < water->Position().y + 0.2f);
         playerObjects.push_back(PlayerObject{ glm::vec3(randPos.x, terrainObject->GetY(randPos.x, randPos.z) + 0.01f, randPos.z) });
     }
@@ -264,7 +270,7 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     swingAngle += time * (Input()->Pressed(InputHandler::RIGHT) - Input()->Pressed(InputHandler::LEFT));
     glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
     
-    if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE && golfBall->GetState() != GolfBall::EXPLODED) {
+    if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() == GolfBall::INITIAL) {
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
         golfHitSound->SetPosition(golfBall->Position());
         golfHitSound->Play();
