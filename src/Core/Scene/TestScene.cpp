@@ -13,22 +13,22 @@
 
 TestScene::TestScene(const glm::vec2& screenSize) {
     femaleModel = Resources().CreateOBJModel("Resources/Models/Maximo/GolferFemale.obj");
-	std::string femaleDiffusePath = "Resources/Models/Maximo/GolferFemaleDiffuse.png";
-	std::string femaleNormalPath = "Resources/Models/Maximo/GolferFemaleNormal.png";
-	std::string femaleSpecularPath = "Resources/Models/Maximo/GolferFemaleSpecular.png";
-	femaleModelObject = new ModelObject(femaleModel, femaleDiffusePath, femaleNormalPath, femaleSpecularPath);
-	femaleModelObject->SetPosition(2.f, 0.f, 0.f);
-	femaleModelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
+    std::string femaleDiffusePath = "Resources/Models/Maximo/GolferFemaleDiffuse.png";
+    std::string femaleNormalPath = "Resources/Models/Maximo/GolferFemaleNormal.png";
+    std::string femaleSpecularPath = "Resources/Models/Maximo/GolferFemaleSpecular.png";
+    femaleModelObject = new ModelObject(femaleModel, femaleDiffusePath, femaleNormalPath, femaleSpecularPath);
+    femaleModelObject->SetPosition(2.f, 0.f, 0.f);
+    femaleModelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
     
-	maleModel = Resources().CreateOBJModel("Resources/Models/Maximo/GolferMale.obj");
-	std::string maleDiffusePath = "Resources/Models/Maximo/GolferMaleDiffuse.png";
-	std::string maleNormalPath = "Resources/Models/Maximo/GolferMaleNormal.png";
-	std::string maleSpecularPath = "Resources/Models/Maximo/GolferMaleSpecular.png";
-	maleModelObject = new ModelObject(maleModel, maleDiffusePath, maleNormalPath, maleSpecularPath);
-	maleModelObject->SetPosition(2.f, 0.f, 0.f);
-	maleModelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
-
-	iteratePlayers = 0;
+    maleModel = Resources().CreateOBJModel("Resources/Models/Maximo/GolferMale.obj");
+    std::string maleDiffusePath = "Resources/Models/Maximo/GolferMaleDiffuse.png";
+    std::string maleNormalPath = "Resources/Models/Maximo/GolferMaleNormal.png";
+    std::string maleSpecularPath = "Resources/Models/Maximo/GolferMaleSpecular.png";
+    maleModelObject = new ModelObject(maleModel, maleDiffusePath, maleNormalPath, maleSpecularPath);
+    maleModelObject->SetPosition(2.f, 0.f, 0.f);
+    maleModelObject->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
+    
+    iteratePlayers = 0;
     srand(time(NULL));
     
     // Map of all available clubtypes
@@ -52,9 +52,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     swingTime = 1.f;
     swingDirection = 1.f;
     swingAngle = 0.f;
-
-	// Font.
-	font = Resources().CreateFontEmbedded(ABEEZEE_TTF, ABEEZEE_TTF_LENGTH, 24.f);
+    
+    // Font.
+    font = Resources().CreateFontEmbedded(ABEEZEE_TTF, ABEEZEE_TTF_LENGTH, 24.f);
     
     // Terrain.
     terrain = new Geometry::Terrain("Resources/Terrain/TestMapSmall.png");
@@ -116,8 +116,9 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     particleSystem = new ParticleSystem(dustParticle, 1000);
     
     // Ducks
+    duckFile = new VorbisFile("Resources/Audio/Duck.ogg");
     for (int i=0; i<10; i++) {
-        ducks.push_back(new Duck());
+        ducks.push_back(new Duck(duckFile));
         glm::vec3 position;
         do {
             position = glm::vec3(rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX) * 200.f - 100.f);
@@ -157,22 +158,29 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     emitterAttached = false;
     
     // Initiate players
-	numberOfPlayers = GameSettings::GetInstance().GetLong("Players");
-
-	playerIndex = 0;
-	glm::vec3 randPos;
-
-	for (int i = 0; i < numberOfPlayers; i++){
-		do {
-			randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
-		} while (terrainObject->GetY(randPos.x, randPos.z) < water->Position().y + 0.2f);
-		playerObjects.push_back(PlayerObject{ glm::vec3(randPos.x, terrainObject->GetY(randPos.x, randPos.z) + 0.01f, randPos.z) });
-	}
+    numberOfPlayers = GameSettings::GetInstance().GetLong("Players");
+    
+    playerIndex = 0;
+    glm::vec3 randPos;
+    
+    for (int i = 0; i < numberOfPlayers; i++){
+        do {
+			if (i > 0){
+				randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+				while (glm::length(playerObjects[i-1].Position() - randPos) > 25.f)
+					randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+			} else {
+				randPos = glm::vec3(rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f, water->Position().y, rand() / static_cast<float>(RAND_MAX)* 200.f - 100.f);
+			}
+        } while (terrainObject->GetY(randPos.x, randPos.z) < water->Position().y + 0.2f);
+        playerObjects.push_back(PlayerObject{ glm::vec3(randPos.x, terrainObject->GetY(randPos.x, randPos.z) + 0.01f, randPos.z) });
+    }
+    
     playerIterator = playerObjects.begin();
     
     // Golf ball.
     golfBall = new GolfBall(GolfBall::TWOPIECE, terrainObject, water);
-    golfBall->SetPosition(playerObjects[0].Position());
+    golfBall->SetPosition(playerObjects[0].Position() + glm::vec3(0.f, golfBall->Radius(), 0.f));
     
     // Camera.
     player = new ThirdPersonPlayer(golfBall);
@@ -180,9 +188,20 @@ TestScene::TestScene(const glm::vec2& screenSize) {
     wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), 0.f, static_cast<float>(rand() % 30 + (-15)));
     
     // Emitters.
-    ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(20.f, 4.f, 20.f), 0.01, 0.02, true);
+    ParticleEmitter* emitter = new CuboidParticleEmitter(glm::vec3(0.f, 0.f, 0.f), glm::vec3(40.f, 15.f, 40.f), 0.01, 0.02, true);
     particleSystem->AddParticleEmitter(emitter);
-    emitter->Update(5.0, particleSystem, player->GetCamera());
+    emitter->Update(5.0, particleSystem, golfBall);
+    
+    // Sound
+    golfHitFile = new VorbisFile("Resources/Audio/GolfBallHit.ogg");
+    golfHitBuffer = new SoundBuffer(golfHitFile);
+    golfHitSound = new Sound(golfHitBuffer);
+    waterFile = new VorbisFile("Resources/Audio/Water.ogg");
+    waterBuffer = new SoundBuffer(waterFile);
+    waterSound = new Sound(waterBuffer);
+    waterSound->SetGain(0.15f);
+    waterSound->SetLooping(AL_TRUE);
+    waterSound->Play();
 }
 
 TestScene::~TestScene() {
@@ -191,9 +210,9 @@ TestScene::~TestScene() {
     
     delete particleSystem;
     Resources().FreeTexture2DFromFile(particleTexture);
-
-	delete explosionParticleSystem;
-	Resources().FreeTexture2DFromFile(explosionTexture);
+    
+    delete explosionParticleSystem;
+    Resources().FreeTexture2DFromFile(explosionTexture);
     
     delete player;
     
@@ -206,8 +225,8 @@ TestScene::~TestScene() {
     Resources().FreeSquare();
     delete femaleModelObject;
     Resources().FreeOBJModel(femaleModel);
-	delete maleModelObject;
-	Resources().FreeOBJModel(maleModel);
+    delete maleModelObject;
+    Resources().FreeOBJModel(maleModel);
     
     delete golfBall;
     delete terrainObject;
@@ -225,11 +244,20 @@ TestScene::~TestScene() {
     for (Duck* duck : ducks) {
         delete duck;
     }
+    delete duckFile;
     
     for (LilyPad* lilypad : lilypads) {
         delete lilypad;
     }
-	Resources().FreeFont(font);
+    Resources().FreeFont(font);
+    
+    delete golfHitSound;
+    delete golfHitBuffer;
+    delete golfHitFile;
+    
+    delete waterSound;
+    delete waterBuffer;
+    delete waterFile;
 }
 
 TestScene::SceneEnd* TestScene::Update(double time) {
@@ -242,24 +270,29 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     swingAngle += time * (Input()->Pressed(InputHandler::RIGHT) - Input()->Pressed(InputHandler::LEFT));
     glm::vec3 strikeDirection = glm::vec3(cos(swingAngle), 0.f, sin(swingAngle));
     
-	if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() != GolfBall::ACTIVE && golfBall->GetState() != GolfBall::EXPLODED) {
+    if (Input()->Triggered(InputHandler::STRIKE) && golfBall->GetState() == GolfBall::INITIAL) {
         golfBall->Strike(clubIterator->second, maxSwingStrength * swingStrength * strikeDirection);
+        golfHitSound->SetPosition(golfBall->Position());
+        golfHitSound->Play();
         
     }
     golfBall->Update(time, wind, playerObjects);
     
     
     if (Input()->Triggered(InputHandler::RESET)) {
-		iteratePlayers = 0;
-		do{
-			iteratePlayers++;
-			playerIterator++;
-			if (playerIterator == playerObjects.end())
-				playerIterator = playerObjects.begin();
-		} while (playerIterator->getHealth() <= 0.f || iteratePlayers == numberOfPlayers);
-		if (playerIterator->getHealth() > 0.f)
-			golfBall->Reset(playerIterator->Position());
-
+        iteratePlayers = 0;
+        do{
+            playerIndex++;
+            iteratePlayers++;
+            playerIterator++;
+            if (playerIterator == playerObjects.end()){
+                playerIndex = 0;
+                playerIterator = playerObjects.begin();
+            }
+        } while (playerIterator->getHealth() <= 0.f || iteratePlayers == numberOfPlayers);
+        if (playerIterator->getHealth() > 0.f)
+            golfBall->Reset(playerIterator->Position() + glm::vec3(0.f, golfBall->Radius(), 0.f));
+        
         wind = glm::vec3(static_cast<float>(rand() % 30 + (-15)), static_cast<float>(rand() % 4 + (-2)), static_cast<float>(rand() % 30 + (-15)));
         Log() << wind << "\n";
     }
@@ -274,18 +307,13 @@ TestScene::SceneEnd* TestScene::Update(double time) {
         Log() << "\n";
     }
     
-    if (Input()->Triggered(InputHandler::EXPLODE) && golfBall->GetState() == GolfBall::ACTIVE) {
-        if (playerIndex < (numberOfPlayers-1))
-            playerIndex++;
-        else
-            playerIndex = 0;
-        
+    if (Input()->Triggered(InputHandler::EXPLODE) && golfBall->GetState() == GolfBall::ACTIVE) {    
         // Emitters.
         explosionEmitter = new PointParticleEmitter(golfBall->Position(), 0.1, 0.2, false);
         explosionParticleSystem->AddParticleEmitter(explosionEmitter);
         explosionEmitter->Update(15, explosionParticleSystem, player->GetCamera());
         emitterAttached = true;
-        explosionEmitter->resetLifetime();
+        explosionEmitter->ResetLifetime();
         
         golfBall->Explode(playerObjects);
     }
@@ -293,30 +321,30 @@ TestScene::SceneEnd* TestScene::Update(double time) {
     SoundSystem::GetInstance()->GetListener()->SetPosition(player->GetCamera()->Position());
     SoundSystem::GetInstance()->GetListener()->SetOrientation(player->GetCamera()->Forward(), player->GetCamera()->Up());
     
-    if (emitterAttached && explosionEmitter->getLifetime() > 0.5 ){
+    if (emitterAttached && explosionEmitter->Lifetime() > 0.5 ){
         explosionParticleSystem->RemoveParticleEmitter();
         emitterAttached = false;
     }
     
-    particleSystem->Update(time, player->GetCamera());
-    explosionParticleSystem->Update(time, player->GetCamera());
+    particleSystem->Update(time, golfBall);
+    explosionParticleSystem->Update(time);
     water->Update(time, wind);
     
     swingArrow->SetRotation(-glm::degrees(swingAngle) - 90.f, 270.f, 0.f);
-    glm::vec3 swingPosition = golfBall->Position() + strikeDirection * 0.5f * swingArrow->Scale().y - glm::vec3(0.f, golfBall->Radius(), 0.f);
+    glm::vec3 swingPosition = golfBall->Position() + strikeDirection * 0.5f * swingArrow->Scale().y + glm::vec3(0.f, 1.f - golfBall->Radius(), 0.f);
     swingArrow->SetPosition(swingPosition);
     
     for (Duck* duck : ducks) {
         duck->Update(time, terrainObject, water);
     }
-	int deadPlayers = 0;
-	for (auto &playerObject : playerObjects) {
-		if (playerObject.getHealth() < 0.f)
-			deadPlayers++;
-		if (deadPlayers == (numberOfPlayers-1))
-			winner = true;
-	}
-
+    int deadPlayers = 0;
+    for (auto &playerObject : playerObjects) {
+        if (playerObject.getHealth() < 0.f)
+            deadPlayers++;
+        if (deadPlayers == (numberOfPlayers-1))
+            winner = true;
+    }
+    
     return nullptr;
 }
 
@@ -336,7 +364,7 @@ void TestScene::Render(const glm::vec2& screenSize) {
     // Render to screen.
     RenderToTarget(postProcessing->GetRenderTarget(), 1.f, glm::vec4(0.f, 0.f, 0.f, 0.f));
     
-    //water->Render(player->GetCamera(), deferredLighting->light, screenSize);
+    water->Render(player->GetCamera(), deferredLighting->light, screenSize);
     
     if (GameSettings::GetInstance().GetBool("FXAA")) {
         fxaaFilter->SetScreenSize(screenSize);
@@ -345,24 +373,6 @@ void TestScene::Render(const glm::vec2& screenSize) {
     
     particleSystem->Render(player->GetCamera(), screenSize);
     explosionParticleSystem->Render(player->GetCamera(), screenSize);
-
-	font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
-
-	std::string playerText = "Player " + std::to_string(iteratePlayers+1);
-	font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize);
-
-	float barHeight = screenSize.y * 0.25f;
-	float barWidth = screenSize.x * 0.04f;
-	float barPosX = screenSize.x * 0.1f;
-	float barPosY = screenSize.y * 0.7f;
-	float barXOffset = screenSize.x * 0.05f;
-
-	for (int i = 0; i < numberOfPlayers; i++){
-		std::string healthBarNum = std::to_string(i + 1);
-		font->RenderText(healthBarNum.c_str(), glm::vec2(barPosX+10.f + barXOffset*i, barPosY-30.f), 256.f, screenSize);
-	}
-	if (winner)
-		font->RenderText("A WINNER IS YOU!", glm::vec2((screenSize.x) / 3.f, (screenSize.y) / 3.f), 256.f, screenSize);
     postProcessing->Render();
     
     // Start - swing arrow
@@ -400,6 +410,27 @@ void TestScene::Render(const glm::vec2& screenSize) {
     }
     
     gui->Render(screenSize, playerObjects, swingStrength);
+    
+    // Player info.
+    font->RenderText(clubIterator->first.c_str(), glm::vec2(0.f,0.f), 256.f, screenSize);
+    
+    std::string playerText = "Player " + std::to_string(playerIndex+1);
+    font->RenderText(playerText.c_str(), glm::vec2(screenSize.x / 2.f, 0.f), 256.f, screenSize);
+    
+    float barPosX = screenSize.x * 0.1f;
+    float barPosY = screenSize.y * 0.7f;
+    float barXOffset = screenSize.x * 0.05f;
+    
+    for (int i = 0; i < numberOfPlayers; i++){
+        std::string healthBarNum = std::to_string(i + 1);
+        font->RenderText(healthBarNum.c_str(), glm::vec2(barPosX+10.f + barXOffset*i, barPosY-30.f), 256.f, screenSize);
+    }
+    if (winner)
+        font->RenderText("A WINNER IS YOU!", glm::vec2((screenSize.x) / 3.f, (screenSize.y) / 3.f), 256.f, screenSize);
+    
+    // Wind info.
+    std::string windText = "Wind: (" + std::to_string(wind.x) + ", " + std::to_string(wind.y) + ", " + std::to_string(wind.z) + ") m/s";
+    font->RenderText(windText.c_str(), glm::vec2(screenSize.x - 300.f, 0.f), 256.f, screenSize);
 }
 
 void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const glm::vec4& clippingPlane) {
@@ -407,17 +438,17 @@ void TestScene::RenderToTarget(RenderTarget *renderTarget, float scale, const gl
     
     glViewport(0, 0, static_cast<int>(renderTarget->Size().x), static_cast<int>(renderTarget->Size().y));
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	bool male = true;
+    bool male = true;
     for (auto &playerObject : playerObjects) {
-		if (male == false){
-			femaleModelObject->SetPosition(playerObject.Position());
-			femaleModelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
-			male = true;
-		} else {
-			maleModelObject->SetPosition(playerObject.Position());
-			maleModelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
-			male = false;
-		}
+        if (male == false){
+            femaleModelObject->SetPosition(playerObject.Position());
+            femaleModelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+            male = true;
+        } else {
+            maleModelObject->SetPosition(playerObject.Position());
+            maleModelObject->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);
+            male = false;
+        }
     }
     
     golfBall->Render(player->GetCamera(), renderTarget->Size(), clippingPlane);

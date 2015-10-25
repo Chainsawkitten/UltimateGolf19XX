@@ -74,9 +74,9 @@ class ParticleSystem {
         /// Update all the system's particles, spawn new particles etc.
         /**
          * @param time Time since last frame (in seconds).
-         * @param camera Camera (only needs to be sent if there are camera-relative emitters).
+         * @param follow %Object to follow (only needs to be sent if there are relative emitters).
          */
-        void Update(double time, const Camera* camera = nullptr);
+        void Update(double time, const Object* follow = nullptr);
         
         /// Render particles.
         /**

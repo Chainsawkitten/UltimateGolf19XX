@@ -5,13 +5,14 @@
 #include "Default3D.frag.hpp"
 #include "../Physics/Frustum.hpp"
 
-Duck::Duck() {
+Duck::Duck(SoundFile* quack) {
     vertexShader = Resources().CreateShader(DEFAULT3D_VERT, DEFAULT3D_VERT_LENGTH, GL_VERTEX_SHADER);
     geometryShader = Resources().CreateShader(DEFAULT3D_GEOM, DEFAULT3D_GEOM_LENGTH, GL_GEOMETRY_SHADER);
     fragmentShader = Resources().CreateShader(DEFAULT3D_FRAG, DEFAULT3D_FRAG_LENGTH, GL_FRAGMENT_SHADER);
     shaderProgram = Resources().CreateShaderProgram({ vertexShader, geometryShader, fragmentShader });
     
     geometry = Resources().CreateOBJModel("Resources/Models/Duck/Duck.obj");
+    geometry->CreateAabb();
     texture = Resources().CreateTexture2DFromFile("Resources/Models/Duck/Diffuse.png");
     
     velocity = 0.1f;
@@ -19,6 +20,13 @@ Duck::Duck() {
     angularVelocity = 0.f;
     targetAngularVelocity = 0.f;
     lastChanged = 0.f;
+    
+    quackSoundBuffer = new SoundBuffer(quack);
+    
+    quackSound = new Sound(quackSoundBuffer);
+    quackSound->SetLooping(AL_TRUE);
+    
+    quackTimer = rand() / static_cast<float>(RAND_MAX) * 10.f;
 }
 
 Duck::~Duck() {
@@ -29,6 +37,9 @@ Duck::~Duck() {
     
     Resources().FreeOBJModel(geometry);
     Resources().FreeTexture2DFromFile(texture);
+    
+    delete quackSound;
+    delete quackSoundBuffer;
 }
 
 void Duck::Update(double time, TerrainObject* terrain, Water* water) {
@@ -50,6 +61,13 @@ void Duck::Update(double time, TerrainObject* terrain, Water* water) {
     pos.z += cos(glm::radians(HorizontalAngle()));
     if (terrain->GetY(pos.x, pos.z) < water->Position().y - 0.2f)
         Move(glm::vec3(time * velocity * sin(glm::radians(HorizontalAngle())), 0.f, time * velocity * cos(glm::radians(HorizontalAngle()))));
+    
+    quackSound->SetPosition(Position());
+    if (quackTimer > 0.f) {
+        quackTimer -= time;
+        if (quackTimer <= 0.f)
+            quackSound->Play();
+    }
 }
 
 void Duck::Render(Camera* camera, const glm::vec2& screenSize, const glm::vec4& clippingPlane) const {

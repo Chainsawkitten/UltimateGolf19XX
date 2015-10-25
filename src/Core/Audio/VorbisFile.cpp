@@ -3,7 +3,6 @@
 #include <stb_vorbis.c>
 
 VorbisFile::VorbisFile(const char *filename) {
-	Log() << "Warning!! Vorbis support not active!!\n";
     int channels;
     dataSize = stb_vorbis_decode_filename(filename, &channels, &sampleRate, reinterpret_cast<short**>(&data));
     
